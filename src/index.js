@@ -9,8 +9,24 @@ const app = express()
 // Init body-parser
 app.use(express.json())
 
-// Init cors
+// Use cors
 app.use(cors())
+
+// Services
+const { UserService } = require('./services')
+const userService = new UserService()
+
+// Utils
+
+// Controllers
+const { AuthController } = require('./controllers')
+const authController = new AuthController(userService)
+
+// Routes
+const { AuthRoutes } = require('./routes')
+const authRoutes = new AuthRoutes(authController)
+
+// Validator
 
 // Connect to mongodb
 mongoose.connect(process.env.DATABASE_URL, {
@@ -23,21 +39,9 @@ app.get('/', (req, res) => {
   res.send('Hello World')
 })
 
+// Routes
+app.use('/api/v1/auth', authRoutes.router)
+
 // Listen to port
-app.listen(3000, () => console.log('Server started'))
-
-// Test db
-// const { Token } = require('./models')
-
-// const test = async () => {
-//   const token = new Token({
-//     email: 'test@test.com',
-//     token: 'test',
-//     expiresIn: '2022/10/15'
-//   })
-
-//   await token.save()
-//   console.log(token)
-// }
-
-// test()
+const PORT = process.env.PORT || 5000
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
