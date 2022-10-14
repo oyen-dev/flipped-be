@@ -6,10 +6,10 @@ class Tokenize {
     this.name = 'tokenize'
   }
 
-  async sign (user) {
+  async sign (user, remember) {
     const { _id } = user
     const SECRET = process.env.JWT_SECRET || 'secret'
-    return jwt.sign({ _id }, SECRET, { expiresIn: '1d' })
+    return jwt.sign({ _id }, SECRET, { expiresIn: remember ? '7d' : '1d' })
   }
 
   async verify (token) {

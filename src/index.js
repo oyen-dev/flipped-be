@@ -21,13 +21,14 @@ const { Validator } = require('./validators')
 const validator = new Validator()
 
 // Utils
-const { Response, HashPassword } = require('./utils')
+const { Response, HashPassword, Tokenize } = require('./utils')
 const response = new Response()
 const hashPassword = new HashPassword()
+const tokenize = new Tokenize()
 
 // Controllers
 const { AuthController } = require('./controllers')
-const authController = new AuthController(userService, validator, hashPassword, response)
+const authController = new AuthController(userService, validator, hashPassword, tokenize, response)
 
 // Routes
 const { AuthRoutes } = require('./routes')
