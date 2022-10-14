@@ -2,7 +2,7 @@ const { Schema, model } = require('mongoose')
 const { nanoid } = require('nanoid')
 
 const tokenSchema = new Schema({
-  id: {
+  _id: {
     type: String,
     default: `tkn-${nanoid(15)}`
   },

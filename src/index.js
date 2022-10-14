@@ -16,17 +16,22 @@ app.use(cors())
 const { UserService } = require('./services')
 const userService = new UserService()
 
+// Validator
+const { Validator } = require('./validators')
+const validator = new Validator()
+
 // Utils
+const { Response, HashPassword } = require('./utils')
+const response = new Response()
+const hashPassword = new HashPassword()
 
 // Controllers
 const { AuthController } = require('./controllers')
-const authController = new AuthController(userService)
+const authController = new AuthController(userService, validator, hashPassword, response)
 
 // Routes
 const { AuthRoutes } = require('./routes')
 const authRoutes = new AuthRoutes(authController)
-
-// Validator
 
 // Connect to mongodb
 mongoose.connect(process.env.DATABASE_URL, {

@@ -3,7 +3,7 @@ const { nanoid } = require('nanoid')
 
 const userSchema = new Schema({
   // Base user fileds
-  id: {
+  _id: {
     type: String,
     default: `usr-${nanoid(15)}`
   },
