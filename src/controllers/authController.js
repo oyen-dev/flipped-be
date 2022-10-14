@@ -1,9 +1,10 @@
 const { ClientError } = require('../errors')
 class AuthController {
-  constructor (authService, userService, validator, hashPassword, tokenize, response) {
+  constructor (authService, userService, mailService, validator, hashPassword, tokenize, response) {
     this.name = 'authController'
     this._authService = authService
     this._userService = userService
+    this._mailService = mailService
     this._validator = validator
     this._hashPassword = hashPassword
     this._tokenize = tokenize
@@ -36,6 +37,12 @@ class AuthController {
       user = await this._userService.createUser({ ...payload, password: hashedPassword })
 
       // Send email
+      const message = {
+        name: user.fullName,
+        email,
+        link: `https://wa.me/+6285736822725?text=Hallo%20mimin%20Flipped%20Learning..%0ASaya%20baru%20saja%20mendaftar%20LMS%20dengan%20nama%20lengkap%20${encodeURIComponent(user.fullName.trim())}%20dan%20email%20${user.email.replace(/@/g, '%40')}`
+      }
+      await this._mailService.sendEmail(message, 'Hooray, Your Registration Success1', 'register')
 
       // Response
       const response = this._response.success(201, 'Register success, please check your email to activate your account!')
@@ -43,6 +50,7 @@ class AuthController {
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
       // To do logger error
+      console.log(error)
       return this._response.error(res, error)
     }
   }
@@ -123,9 +131,15 @@ class AuthController {
       if (!user) throw new ClientError('Sorry, this email is not registered.', 400)
 
       // Generate token
-      await this._authService.createToken(user)
+      const tokenDetails = await this._authService.createToken(user)
 
       // Send email
+      const message = {
+        name: user.fullName,
+        email: user.email,
+        link: `https://lms.flippedlearning.id/reset-password?token=${tokenDetails.token}`
+      }
+      await this._mailService.sendEmail(message, 'Request Reset Password', 'forgot')
 
       // Response
       const response = this._response.success(200, 'We have sent you an email to reset your password!')
