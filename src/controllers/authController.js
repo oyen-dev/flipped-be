@@ -14,6 +14,7 @@ class AuthController {
     this.getAuthProfile = this.getAuthProfile.bind(this)
     this.forgotPassword = this.forgotPassword.bind(this)
     this.resetPassword = this.resetPassword.bind(this)
+    this.checkToken = this.checkToken.bind(this)
   }
 
   async register (req, res) {
@@ -173,6 +174,30 @@ class AuthController {
 
       // Response
       const response = this._response.success(200, 'Reset password success.')
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      // To do logger error
+      return this._response.error(res, error)
+    }
+  }
+
+  async checkToken (req, res) {
+    const token = req.query.token
+
+    try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      this._validator.validateCheckToken({ token })
+
+      // Find token
+      const tokenDetails = await this._authService.findTokenByToken(token)
+      if (!tokenDetails) throw new ClientError('Unauthorized', 401)
+
+      // Response
+      const response = this._response.success(200, 'Token is valid.')
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {

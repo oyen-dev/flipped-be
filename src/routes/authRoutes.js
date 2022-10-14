@@ -10,6 +10,7 @@ class AuthRoutes {
     this.router.get('/me', this._authController.getAuthProfile)
     this.router.post('/forgot-password', this._authController.forgotPassword)
     this.router.post('/reset-password', this._authController.resetPassword)
+    this.router.get('/check-token', this._authController.checkToken)
   }
 }
 
