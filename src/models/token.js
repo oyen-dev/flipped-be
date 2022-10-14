@@ -7,7 +7,7 @@ const tokenSchema = new Schema({
     default: `tkn-${nanoid(15)}`
   },
   email: { type: String, required: true, unique: true, lowercase: true },
-  token: { type: String, required: true },
+  token: { type: String, required: true, unique: true },
   expiresIn: { type: String, required: true }
 })
 

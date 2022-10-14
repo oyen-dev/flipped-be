@@ -1,5 +1,5 @@
 const { ClientError } = require('../errors')
-const { registerSchema, loginSchema } = require('./schema/authSchema')
+const { registerSchema, loginSchema, forgotPasswordSchema } = require('./schema/authSchema')
 
 class Validator {
   constructor () {
@@ -13,6 +13,11 @@ class Validator {
 
   validateLogin (payload) {
     const { error } = loginSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateForgotPassword (payload) {
+    const { error } = forgotPasswordSchema.validate(payload)
     if (error) throw new ClientError(error.message, 400)
   }
 }

@@ -13,8 +13,9 @@ app.use(express.json())
 app.use(cors())
 
 // Services
-const { UserService } = require('./services')
+const { UserService, AuthService } = require('./services')
 const userService = new UserService()
+const authService = new AuthService()
 
 // Validator
 const { Validator } = require('./validators')
@@ -28,7 +29,7 @@ const tokenize = new Tokenize()
 
 // Controllers
 const { AuthController } = require('./controllers')
-const authController = new AuthController(userService, validator, hashPassword, tokenize, response)
+const authController = new AuthController(authService, userService, validator, hashPassword, tokenize, response)
 
 // Routes
 const { AuthRoutes } = require('./routes')

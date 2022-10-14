@@ -1,7 +1,8 @@
 const { ClientError } = require('../errors')
 class AuthController {
-  constructor (userService, validator, hashPassword, tokenize, response) {
+  constructor (authService, userService, validator, hashPassword, tokenize, response) {
     this.name = 'authController'
+    this._authService = authService
     this._userService = userService
     this._validator = validator
     this._hashPassword = hashPassword
@@ -11,6 +12,7 @@ class AuthController {
     this.register = this.register.bind(this)
     this.login = this.login.bind(this)
     this.getAuthProfile = this.getAuthProfile.bind(this)
+    this.forgotPassword = this.forgotPassword.bind(this)
   }
 
   async register (req, res) {
@@ -99,6 +101,32 @@ class AuthController {
       // Response
       const response = this._response.success(200, 'Get profile success!', details)
 
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      // To do logger error
+      return this._response.error(res, error)
+    }
+  }
+
+  async forgotPassword (req, res) {
+    const payload = req.body
+    const { email } = payload
+
+    try {
+      // Validate payload
+      this._validator.validateForgotPassword(payload)
+
+      // Find user
+      const user = await this._userService.findUserByEmail(email)
+      if (!user) throw new ClientError('Sorry, this email is not registered.', 400)
+
+      // Generate token
+      // const resetToken = await this._authService.createToken(user)
+
+      // Send email
+
+      // Response
+      const response = this._response.success(200, 'We have sent you an email to reset your password!')
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
       // To do logger error
