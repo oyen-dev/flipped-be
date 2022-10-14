@@ -10,6 +10,7 @@ class AuthController {
 
     this.register = this.register.bind(this)
     this.login = this.login.bind(this)
+    this.getAuthProfile = this.getAuthProfile.bind(this)
   }
 
   async register (req, res) {
@@ -66,6 +67,37 @@ class AuthController {
 
       // Response
       const response = this._response.success(200, 'Login success!', { accessToken, expiredIn: remember ? '7d' : '1d' })
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      // To do logger error
+      return this._response.error(res, error)
+    }
+  }
+
+  async getAuthProfile (req, res) {
+    const token = req.headers.authorization
+    try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Find user
+      const user = await this._userService.findUserById(_id)
+      if (!user) throw new ClientError('Unauthorized', 401)
+
+      const details = {
+        _id: user._id,
+        email: user.email,
+        name: user.fullName,
+        picture: user.picture,
+        role: user.role
+      }
+
+      // Response
+      const response = this._response.success(200, 'Get profile success!', details)
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
