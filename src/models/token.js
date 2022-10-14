@@ -8,8 +8,11 @@ const tokenSchema = new Schema({
   },
   email: { type: String, required: true, unique: true, lowercase: true },
   token: { type: String, required: true, unique: true },
-  expiresIn: { type: String, required: true }
+  expiresIn: { type: Date, required: true }
 })
+
+// Auto delete token after 1 day
+tokenSchema.index({ expiresIn: 1 }, { expireAfterSeconds: 86400 })
 
 // Create model
 const Token = model('tokens', tokenSchema)

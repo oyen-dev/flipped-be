@@ -1,9 +1,21 @@
 const { ClientError } = require('../errors')
-const { registerSchema, loginSchema, forgotPasswordSchema } = require('./schema/authSchema')
+const {
+  registerSchema,
+  loginSchema,
+  forgotPasswordSchema,
+  checkTokenSchema,
+  resetPasswordSchema
+} = require('./schema/authSchema')
 
 class Validator {
   constructor () {
     this.name = 'Validator'
+
+    this.validateRegister = this.validateRegister.bind(this)
+    this.validateLogin = this.validateLogin.bind(this)
+    this.validateForgotPassword = this.validateForgotPassword.bind(this)
+    this.validateCheckToken = this.validateCheckToken.bind(this)
+    this.validateResetPassword = this.validateResetPassword.bind(this)
   }
 
   validateRegister (payload) {
@@ -18,6 +30,16 @@ class Validator {
 
   validateForgotPassword (payload) {
     const { error } = forgotPasswordSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateCheckToken (payload) {
+    const { error } = checkTokenSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateResetPassword (payload) {
+    const { error } = resetPasswordSchema.validate(payload)
     if (error) throw new ClientError(error.message, 400)
   }
 }

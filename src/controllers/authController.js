@@ -13,6 +13,7 @@ class AuthController {
     this.login = this.login.bind(this)
     this.getAuthProfile = this.getAuthProfile.bind(this)
     this.forgotPassword = this.forgotPassword.bind(this)
+    this.resetPassword = this.resetPassword.bind(this)
   }
 
   async register (req, res) {
@@ -121,12 +122,58 @@ class AuthController {
       if (!user) throw new ClientError('Sorry, this email is not registered.', 400)
 
       // Generate token
-      // const resetToken = await this._authService.createToken(user)
+      await this._authService.createToken(user)
 
       // Send email
 
       // Response
       const response = this._response.success(200, 'We have sent you an email to reset your password!')
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      // To do logger error
+      return this._response.error(res, error)
+    }
+  }
+
+  async resetPassword (req, res) {
+    const token = req.query.token
+    const payload = req.body
+    const { password } = payload
+
+    try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      this._validator.validateCheckToken({ token })
+
+      // Validate payload
+      this._validator.validateResetPassword(payload)
+
+      // Find token
+      const tokenDetails = await this._authService.findTokenByToken(token)
+      if (!tokenDetails) throw new ClientError('Unauthorized', 401)
+
+      // Get user based on token
+      const { email } = tokenDetails
+      const user = await this._userService.findUserByEmail(email)
+
+      // Check if account is actived
+      if (!user.isActivated) throw new ClientError('Sorry, this account is not actived yet.', 400)
+
+      // Hash password
+      const hashedPassword = await this._hashPassword.hash(password)
+
+      // Update user
+      user.password = hashedPassword
+      await user.save()
+
+      // Delete token
+      await this._authService.deleteToken(email)
+
+      // Response
+      const response = this._response.success(200, 'Reset password success.')
+
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
       // To do logger error
