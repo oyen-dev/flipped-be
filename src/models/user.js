@@ -19,11 +19,19 @@ const userSchema = new Schema({
 
   // Activation and soft delete
   isActivated: { type: Boolean, default: false },
+  verifiedAt: { type: Date, default: null },
   isDeleted: { type: Boolean, default: false },
-  deletedAt: { type: String, default: null },
+  deletedAt: { type: Date, default: null },
 
   // Role
   role: { type: String, default: 'STUDENT' },
+
+  // Class
+  // classEnrolled with array of class id
+  classEnrolled: [{ type: Schema.Types.String, ref: 'classes' }],
+
+  // Logs
+  logs: [{ type: Schema.Types.String, ref: 'logs' }],
 
   // Timestamps
   createdAt: { type: String, default: new Date().toISOString() },

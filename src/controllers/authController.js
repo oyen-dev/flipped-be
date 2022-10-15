@@ -181,6 +181,7 @@ class AuthController {
 
       // Update user
       user.password = hashedPassword
+      user.updatedAt = new Date().toISOString()
       await user.save()
 
       // Delete token
