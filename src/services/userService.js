@@ -4,12 +4,6 @@ const { ClientError } = require('../errors')
 class UserService {
   constructor () {
     this.name = 'userService'
-    this.findUserByEmail = this.findUserByEmail.bind(this)
-    this.findUserById = this.findUserById.bind(this)
-    this.createUser = this.createUser.bind(this)
-    this.updatePassword = this.updatePassword.bind(this)
-    this.createTeacher = this.createTeacher.bind(this)
-    this.updateTeacher = this.updateTeacher.bind(this)
   }
 
   async findUserByEmail (email) {
@@ -57,6 +51,19 @@ class UserService {
     teacher.placeOfBirth = placeOfBirth
     teacher.address = address
     teacher.phone = phone
+    teacher.updatedAt = new Date()
+
+    return await teacher.save()
+  }
+
+  async deleteTeacher (id) {
+    const teacher = await this.findUserById(id)
+    if (!teacher) throw new ClientError('Teacher not found', 404)
+
+    // Soft delete
+    teacher.isDeleted = true
+    teacher.deletedAt = new Date()
+    teacher.willBeDeletedAt = new Date(new Date().setDate(new Date().getDate() + 30))
     teacher.updatedAt = new Date()
 
     return await teacher.save()

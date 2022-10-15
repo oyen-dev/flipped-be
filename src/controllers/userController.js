@@ -12,6 +12,7 @@ class UserController {
 
     this.addTeacher = this.addTeacher.bind(this)
     this.editTeacher = this.editTeacher.bind(this)
+    this.deleteTeacher = this.deleteTeacher.bind(this)
   }
 
   async addTeacher (req, res) {
@@ -57,6 +58,29 @@ class UserController {
 
       // Send response
       const response = this._response.success(200, 'Edit teacher success!')
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      // To do logger error
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async deleteTeacher (req, res) {
+    const id = req.params.id
+
+    try {
+      // Validate payload
+      this._validator.validateDeleteTeacher({ id })
+
+      // Delete teacher
+      await this._userService.deleteTeacher(id)
+
+      // Send email for notify
+
+      // Send response
+      const response = this._response.success(200, 'Delete teacher success!')
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {

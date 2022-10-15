@@ -24,8 +24,13 @@ const editTeacherSchema = Joi.object({
   phone: Joi.string().allow('')
 })
 
+const deleteTeacherSchema = Joi.object({
+  id: Joi.string().required()
+})
+
 module.exports = {
   getUserProfileSchema,
   addTeacherSchema,
-  editTeacherSchema
+  editTeacherSchema,
+  deleteTeacherSchema
 }

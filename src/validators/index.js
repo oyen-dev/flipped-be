@@ -6,7 +6,11 @@ const {
   checkTokenSchema,
   resetPasswordSchema
 } = require('./schema/authSchema')
-const { addTeacherSchema, editTeacherSchema } = require('./schema/userSchema')
+const {
+  addTeacherSchema,
+  editTeacherSchema,
+  deleteTeacherSchema
+} = require('./schema/userSchema')
 
 class Validator {
   constructor () {
@@ -45,6 +49,11 @@ class Validator {
 
   validateEditTeacher (payload) {
     const { error } = editTeacherSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateDeleteTeacher (payload) {
+    const { error } = deleteTeacherSchema.validate(payload)
     if (error) throw new ClientError(error.message, 400)
   }
 }

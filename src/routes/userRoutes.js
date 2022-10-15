@@ -7,6 +7,8 @@ class UserRoutes {
 
     this.router.post('/teachers', this._userController.addTeacher)
     this.router.put('/teachers/:id', this._userController.editTeacher)
+    this.router.put('/teachers/:id', this._userController.editTeacher)
+    this.router.delete('/teachers/:id', this._userController.deleteTeacher)
   }
 }
 

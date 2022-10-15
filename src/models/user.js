@@ -22,6 +22,7 @@ const userSchema = new Schema({
   verifiedAt: { type: Date, default: null },
   isDeleted: { type: Boolean, default: false },
   deletedAt: { type: Date, default: null },
+  willBeDeletedAt: { type: Date, default: null },
 
   // Role
   role: { type: String, default: 'STUDENT' },
@@ -33,6 +34,9 @@ const userSchema = new Schema({
   createdAt: { type: Date, default: new Date() },
   updatedAt: { type: Date, default: new Date() }
 })
+
+// Add index for better search in field fullName
+userSchema.index({ fullName: 'text' })
 
 // Create model
 const User = model('users', userSchema)
