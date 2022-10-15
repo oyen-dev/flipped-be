@@ -4,7 +4,7 @@ const { nanoid } = require('nanoid')
 const tokenSchema = new Schema({
   _id: {
     type: String,
-    default: `tkn-${nanoid(15)}`
+    default: () => { return `tkn-${nanoid(15)}` }
   },
   email: { type: String, required: true, unique: true, lowercase: true },
   token: { type: String, required: true, unique: true },

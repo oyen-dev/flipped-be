@@ -2,7 +2,7 @@ const { Schema, model } = require('mongoose')
 const { nanoid } = require('nanoid')
 
 const gradeSchema = new Schema({
-  _id: { type: String, default: `grd-${nanoid(15)}` },
+  _id: { type: String, default: () => { return `gra-${nanoid(15)}` } },
   name: { type: String, required: true },
   createdAt: { type: Date, default: new Date() },
   updatedAt: { type: Date, default: new Date() }

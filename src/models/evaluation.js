@@ -2,7 +2,7 @@ const { Schema, model } = require('mongoose')
 const { nanoid } = require('nanoid')
 
 const evaluationSchema = new Schema({
-  _id: { type: String, default: `evl-${nanoid(15)}` },
+  _id: { type: String, default: () => { return `evl-${nanoid(15)}` } },
   classId: { type: Schema.Types.String, ref: 'classes' },
   teacherId: { type: Schema.Types.String, ref: 'users' },
   title: { type: String, required: true },

@@ -2,7 +2,7 @@ const { Schema, model } = require('mongoose')
 const { nanoid } = require('nanoid')
 
 const eSubmissionSchema = new Schema({
-  _id: { type: String, default: `esb-${nanoid(15)}` },
+  _id: { type: String, default: () => { return `esb-${nanoid(15)}` } },
   evaluationId: { type: Schema.Types.String, ref: 'evaluations' },
   studentId: { type: Schema.Types.String, ref: 'users' },
   answers: [{ type: Schema.Types.String, ref: 'answers' }],

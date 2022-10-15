@@ -2,7 +2,7 @@ const { Schema, model } = require('mongoose')
 const { nanoid } = require('nanoid')
 
 const presenceSchema = new Schema({
-  _id: { type: String, default: `prc-${nanoid(15)}` },
+  _id: { type: String, default: () => { return `pre-${nanoid(15)}` } },
   classId: { type: Schema.Types.String, ref: 'classes' },
   start: { type: Date, required: true },
   end: { type: Date, required: true },

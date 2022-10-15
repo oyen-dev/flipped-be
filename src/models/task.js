@@ -2,7 +2,7 @@ const { Schema, model } = require('mongoose')
 const { nanoid } = require('nanoid')
 
 const taskSchema = new Schema({
-  _id: { type: String, default: `tsk-${nanoid(15)}` },
+  _id: { type: String, default: () => { return `tas-${nanoid(15)}` } },
   postId: { type: Schema.Types.String, ref: 'posts' },
   deadline: {
     start: { type: Date, required: true },
