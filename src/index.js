@@ -29,12 +29,14 @@ const hashPassword = new HashPassword()
 const tokenize = new Tokenize()
 
 // Controllers
-const { AuthController } = require('./controllers')
+const { AuthController, UserController } = require('./controllers')
 const authController = new AuthController(authService, userService, mailService, validator, hashPassword, tokenize, response)
+const userController = new UserController(userService, mailService, validator, hashPassword, tokenize, response)
 
 // Routes
-const { AuthRoutes } = require('./routes')
+const { AuthRoutes, UserRoutes } = require('./routes')
 const authRoutes = new AuthRoutes(authController)
+const userRoutes = new UserRoutes(userController)
 
 // Connect to mongodb
 mongoose.connect(process.env.DATABASE_URL, {
@@ -49,6 +51,7 @@ app.get('/', (req, res) => {
 
 // Routes
 app.use('/api/v1/auth', authRoutes.router)
+app.use('/api/v1/users', userRoutes.router)
 
 // Listen to port
 const PORT = process.env.PORT || 5000

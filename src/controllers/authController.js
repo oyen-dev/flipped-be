@@ -50,7 +50,7 @@ class AuthController {
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
       // To do logger error
-      console.log(error)
+      // console.log(error)
       return this._response.error(res, error)
     }
   }

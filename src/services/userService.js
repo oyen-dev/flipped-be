@@ -8,6 +8,7 @@ class UserService {
     this.findUserById = this.findUserById.bind(this)
     this.createUser = this.createUser.bind(this)
     this.updatePassword = this.updatePassword.bind(this)
+    this.createTeacher = this.createTeacher.bind(this)
   }
 
   async findUserByEmail (email) {
@@ -24,6 +25,23 @@ class UserService {
 
   async updatePassword (email, password) {
     return await User.findOneAndUpdate({ email }, { password })
+  }
+
+  async createTeacher (user) {
+    const { email, fullName, gender, dateOfBirth, placeOfBirth, address } = user
+    const newTeacher = new User({
+      email: email.toLowerCase(),
+      password: '12345678',
+      fullName,
+      gender,
+      dateOfBirth: new Date(dateOfBirth),
+      placeOfBirth,
+      address,
+      isActivated: true,
+      verifiedAt: new Date(),
+      role: 'TEACHER'
+    })
+    return await newTeacher.save()
   }
 }
 

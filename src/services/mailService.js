@@ -11,6 +11,15 @@ class MailService {
 
     this.transporter = this.transporter.bind(this)
     this.sendEmail = this.sendEmail.bind(this)
+
+    // console.log(process.env.OAUTH_CLIENT_ID,
+    //   process.env.OAUTH_CLIENT_SECRET,
+    //   process.env.OAUTH_REFRESH_TOKEN,
+    //   process.env.OAUTH_EMAIL,
+    //   process.env.OAUTH_CLIENT_ID,
+    //   process.env.OAUTH_CLIENT_SECRET,
+    //   process.env.OAUTH_REFRESH_TOKEN
+    // )
   }
 
   async transporter () {

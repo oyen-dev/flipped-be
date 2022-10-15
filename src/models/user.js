@@ -14,7 +14,7 @@ const userSchema = new Schema({
   dateOfBirth: { type: String, required: true },
   placeOfBirth: { type: String, required: true },
   address: { type: String, required: true },
-  picture: { type: String, default: 'https://i.pravatar.cc/300' },
+  picture: { type: String, default: (user) => { return `https://ui-avatars.com/api/?name=${user.fullName.split(' ')[0]}` } },
   phone: { type: String, default: '' },
 
   // Activation and soft delete
@@ -25,10 +25,6 @@ const userSchema = new Schema({
 
   // Role
   role: { type: String, default: 'STUDENT' },
-
-  // Class
-  // classEnrolled with array of class id
-  classEnrolled: [{ type: Schema.Types.String, ref: 'classes' }],
 
   // Logs
   logs: [{ type: Schema.Types.String, ref: 'logs' }],
