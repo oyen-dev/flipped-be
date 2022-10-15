@@ -1,5 +1,6 @@
 // Export all models
 module.exports = {
+  ...require('./answer'),
   ...require('./attachment'),
   ...require('./class'),
   ...require('./eSubmission'),
@@ -7,8 +8,10 @@ module.exports = {
   ...require('./grade'),
   ...require('./log'),
   ...require('./post'),
-  ...require('./tSubmission'),
+  ...require('./presence'),
+  ...require('./question'),
   ...require('./task'),
+  ...require('./tSubmission'),
   ...require('./token'),
   ...require('./tSubmission'),
   ...require('./user')
