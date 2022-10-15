@@ -28,10 +28,14 @@ const deleteTeacherSchema = Joi.object({
   id: Joi.string().required()
 })
 
-const getTeachersSchema = Joi.object({
+const getUsersSchema = Joi.object({
   q: Joi.string().allow(''),
   page: Joi.number().integer().min(1).required(),
   limit: Joi.number().integer().min(1).required()
+})
+
+const getUserSchema = Joi.object({
+  id: Joi.string().required()
 })
 
 module.exports = {
@@ -39,5 +43,6 @@ module.exports = {
   addTeacherSchema,
   editTeacherSchema,
   deleteTeacherSchema,
-  getTeachersSchema
+  getUsersSchema,
+  getUserSchema
 }

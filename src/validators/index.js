@@ -8,7 +8,8 @@ const {
   addTeacherSchema,
   editTeacherSchema,
   deleteTeacherSchema,
-  getTeachersSchema
+  getUsersSchema,
+  getUserSchema
 } = require('./schema')
 
 class Validator {
@@ -56,8 +57,13 @@ class Validator {
     if (error) throw new ClientError(error.message, 400)
   }
 
-  validateGetTeachers (payload) {
-    const { error } = getTeachersSchema.validate(payload)
+  validateGetUsers (payload) {
+    const { error } = getUsersSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateGetUser (payload) {
+    const { error } = getUserSchema.validate(payload)
     if (error) throw new ClientError(error.message, 400)
   }
 }

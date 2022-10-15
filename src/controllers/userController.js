@@ -14,6 +14,7 @@ class UserController {
     this.editTeacher = this.editTeacher.bind(this)
     this.deleteTeacher = this.deleteTeacher.bind(this)
     this.getTeachers = this.getTeachers.bind(this)
+    this.getTeacher = this.getTeacher.bind(this)
   }
 
   async addTeacher (req, res) {
@@ -97,7 +98,7 @@ class UserController {
 
     try {
       // Validate payload
-      this._validator.validateGetTeachers(payload)
+      this._validator.validateGetUsers(payload)
 
       // Get teachers
       const teachers = await this._userService.getUsers('TEACHER', q, page, limit)
@@ -113,6 +114,27 @@ class UserController {
       const response = this._response.success(200, 'Get teachers success!', users, meta)
 
       return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      // To do logger error
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async getTeacher (req, res) {
+    const id = req.params.id
+
+    try {
+      // Validate payload
+      this._validator.validateGetUser({ id })
+
+      // Get teacher
+      const user = await this._userService.getUser('TEACHER', id)
+
+      // Send response
+      const response = this._response.success(200, 'Get teacher success!', user)
+
+      return res.status(200).json(response)
     } catch (error) {
       // To do logger error
       console.log(error)

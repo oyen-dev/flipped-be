@@ -98,6 +98,18 @@ class UserService {
       count
     }
   }
+
+  async getUser (type, id) {
+    const user = await User.findOne({
+      _id: id,
+      isDeleted: false,
+      isActivated: true,
+      role: type
+    }).select('_id email fullName gender dateOfBirth placeOfBirth address phone picture')
+    if (!user) throw new ClientError('User not found', 404)
+
+    return user
+  }
 }
 
 module.exports = {
