@@ -6,23 +6,14 @@ const evaluationSchema = new Schema({
   classId: { type: Schema.Types.String, ref: 'classes' },
   teacherId: { type: Schema.Types.String, ref: 'users' },
   title: { type: String, required: true },
-  questions: [{
-    question: { type: String, required: true },
-    choices: {
-      a: { type: String, required: true },
-      b: { type: String, required: true },
-      c: { type: String, required: true },
-      d: { type: String, required: true }
-    },
-    correctAnswer: { type: String, required: true }
-  }],
+  questions: [{ type: Schema.Types.String, ref: 'questions' }],
   deadline: {
     start: { type: Date, required: true },
     end: { type: Date, required: true }
   },
   submissions: [{ type: Schema.Types.String, ref: 'esubmissions' }],
-  createdAt: { type: String, default: new Date().toISOString() },
-  updatedAt: { type: String, default: new Date().toISOString() }
+  createdAt: { type: Date, default: new Date() },
+  updatedAt: { type: Date, default: new Date() }
 })
 
 // Create model

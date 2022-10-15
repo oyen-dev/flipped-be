@@ -34,8 +34,8 @@ const userSchema = new Schema({
   logs: [{ type: Schema.Types.String, ref: 'logs' }],
 
   // Timestamps
-  createdAt: { type: String, default: new Date().toISOString() },
-  updatedAt: { type: String, default: new Date().toISOString() }
+  createdAt: { type: Date, default: new Date() },
+  updatedAt: { type: Date, default: new Date() }
 })
 
 // Create model

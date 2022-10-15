@@ -9,9 +9,9 @@ const postSchema = new Schema({
   description: { type: String, required: true },
   attachments: [{ type: Schema.Types.String, ref: 'attachments' }],
   isTask: { type: Boolean, default: false },
-  taskId: { type: Schema.Types.String, ref: 'tasks' },
-  createdAt: { type: String, default: new Date().toISOString() },
-  updatedAt: { type: String, default: new Date().toISOString() }
+  taskId: { type: Schema.Types.String, ref: 'tasks', default: null },
+  createdAt: { type: Date, default: new Date() },
+  updatedAt: { type: Date, default: new Date() }
 })
 
 // Create model

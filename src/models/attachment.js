@@ -6,8 +6,8 @@ const attachmentSchema = new Schema({
   postId: { type: Schema.Types.String, ref: 'posts' },
   type: { type: String, required: true },
   url: { type: String, required: true },
-  createdAt: { type: String, default: new Date().toISOString() },
-  updatedAt: { type: String, default: new Date().toISOString() }
+  createdAt: { type: Date, default: new Date() },
+  updatedAt: { type: Date, default: new Date() }
 })
 
 // Create model

@@ -7,12 +7,11 @@ const tSubmissionSchema = new Schema({
   studentId: { type: Schema.Types.String, ref: 'users' },
   answers: { type: String, required: true },
   attachments: [{ type: Schema.Types.String, ref: 'attachments' }],
-  submittedAt: { type: String, default: new Date().toISOString() },
   points: { type: Number, default: 0 },
   reaction: { type: Number, default: 0 },
   feedback: { type: String, default: '' },
-  createdAt: { type: String, default: new Date().toISOString() },
-  updatedAt: { type: String, default: new Date().toISOString() }
+  createdAt: { type: Date, default: new Date() },
+  updatedAt: { type: Date, default: new Date() }
 })
 
 // Create model

@@ -11,8 +11,8 @@ const presenceSchema = new Schema({
     at: { type: Date, required: true },
     status: { type: String, required: true }
   }],
-  createdAt: { type: String, default: new Date().toISOString() },
-  updatedAt: { type: String, default: new Date().toISOString() }
+  createdAt: { type: Date, default: new Date() },
+  updatedAt: { type: Date, default: new Date() }
 })
 
 // Create model
