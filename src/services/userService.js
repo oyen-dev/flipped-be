@@ -1,5 +1,5 @@
 const { User } = require('../models')
-// const { ClientError } = require('../errors')
+const { ClientError } = require('../errors')
 
 class UserService {
   constructor () {
@@ -9,6 +9,7 @@ class UserService {
     this.createUser = this.createUser.bind(this)
     this.updatePassword = this.updatePassword.bind(this)
     this.createTeacher = this.createTeacher.bind(this)
+    this.updateTeacher = this.updateTeacher.bind(this)
   }
 
   async findUserByEmail (email) {
@@ -16,7 +17,7 @@ class UserService {
   }
 
   async findUserById (id) {
-    return await User.findOne({ id })
+    return await User.findOne({ _id: id })
   }
 
   async createUser (user) {
@@ -42,6 +43,23 @@ class UserService {
       role: 'TEACHER'
     })
     return await newTeacher.save()
+  }
+
+  async updateTeacher (id, user) {
+    const teacher = await this.findUserById(id)
+    if (!teacher) throw new ClientError('Teacher not found', 404)
+
+    const { email, fullName, gender, dateOfBirth, placeOfBirth, address, phone } = user
+    teacher.email = email.toLowerCase()
+    teacher.fullName = fullName
+    teacher.gender = gender
+    teacher.dateOfBirth = new Date(dateOfBirth)
+    teacher.placeOfBirth = placeOfBirth
+    teacher.address = address
+    teacher.phone = phone
+    teacher.updatedAt = new Date()
+
+    return await teacher.save()
   }
 }
 
