@@ -5,9 +5,9 @@ const {
   forgotPasswordSchema,
   checkTokenSchema,
   resetPasswordSchema,
-  addTeacherSchema,
-  editTeacherSchema,
-  deleteTeacherSchema,
+  addUserSchema,
+  editUserSchema,
+  deleteUserSchema,
   getUsersSchema,
   getUserSchema
 } = require('./schema')
@@ -42,18 +42,18 @@ class Validator {
     if (error) throw new ClientError(error.message, 400)
   }
 
-  validateAddTeacher (payload) {
-    const { error } = addTeacherSchema.validate(payload)
+  validateAddUser (payload) {
+    const { error } = addUserSchema.validate(payload)
     if (error) throw new ClientError(error.message, 400)
   }
 
-  validateEditTeacher (payload) {
-    const { error } = editTeacherSchema.validate(payload)
+  validateEditUser (payload) {
+    const { error } = editUserSchema.validate(payload)
     if (error) throw new ClientError(error.message, 400)
   }
 
-  validateDeleteTeacher (payload) {
-    const { error } = deleteTeacherSchema.validate(payload)
+  validateDeleteUser (payload) {
+    const { error } = deleteUserSchema.validate(payload)
     if (error) throw new ClientError(error.message, 400)
   }
 

@@ -4,7 +4,7 @@ const getUserProfileSchema = Joi.object({
   id: Joi.string().required()
 })
 
-const addTeacherSchema = Joi.object({
+const addUserSchema = Joi.object({
   email: Joi.string().email().required(),
   fullName: Joi.string().required(),
   gender: Joi.boolean().truthy('true', 'yes', 1, '1').falsy('false', 'no', 0, '0').required(),
@@ -13,7 +13,7 @@ const addTeacherSchema = Joi.object({
   address: Joi.string().required()
 })
 
-const editTeacherSchema = Joi.object({
+const editUserSchema = Joi.object({
   id: Joi.string().required(),
   email: Joi.string().email().required(),
   fullName: Joi.string().required(),
@@ -24,7 +24,7 @@ const editTeacherSchema = Joi.object({
   phone: Joi.string().allow('')
 })
 
-const deleteTeacherSchema = Joi.object({
+const deleteUserSchema = Joi.object({
   id: Joi.string().required()
 })
 
@@ -40,9 +40,9 @@ const getUserSchema = Joi.object({
 
 module.exports = {
   getUserProfileSchema,
-  addTeacherSchema,
-  editTeacherSchema,
-  deleteTeacherSchema,
+  addUserSchema,
+  editUserSchema,
+  deleteUserSchema,
   getUsersSchema,
   getUserSchema
 }

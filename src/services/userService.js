@@ -22,9 +22,9 @@ class UserService {
     return await User.findOneAndUpdate({ email }, { password })
   }
 
-  async createTeacher (user) {
+  async directCreateUser (user, role) {
     const { email, fullName, gender, dateOfBirth, placeOfBirth, address } = user
-    const newTeacher = new User({
+    const newUser = new User({
       email: email.toLowerCase(),
       password: '12345678',
       fullName,
@@ -34,39 +34,44 @@ class UserService {
       address,
       isActivated: true,
       verifiedAt: new Date(),
-      role: 'TEACHER'
+      role
     })
-    return await newTeacher.save()
+    return await newUser.save()
   }
 
-  async updateTeacher (id, user) {
-    const teacher = await this.findUserById(id)
-    if (!teacher) throw new ClientError('Teacher not found', 404)
-
+  async updateUserProfile (id, user, type) {
     const { email, fullName, gender, dateOfBirth, placeOfBirth, address, phone } = user
-    teacher.email = email.toLowerCase()
-    teacher.fullName = fullName
-    teacher.gender = gender
-    teacher.dateOfBirth = new Date(dateOfBirth)
-    teacher.placeOfBirth = placeOfBirth
-    teacher.address = address
-    teacher.phone = phone
-    teacher.updatedAt = new Date()
 
-    return await teacher.save()
+    // Make sure email is not taken
+    let updatedUser = await this.findUserByEmail(email)
+    if (updatedUser) throw new ClientError('Sorry, this email is already taken.', 400)
+
+    updatedUser = await this.findUserById(id)
+    if (!updatedUser) throw new ClientError(`${type} not found.`, 404)
+
+    updatedUser.email = email.toLowerCase()
+    updatedUser.fullName = fullName
+    updatedUser.gender = gender
+    updatedUser.dateOfBirth = new Date(dateOfBirth)
+    updatedUser.placeOfBirth = placeOfBirth
+    updatedUser.address = address
+    updatedUser.phone = phone
+    updatedUser.updatedAt = new Date()
+
+    return await updatedUser.save()
   }
 
-  async deleteTeacher (id) {
-    const teacher = await this.findUserById(id)
-    if (!teacher) throw new ClientError('Teacher not found', 404)
+  async deleteUser (id, type) {
+    const oldUser = await this.findUserById(id)
+    if (!oldUser) throw new ClientError(`${type} not found`, 404)
 
     // Soft delete
-    teacher.isDeleted = true
-    teacher.deletedAt = new Date()
-    teacher.willBeDeletedAt = new Date(new Date().setDate(new Date().getDate() + 30))
-    teacher.updatedAt = new Date()
+    oldUser.isDeleted = true
+    oldUser.deletedAt = new Date()
+    oldUser.willBeDeletedAt = new Date(new Date().setDate(new Date().getDate() + 30))
+    oldUser.updatedAt = new Date()
 
-    return await teacher.save()
+    return await oldUser.save()
   }
 
   async getUsers (type, q, page, limit) {
@@ -105,7 +110,7 @@ class UserService {
       isDeleted: false,
       isActivated: true,
       role: type
-    }).select('_id email fullName gender dateOfBirth placeOfBirth address phone picture')
+    }).select('_id email fullName gender dateOfBirth placeOfBirth role address phone picture')
     if (!user) throw new ClientError('User not found', 404)
 
     return user
