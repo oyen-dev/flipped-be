@@ -5,7 +5,7 @@ const userSchema = new Schema({
   // Base user fileds
   _id: {
     type: String,
-    default: `usr-${nanoid(15)}`
+    default: () => { return `usr-${nanoid(15)}` }
   },
   email: { type: String, required: true, unique: true, lowercase: true },
   password: { type: String, required: true, minlength: 8 },

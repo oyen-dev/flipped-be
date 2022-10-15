@@ -4,11 +4,6 @@ const { Token } = require('../models')
 class AuthService {
   constructor () {
     this.name = 'authService'
-
-    this.createToken = this.createToken.bind(this)
-    this.checkActiveToken = this.checkActiveToken.bind(this)
-    this.findTokenByToken = this.findTokenByToken.bind(this)
-    this.deleteToken = this.deleteToken.bind(this)
   }
 
   async checkActiveToken (email) {

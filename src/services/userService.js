@@ -68,6 +68,36 @@ class UserService {
 
     return await teacher.save()
   }
+
+  async getUsers (type, q, page, limit) {
+    if (q === '' || q === undefined) q = ''
+
+    // Get users based on q page and limit
+    const users = await User.find({
+      isDeleted: false,
+      isActivated: true,
+      role: type,
+      fullName: { $regex: q, $options: 'i' }
+    }).skip((page - 1) * limit)
+      .limit(limit)
+      .sort({ fullName: 1 })
+      // only return _id, fullName
+      .select('_id fullName email')
+      .exec()
+
+    // Get total users
+    const count = await User.countDocuments({
+      isDeleted: false,
+      isActivated: true,
+      role: type,
+      fullName: { $regex: q, $options: 'i' }
+    })
+
+    return {
+      users,
+      count
+    }
+  }
 }
 
 module.exports = {
