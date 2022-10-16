@@ -10,7 +10,7 @@ const addClassSchema = Joi.object({
   })).required()
 })
 
-const getClassSchema = Joi.object({
+const getClassesSchema = Joi.object({
   q: Joi.string().allow(''),
   tId: Joi.string().allow(''),
   sId: Joi.string().allow(''),
@@ -18,7 +18,12 @@ const getClassSchema = Joi.object({
   limit: Joi.number().integer().min(1).required()
 })
 
+const getClassSchema = Joi.object({
+  id: Joi.string().required()
+})
+
 module.exports = {
   addClassSchema,
+  getClassesSchema,
   getClassSchema
 }

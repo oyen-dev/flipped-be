@@ -6,11 +6,7 @@ const presenceSchema = new Schema({
   classId: { type: Schema.Types.String, ref: 'classes' },
   start: { type: Date, required: true },
   end: { type: Date, required: true },
-  attendance: [{
-    studentId: { type: Schema.Types.String, ref: 'users' },
-    at: { type: Date, required: true },
-    status: { type: String, required: true }
-  }],
+  attendance: [{ type: Schema.Types.String, ref: 'attendances' }],
   createdAt: { type: Date, default: new Date() },
   updatedAt: { type: Date, default: new Date() }
 })

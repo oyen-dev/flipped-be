@@ -2,6 +2,7 @@
 module.exports = {
   ...require('./answer'),
   ...require('./attachment'),
+  ...require('./attendance'),
   ...require('./class'),
   ...require('./eSubmission'),
   ...require('./evaluation'),

@@ -12,6 +12,7 @@ class ClassController {
     this._response = response
 
     this.addClass = this.addClass.bind(this)
+    this.getClasses = this.getClasses.bind(this)
     this.getClass = this.getClass.bind(this)
   }
 
@@ -86,15 +87,15 @@ class ClassController {
     }
   }
 
-  async getClass (req, res) {
+  async getClasses (req, res) {
     const query = req.query
 
     try {
       // Validate payload
-      this._validator.validateGetClass(query)
+      this._validator.validateGetClasses(query)
 
       // Get class
-      const classData = await this._classService.getClass(query)
+      const classData = await this._classService.getClasses(query)
       const { page, limit } = query
       const { classes, count } = classData
       const meta = {
@@ -113,19 +114,28 @@ class ClassController {
       return this._response.error(res, error)
     }
   }
+
+  async getClass (req, res) {
+    const id = req.params.id
+
+    try {
+      // Validate payload
+      this._validator.validateGetClass({ id })
+
+      // Get class
+      const classDetail = await this._classService.getClass(id)
+
+      // Response
+      const response = this._response.success(200, 'Get class success!', classDetail)
+
+      return res.status(response.statsCode || 200).json(response)
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
 }
 
 module.exports = {
   ClassController
 }
-
-//   schedule.forEach(sch => {
-//     let scheduleDay = new Date(sch.start)
-//       .toLocaleDateString('id', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' })
-
-//     console.log(scheduleDay)
-//     scheduleDay = new Date(sch.end)
-//       .toLocaleDateString('id', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' })
-
-//     console.log(scheduleDay)
-//   })

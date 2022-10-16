@@ -1,3 +1,4 @@
+const { ClientError } = require('../errors')
 const { Class } = require('../models/class')
 
 class ClassService {
@@ -9,19 +10,13 @@ class ClassService {
     return await Class.create(payload)
   }
 
-  async getClass (query) {
+  async getClasses (query) {
     // Destructure query
     let { q, tId, sId, page, limit } = query
 
     if (q === '' || q === undefined) q = ''
     if (tId === '' || tId === undefined) tId = ''
     if (sId === '' || sId === undefined) sId = ''
-
-    console.log('q', q)
-    console.log('tId', tId)
-    console.log('sId', sId)
-    console.log('page', page)
-    console.log('limit', limit)
 
     // Get class based on q tId sId page and limit
     const classes = await Class.find({
@@ -51,6 +46,35 @@ class ClassService {
       classes,
       count
     }
+  }
+
+  async getClass (id) {
+    const classDetail = await Class.findOne({
+      _id: id,
+      isDeleted: false,
+      isArchived: false
+    }).populate({ path: 'teachers', select: '_id fullName' })
+      .populate({ path: 'students', select: '_id fullName' })
+      .populate({ path: 'gradeId', select: '_id name' })
+      .populate({
+        path: 'posts',
+        select: '_id title description teacherId attachments isTask taskId',
+        populate: [
+          { path: 'taskId', select: '_id deadline' },
+          { path: 'teacherId', select: '_id fullName picture' },
+          { path: 'attachments', select: '_id type url' }
+        ]
+      })
+      .populate({ path: 'evaluations', select: '_id name' })
+      .populate({ path: 'presences', select: '_id start end attendance' })
+      .select('_id teachers schedule name gradeId cover students invitationCode posts evaluations presence presences')
+      .exec({
+        path: 'presence.presences',
+        select: '_id name'
+      })
+
+    if (!classDetail) throw new ClientError('Class not found', 404)
+    return classDetail
   }
 }
 
