@@ -41,7 +41,7 @@ class Response {
 
   error (res, error) {
     const { statusCode, message } = error
-    const msg = message.replace(/['"]+/g, '')
+    const msg = message || ''.replace(/['"]+/g, '')
 
     return res.status(statusCode).json(this.fail(statusCode, msg))
   }

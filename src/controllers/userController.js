@@ -1,9 +1,10 @@
 const { ClientError } = require('../errors')
 
 class UserController {
-  constructor (userService, mailService, validator, hashPassword, tokenize, response) {
+  constructor (userService, storageService, mailService, validator, hashPassword, tokenize, response) {
     this.name = 'userController'
     this._userService = userService
+    this._storageService = storageService
     this._mailService = mailService
     this._validator = validator
     this._hashPassword = hashPassword
@@ -21,6 +22,8 @@ class UserController {
     this.deleteStudent = this.deleteStudent.bind(this)
     this.getStudents = this.getStudents.bind(this)
     this.getStudent = this.getStudent.bind(this)
+
+    this.editProfilePicture = this.editProfilePicture.bind(this)
   }
 
   async addTeacher (req, res) {
@@ -270,6 +273,20 @@ class UserController {
       const response = this._response.success(200, 'Get student success!', user)
 
       return res.status(200).json(response)
+    } catch (error) {
+      // To do logger error
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async editProfilePicture (req, res) {
+    const file = req.file
+    console.log(file)
+    try {
+      const imageUrl = await this._storageService.uploadImage(file)
+
+      return res.status(200).json({ message: 'success', imageUrl })
     } catch (error) {
       // To do logger error
       console.log(error)

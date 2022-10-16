@@ -1,9 +1,10 @@
 const express = require('express')
 
 class UserRoutes {
-  constructor (userController) {
+  constructor (userController, storageService) {
     this.router = express.Router()
     this._userController = userController
+    this._storageService = storageService
 
     // Teacher
     this.router.get('/teachers', this._userController.getTeachers)
@@ -18,6 +19,7 @@ class UserRoutes {
     this.router.post('/students', this._userController.addStudent)
     this.router.put('/students/:id', this._userController.editStudent)
     this.router.delete('/students/:id', this._userController.deleteStudent)
+    this.router.post('/students/picture', this._userController.editProfilePicture)
   }
 }
 
