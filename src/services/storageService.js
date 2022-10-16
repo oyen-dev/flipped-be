@@ -13,7 +13,9 @@ class StorageService {
     return new Promise((resolve, reject) => {
       if (!file) reject(new ClientError('File is required', 400))
 
-      const newFileName = `${Date.now()}-${file.originalname}`
+      // Format name file tp avoid space
+      const newFileName = `${Date.now()}-${file.originalname.replace(/\s/g, '')}`
+
       const blob = bucket.file(newFileName)
       const blobStream = blob.createWriteStream({
         resumable: false

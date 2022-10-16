@@ -38,11 +38,17 @@ const getUserSchema = Joi.object({
   id: Joi.string().required()
 })
 
+const editPictureSchema = Joi.object({
+  mimetype: Joi.string().valid('image/jpeg', 'image/png').required(),
+  size: Joi.number().integer().max(2 * 1024 * 1024).required()
+})
+
 module.exports = {
   getUserProfileSchema,
   addUserSchema,
   editUserSchema,
   deleteUserSchema,
   getUsersSchema,
-  getUserSchema
+  getUserSchema,
+  editPictureSchema
 }

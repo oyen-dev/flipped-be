@@ -40,8 +40,8 @@ class Response {
   }
 
   error (res, error) {
-    const { statusCode, message } = error
-    const msg = message || ''.replace(/['"]+/g, '')
+    const { statusCode, message = 'An error occured' } = error
+    const msg = message.replace(/['"]+/g, '')
 
     return res.status(statusCode).json(this.fail(statusCode, msg))
   }

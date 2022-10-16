@@ -44,7 +44,7 @@ const userRoutes = new UserRoutes(userController, storageService)
 const multerMid = multer({
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 5 * 1024 * 1024 // no larger than 5mb
+    fileSize: 10 * 1024 * 1024 // no larger than 10mb
   }
 })
 
@@ -54,8 +54,17 @@ mongoose.connect(process.env.DATABASE_URL, {
   useUnifiedTopology: true
 }).then(console.log('connected to db')).catch((err) => console.log(err))
 
-// Use multer middleware
-app.use(multerMid.single('file'))
+// Use multer middleware single file
+app.use(multerMid.array('files', 10))
+
+// Catch error when file is too large
+app.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    const payload = response.fail(400, 'File is too large, max size is 10mb')
+
+    return res.status(400).json(payload)
+  }
+})
 
 // Simple route
 app.get('/', (req, res) => {
