@@ -7,6 +7,7 @@ class ClassRoutes {
     this._classController = classController
 
     this.router.post('/class', this._classController.addClass)
+    this.router.get('/class', this._classController.getClass)
   }
 }
 

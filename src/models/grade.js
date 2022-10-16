@@ -8,6 +8,9 @@ const gradeSchema = new Schema({
   updatedAt: { type: Date, default: new Date() }
 })
 
+// add index text to name
+gradeSchema.index({ name: 'text' })
+
 // Create model
 const Grade = model('grades', gradeSchema)
 

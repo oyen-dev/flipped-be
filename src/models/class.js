@@ -23,6 +23,9 @@ const classSchema = new Schema({
   updatedAt: { type: Date, default: new Date() }
 })
 
+// Add index text to name
+classSchema.index({ name: 'text' })
+
 // Create model
 const Class = model('classes', classSchema)
 

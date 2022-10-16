@@ -12,6 +12,7 @@ class ClassController {
     this._response = response
 
     this.addClass = this.addClass.bind(this)
+    this.getClass = this.getClass.bind(this)
   }
 
   async addClass (req, res) {
@@ -36,7 +37,7 @@ class ClassController {
       this._validator.validateAddClass(payload)
 
       // Destructure payload
-      const { name, teachers, schedule, gradeId } = payload
+      const { name, teachers, schedule, grade } = payload
 
       // Make array of schedule
       const scheduleArray = schedule.map((item) => {
@@ -57,26 +58,57 @@ class ClassController {
       }
 
       // Verify grade is exist
-      let grade = await this._gradeService.getGradeByName(gradeId)
-      if (!grade) grade = await this._gradeService.addGrade(gradeId)
+      let gradeId = await this._gradeService.getGradeByName(grade)
+      if (!gradeId) gradeId = await this._gradeService.addGrade(grade)
 
       // Add class
       const classObj = {
         teachers: [...uniqueTeachers],
         schedule: [...scheduleArray],
         name,
-        gradeId: grade._id
+        gradeId: gradeId._id
       }
-      let newClass = await this._classService.addClass(classObj)
-
-      newClass = await this._classService.test(newClass._id)
+      const newClass = await this._classService.addClass(classObj)
 
       // Return response
-      const response = this._response.success(200, 'Add class success!', newClass)
+      const data = {
+        id: newClass._id,
+        name: newClass.name,
+        invitationCode: newClass.invitationCode
+      }
+      const response = this._response.success(200, 'Add class success!', data)
 
       return res.status(response.statsCode || 200).json(response)
     } catch (error) {
       // To do logger error
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async getClass (req, res) {
+    const query = req.query
+
+    try {
+      // Validate payload
+      this._validator.validateGetClass(query)
+
+      // Get class
+      const classData = await this._classService.getClass(query)
+      const { page, limit } = query
+      const { classes, count } = classData
+      const meta = {
+        count,
+        limit,
+        page,
+        totalPages: Math.ceil(count / limit)
+      }
+
+      // Response
+      const response = this._response.success(200, 'Get class success!', classes, meta)
+
+      return res.status(200).json(response)
+    } catch (error) {
       console.log(error)
       return this._response.error(res, error)
     }
