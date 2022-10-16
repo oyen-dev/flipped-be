@@ -8,7 +8,7 @@ const addUserSchema = Joi.object({
   email: Joi.string().email().required(),
   fullName: Joi.string().required(),
   gender: Joi.boolean().truthy('true', 'yes', 1, '1').falsy('false', 'no', 0, '0').required(),
-  dateOfBirth: Joi.string().required(),
+  dateOfBirth: Joi.date().required(),
   placeOfBirth: Joi.string().required(),
   address: Joi.string().required()
 })
@@ -18,7 +18,7 @@ const editUserSchema = Joi.object({
   email: Joi.string().email().required(),
   fullName: Joi.string().required(),
   gender: Joi.boolean().truthy('true', 'yes', 1, '1').falsy('false', 'no', 0, '0').required(),
-  dateOfBirth: Joi.string().required(),
+  dateOfBirth: Joi.date().required(),
   placeOfBirth: Joi.string().required(),
   address: Joi.string().required(),
   phone: Joi.string().allow('')

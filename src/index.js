@@ -14,11 +14,13 @@ app.use(express.json())
 app.use(cors())
 
 // Services
-const { UserService, AuthService, MailService, StorageService } = require('./services')
+const { UserService, AuthService, MailService, StorageService, ClassService, GradeService } = require('./services')
 const userService = new UserService()
 const authService = new AuthService()
 const mailService = new MailService()
 const storageService = new StorageService()
+const classService = new ClassService()
+const gradeService = new GradeService()
 
 // Validator
 const { Validator } = require('./validators')
@@ -31,14 +33,16 @@ const hashPassword = new HashPassword()
 const tokenize = new Tokenize()
 
 // Controllers
-const { AuthController, UserController } = require('./controllers')
+const { AuthController, UserController, ClassController } = require('./controllers')
 const authController = new AuthController(authService, userService, mailService, validator, hashPassword, tokenize, response)
 const userController = new UserController(userService, storageService, mailService, validator, hashPassword, tokenize, response)
+const classController = new ClassController(classService, userService, gradeService, storageService, validator, tokenize, response)
 
 // Routes
-const { AuthRoutes, UserRoutes } = require('./routes')
+const { AuthRoutes, UserRoutes, ClassRoutes } = require('./routes')
 const authRoutes = new AuthRoutes(authController)
-const userRoutes = new UserRoutes(userController, storageService)
+const userRoutes = new UserRoutes(userController)
+const classRoutes = new ClassRoutes(classController)
 
 // Multer middleware
 const multerMid = multer({
@@ -74,6 +78,7 @@ app.get('/', (req, res) => {
 // Routes
 app.use('/api/v1/auth', authRoutes.router)
 app.use('/api/v1/users', userRoutes.router)
+app.use('/api/v1', classRoutes.router)
 
 // Listen to port
 const PORT = process.env.PORT || 5000

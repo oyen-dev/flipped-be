@@ -4,7 +4,7 @@ const { nanoid } = require('nanoid')
 const classSchema = new Schema({
   _id: { type: String, default: () => { return `cls-${nanoid(15)}` } },
   teachers: [{ type: Schema.Types.String, ref: 'users' }],
-  schedule: [{ type: Date, required: true }],
+  schedule: [{ type: Object, required: true }],
   name: { type: String, required: true },
   gradeId: { type: Schema.Types.String, ref: 'grades' },
   cover: { type: String, default: '' },

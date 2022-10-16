@@ -1,4 +1,5 @@
 module.exports = {
   ...require('./authController'),
-  ...require('./userController')
+  ...require('./userController'),
+  ...require('./classController')
 }

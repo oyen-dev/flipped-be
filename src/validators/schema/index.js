@@ -1,4 +1,5 @@
 module.exports = {
   ...require('./authSchema'),
-  ...require('./userSchema')
+  ...require('./userSchema'),
+  ...require('./classSchema')
 }

@@ -6,7 +6,7 @@ const registerSchema = Joi.object({
   confirmPassword: Joi.ref('password'),
   fullName: Joi.string().required(),
   gender: Joi.boolean().truthy('true', 'yes', 1, '1').falsy('false', 'no', 0, '0').required(),
-  dateOfBirth: Joi.string().required(),
+  dateOfBirth: Joi.date().required(),
   placeOfBirth: Joi.string().required(),
   address: Joi.string().required()
 })

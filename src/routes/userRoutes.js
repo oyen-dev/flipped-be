@@ -1,10 +1,9 @@
 const express = require('express')
 
 class UserRoutes {
-  constructor (userController, storageService) {
+  constructor (userController) {
     this.router = express.Router()
     this._userController = userController
-    this._storageService = storageService
 
     // Teacher
     this.router.get('/teachers', this._userController.getTeachers)

@@ -1,4 +1,5 @@
 module.exports = {
   ...require('./authRoutes'),
-  ...require('./userRoutes')
+  ...require('./userRoutes'),
+  ...require('./classRoutes')
 }
