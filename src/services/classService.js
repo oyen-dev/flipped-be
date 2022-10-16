@@ -17,19 +17,19 @@ class ClassService {
     if (tId === '' || tId === undefined) tId = ''
     if (sId === '' || sId === undefined) sId = ''
 
-    // console.log('q', q)
-    // console.log('tId', tId)
-    // console.log('sId', sId)
-    // console.log('page', page)
-    // console.log('limit', limit)
+    console.log('q', q)
+    console.log('tId', tId)
+    console.log('sId', sId)
+    console.log('page', page)
+    console.log('limit', limit)
 
     // Get class based on q tId sId page and limit
     const classes = await Class.find({
       isDeleted: false,
       isArchived: false,
-      name: { $regex: q, $options: 'i' }
-      // teachers: { $in: [tId] },
-      // students: { $in: [sId] }
+      name: { $regex: q, $options: 'i' },
+      teachers: tId === '' ? { $exists: true } : { $in: [tId] },
+      students: sId === '' ? { $exists: true } : { $in: [sId] }
     }).skip((page - 1) * limit)
       .limit(limit)
       .populate({ path: 'teachers', select: '_id fullName' })
@@ -42,9 +42,9 @@ class ClassService {
     const count = await Class.countDocuments({
       isDeleted: false,
       isArchived: false,
-      name: { $regex: q, $options: 'i' }
-      // teachers: { $in: [tId] },
-      // students: { $in: [sId] }
+      name: { $regex: q, $options: 'i' },
+      teachers: tId === '' ? { $exists: true } : { $in: [tId] },
+      students: sId === '' ? { $exists: true } : { $in: [sId] }
     })
 
     return {
