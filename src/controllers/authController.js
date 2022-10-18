@@ -16,6 +16,7 @@ class AuthController {
     this.forgotPassword = this.forgotPassword.bind(this)
     this.resetPassword = this.resetPassword.bind(this)
     this.checkToken = this.checkToken.bind(this)
+    this.verifyAccount = this.verifyAccount.bind(this)
   }
 
   async register (req, res) {
@@ -33,16 +34,24 @@ class AuthController {
       // Hash password
       const hashedPassword = await this._hashPassword.hash(password)
 
+      // Modify payload
+      payload.password = hashedPassword
+      payload.dateOfBirth = new Date(payload.dateOfBirth)
+
       // Create user
-      user = await this._userService.createUser({ ...payload, password: hashedPassword })
+      user = await this._userService.createUser(payload)
+
+      // Generate token
+      const tokenDetails = await this._authService.createToken(user)
+      const { token } = tokenDetails
 
       // Send email
       const message = {
         name: user.fullName,
         email,
-        link: `https://wa.me/+6285736822725?text=Hallo%20mimin%20Flipped%20Learning..%0ASaya%20baru%20saja%20mendaftar%20LMS%20dengan%20nama%20lengkap%20${encodeURIComponent(user.fullName.trim())}%20dan%20email%20${user.email.replace(/@/g, '%40')}`
+        link: `http://localhost:5000/api/v1/auth/verify?token=${token}`
       }
-      await this._mailService.sendEmail(message, 'Hooray, Your Registration Success1', 'register')
+      await this._mailService.sendEmail(message, 'Hooray, Your Registration Success', 'register')
 
       // Response
       const response = this._response.success(201, 'Register success, please check your email to activate your account!')
@@ -68,7 +77,7 @@ class AuthController {
       if (!user) throw new ClientError('You have entered an invalid username or password.', 400)
 
       // Check if account is actived
-      if (!user.isActivated) throw new ClientError('Sorry, this account is not actived yet.', 400)
+      if (!user.isActivated) throw new ClientError('Sorry, this account is not actived yet. Please check your email to activate.', 400)
 
       // Check password
       const isValidPassword = await this._hashPassword.compare(password, user.password)
@@ -132,12 +141,13 @@ class AuthController {
 
       // Generate token
       const tokenDetails = await this._authService.createToken(user)
+      const { token } = tokenDetails
 
       // Send email
       const message = {
         name: user.fullName,
-        email: user.email,
-        link: `https://lms.flippedlearning.id/reset-password?token=${tokenDetails.token}`
+        email,
+        link: `http://localhost:5000/api/v1/auth/reset-password?token=${token}`
       }
       await this._mailService.sendEmail(message, 'Request Reset Password', 'forgot')
 
@@ -213,6 +223,42 @@ class AuthController {
 
       // Response
       const response = this._response.success(200, 'Token is valid.')
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      // To do logger error
+      return this._response.error(res, error)
+    }
+  }
+
+  async verifyAccount (req, res) {
+    const payload = req.query
+    const { token } = payload
+
+    try {
+      // Validate payload
+      this._validator.validateCheckToken(payload)
+
+      // Find token
+      const tokenDetails = await this._authService.findTokenByToken(token)
+      if (!tokenDetails) throw new ClientError('Unauthorized', 401)
+
+      // Get user based on token
+      const { email } = tokenDetails
+      const user = await this._userService.findUserByEmail(email)
+      if (!user) throw new ClientError('Unauthorized', 401)
+
+      // Activate user
+      user.isActivated = true
+      user.verifiedAt = new Date()
+      user.updatedAt = new Date()
+      await user.save()
+
+      // Delete token
+      await this._authService.deleteToken(email)
+
+      // Response
+      const response = this._response.success(200, 'Congratulations! Your account has been verified.')
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {

@@ -11,8 +11,8 @@ const tokenSchema = new Schema({
   expiresIn: { type: Date, required: true }
 })
 
-// Auto delete token after 1 day
-tokenSchema.index({ expiresIn: 1 }, { expireAfterSeconds: 86400 })
+// Auto delete token after 7 days
+tokenSchema.index({ expiresIn: 1 }, { expireAfterSeconds: 604800 })
 
 // Create model
 const Token = model('tokens', tokenSchema)

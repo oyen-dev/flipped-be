@@ -27,10 +27,17 @@ class UserController {
   }
 
   async addTeacher (req, res) {
+    const token = req.headers.authorization
     const payload = req.body
     const { email } = payload
 
     try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      await this._tokenize.verify(token)
+
       // Validate payload
       this._validator.validateAddUser(payload)
 
@@ -55,10 +62,17 @@ class UserController {
   }
 
   async editTeacher (req, res) {
+    const token = req.headers.authorization
     const id = req.params.id
     const payload = req.body
 
     try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      await this._tokenize.verify(token)
+
       // Validate payload
       this._validator.validateEditUser({ id, ...payload })
 
@@ -79,9 +93,16 @@ class UserController {
   }
 
   async deleteTeacher (req, res) {
+    const token = req.headers.authorization
     const id = req.params.id
 
     try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      await this._tokenize.verify(token)
+
       // Validate payload
       this._validator.validateDeleteUser({ id })
 
@@ -102,10 +123,17 @@ class UserController {
   }
 
   async getTeachers (req, res) {
+    const token = req.headers.authorization
     const payload = req.query
     const { q, page, limit } = payload
 
     try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      await this._tokenize.verify(token)
+
       // Validate payload
       this._validator.validateGetUsers(payload)
 
@@ -131,9 +159,16 @@ class UserController {
   }
 
   async getTeacher (req, res) {
+    const token = req.headers.authorization
     const id = req.params.id
 
     try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      await this._tokenize.verify(token)
+
       // Validate payload
       this._validator.validateGetUser({ id })
 
@@ -154,10 +189,17 @@ class UserController {
   }
 
   async addStudent (req, res) {
+    const token = req.headers.authorization
     const payload = req.body
     const { email } = payload
 
     try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      await this._tokenize.verify(token)
+
       // Validate payload
       this._validator.validateAddUser(payload)
 
@@ -182,10 +224,17 @@ class UserController {
   }
 
   async editStudent (req, res) {
+    const token = req.headers.authorization
     const id = req.params.id
     const payload = req.body
 
     try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      await this._tokenize.verify(token)
+
       // Validate payload
       this._validator.validateEditUser({ id, ...payload })
 
@@ -206,9 +255,16 @@ class UserController {
   }
 
   async deleteStudent (req, res) {
+    const token = req.headers.authorization
     const id = req.params.id
 
     try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      await this._tokenize.verify(token)
+
       // Validate payload
       this._validator.validateDeleteUser({ id })
 
@@ -229,14 +285,21 @@ class UserController {
   }
 
   async getStudents (req, res) {
+    const token = req.headers.authorization
     const payload = req.query
     const { q, page, limit } = payload
 
     try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      await this._tokenize.verify(token)
+
       // Validate payload
       this._validator.validateGetUsers(payload)
 
-      // Get teachers
+      // Get students
       const students = await this._userService.getUsers('STUDENT', q, page, limit)
       const { users, count } = students
       const meta = {
@@ -247,7 +310,7 @@ class UserController {
       }
 
       // Send response
-      const response = this._response.success(200, 'Get students success!', users, meta)
+      const response = this._response.success(200, 'Get students success!', { students: users }, meta)
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -258,9 +321,16 @@ class UserController {
   }
 
   async getStudent (req, res) {
+    const token = req.headers.authorization
     const id = req.params.id
 
     try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      await this._tokenize.verify(token)
+
       // Validate payload
       this._validator.validateGetUser({ id })
 

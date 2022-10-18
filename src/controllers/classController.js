@@ -88,9 +88,16 @@ class ClassController {
   }
 
   async getClasses (req, res) {
+    const token = req.headers.authorization
     const query = req.query
 
     try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      await this._tokenize.verify(token)
+
       // Validate payload
       this._validator.validateGetClasses(query)
 
@@ -116,9 +123,16 @@ class ClassController {
   }
 
   async getClass (req, res) {
+    const token = req.headers.authorization
     const id = req.params.id
 
     try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      await this._tokenize.verify(token)
+
       // Validate payload
       this._validator.validateGetClass({ id })
 
