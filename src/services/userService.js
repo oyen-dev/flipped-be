@@ -27,7 +27,7 @@ class UserService {
     const newUser = new User({
       email: email.toLowerCase(),
       password: '12345678',
-      fullName,
+      fullName: this.toTitleCase(fullName),
       gender,
       dateOfBirth: new Date(dateOfBirth),
       placeOfBirth,
@@ -115,6 +115,14 @@ class UserService {
 
     return user
   }
+
+  toTitleCase (phrase) {
+    return phrase
+      .toLowerCase()
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ')
+  };
 }
 
 module.exports = {

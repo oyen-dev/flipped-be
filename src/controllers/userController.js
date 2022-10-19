@@ -221,7 +221,17 @@ class UserController {
       // Create new teacher
       user = await this._userService.directCreateUser(payload, 'STUDENT')
 
-      // Send email for change password
+      // Generate token
+      const tokenDetails = await this._authService.createToken(user)
+
+      // Send email
+      const url = process.env.CLIENT_URL || 'http://localhost:3000'
+      const message = {
+        name: user.fullName,
+        email,
+        link: `${url}/auth/reset-password?token=${tokenDetails.token}`
+      }
+      await this._mailService.sendEmail(message, 'Selamat Datang di Online Learning', 'studentsetpassword')
 
       // Send response
       const response = this._response.success(201, 'Add student success, please check email to set password!')
