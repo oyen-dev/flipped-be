@@ -1,9 +1,10 @@
 const { ClientError } = require('../errors')
 
 class UserController {
-  constructor (userService, storageService, mailService, validator, hashPassword, tokenize, response) {
+  constructor (userService, authService, storageService, mailService, validator, hashPassword, tokenize, response) {
     this.name = 'userController'
     this._userService = userService
+    this._authService = authService
     this._storageService = storageService
     this._mailService = mailService
     this._validator = validator
@@ -48,7 +49,17 @@ class UserController {
       // Create new teacher
       user = await this._userService.directCreateUser(payload, 'TEACHER')
 
-      // Send email for change password
+      // Generate token
+      const tokenDetails = await this._authService.createToken(user)
+
+      // Send email
+      const url = process.env.CLIENT_URL || 'http://localhost:3000'
+      const message = {
+        name: user.fullName,
+        email,
+        link: `${url}/auth/reset-password?token=${tokenDetails.token}`
+      }
+      await this._mailService.sendEmail(message, 'Selamat Datang di Online Learning', 'setpassword')
 
       // Send response
       const response = this._response.success(201, 'Add teacher success, please check email to set password!')
