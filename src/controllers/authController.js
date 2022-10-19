@@ -46,10 +46,11 @@ class AuthController {
       const { token } = tokenDetails
 
       // Send email
+      const url = process.env.CLIENT_URL || 'http://localhost:3000'
       const message = {
         name: user.fullName,
         email,
-        link: `http://localhost:5000/api/v1/auth/verify?token=${token}`
+        link: `${url}/auth/verify?token=${token}`
       }
       await this._mailService.sendEmail(message, 'Hooray, Your Registration Success', 'register')
 
@@ -144,10 +145,11 @@ class AuthController {
       const { token } = tokenDetails
 
       // Send email
+      const url = process.env.CLIENT_URL || 'http://localhost:3000'
       const message = {
         name: user.fullName,
         email,
-        link: `http://localhost:5000/api/v1/auth/reset-password?token=${token}`
+        link: `${url}/auth/reset-password?token=${token}`
       }
       await this._mailService.sendEmail(message, 'Request Reset Password', 'forgot')
 
@@ -219,7 +221,7 @@ class AuthController {
 
       // Find token
       const tokenDetails = await this._authService.findTokenByToken(token)
-      if (!tokenDetails) throw new ClientError('Unauthorized', 401)
+      if (!tokenDetails) throw new ClientError('Invalid reset password token', 401)
 
       // Response
       const response = this._response.success(200, 'Token is valid.')
@@ -241,7 +243,7 @@ class AuthController {
 
       // Find token
       const tokenDetails = await this._authService.findTokenByToken(token)
-      if (!tokenDetails) throw new ClientError('Unauthorized', 401)
+      if (!tokenDetails) throw new ClientError('Invalid activation token', 401)
 
       // Get user based on token
       const { email } = tokenDetails

@@ -14,7 +14,7 @@ const userSchema = new Schema({
   dateOfBirth: { type: String, required: true },
   placeOfBirth: { type: String, required: true },
   address: { type: String, required: true },
-  picture: { type: String, default: (user) => { return `https://ui-avatars.com/api/?name=${user.fullName.split(' ')[0]}` } },
+  picture: { type: String, default: (user) => { return `https://ui-avatars.com/api/?name=${user.fullName.split(' ')[0]}&size=300` } },
   phone: { type: String, default: '' },
 
   // Activation and soft delete
