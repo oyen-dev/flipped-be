@@ -56,9 +56,9 @@ class UserService {
     return await updatedUser.save()
   }
 
-  async deleteUser (id, type) {
+  async deleteUser (id) {
     const oldUser = await this.findUserById(id)
-    if (!oldUser) throw new ClientError(`${type} not found`, 404)
+    if (!oldUser) throw new ClientError('User not found', 404)
 
     // Soft delete
     oldUser.isDeleted = true
@@ -69,12 +69,14 @@ class UserService {
     return await oldUser.save()
   }
 
-  async getUsers (type, q, page, limit) {
+  async getUsers (type, q, page, limit, deleted) {
     if (q === '' || q === undefined) q = ''
+    if (deleted === '' || deleted === 'false' || deleted === undefined) deleted = false
+    else deleted = true
 
     // Get users based on q page and limit
     const users = await User.find({
-      isDeleted: false,
+      isDeleted: deleted,
       isActivated: true,
       role: type,
       fullName: { $regex: q, $options: 'i' }
@@ -82,12 +84,12 @@ class UserService {
       .limit(limit)
       .sort({ fullName: 1 })
       // only return _id, fullName
-      .select('_id fullName email')
+      .select('_id fullName email isDeleted')
       .exec()
 
     // Get total users
     const count = await User.countDocuments({
-      isDeleted: false,
+      isDeleted: deleted,
       isActivated: true,
       role: type,
       fullName: { $regex: q, $options: 'i' }

@@ -30,7 +30,8 @@ const deleteUserSchema = Joi.object({
 const getUsersSchema = Joi.object({
   q: Joi.string().allow(''),
   page: Joi.number().integer().min(1).required(),
-  limit: Joi.number().integer().min(1).required()
+  limit: Joi.number().integer().min(1).required(),
+  deleted: Joi.string().allow('')
 })
 
 const getUserSchema = Joi.object({

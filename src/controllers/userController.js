@@ -28,6 +28,7 @@ class UserController {
 
     this.adminEditProfile = this.adminEditProfile.bind(this)
     this.adminEditProfilePicture = this.adminEditProfilePicture.bind(this)
+    this.adminDeleteUser = this.adminDeleteUser.bind(this)
   }
 
   async addTeacher (req, res) {
@@ -139,7 +140,7 @@ class UserController {
   async getTeachers (req, res) {
     const token = req.headers.authorization
     const payload = req.query
-    const { q, page, limit } = payload
+    const { q, page, limit, deleted } = payload
 
     try {
       // Check token is exist
@@ -152,7 +153,7 @@ class UserController {
       this._validator.validateGetUsers(payload)
 
       // Get teachers
-      const teachers = await this._userService.getUsers('TEACHER', q, page, limit)
+      const teachers = await this._userService.getUsers('TEACHER', q, page, limit, deleted)
       const { users, count } = teachers
       const meta = {
         count,
@@ -291,7 +292,7 @@ class UserController {
       this._validator.validateDeleteUser({ id: _id })
 
       // Delete teacher
-      await this._userService.deleteUser(_id, 'Student')
+      await this._userService.deleteUser(_id)
 
       // Send email for notify
 
@@ -309,7 +310,7 @@ class UserController {
   async getStudents (req, res) {
     const token = req.headers.authorization
     const payload = req.query
-    const { q, page, limit } = payload
+    const { q, page, limit, deleted } = payload
 
     try {
       // Check token is exist
@@ -322,7 +323,7 @@ class UserController {
       this._validator.validateGetUsers(payload)
 
       // Get students
-      const students = await this._userService.getUsers('STUDENT', q, page, limit)
+      const students = await this._userService.getUsers('STUDENT', q, page, limit, deleted)
       const { users, count } = students
       const meta = {
         count,
@@ -487,6 +488,41 @@ class UserController {
 
       // Send response
       const response = this._response.success(200, 'Edit student success!')
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      // To do logger error
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async adminDeleteUser (req, res) {
+    const token = req.headers.authorization
+    const id = req.params.id
+
+    try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Make sure token is ADMIN
+      const user = await this._userService.findUserById(_id)
+      if (!user) throw new ClientError('Unauthorized', 401)
+      if (user.role !== 'ADMIN') throw new ClientError('Unauthorized', 401)
+
+      // Validate payload
+      this._validator.validateDeleteUser({ id })
+
+      // Delete teacher
+      await this._userService.deleteUser(id)
+
+      // Send email for notify
+
+      // Send response
+      const response = this._response.success(200, 'Delete student success!')
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
