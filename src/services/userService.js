@@ -39,17 +39,12 @@ class UserService {
     return await newUser.save()
   }
 
-  async updateUserProfile (id, user, type) {
-    const { email, fullName, gender, dateOfBirth, placeOfBirth, address, phone } = user
+  async updateUserProfile (id, user) {
+    const { fullName, gender, dateOfBirth, placeOfBirth, address, phone } = user
 
-    // Make sure email is not taken
-    let updatedUser = await this.findUserByEmail(email)
-    if (updatedUser) throw new ClientError('Sorry, this email is already taken.', 400)
+    const updatedUser = await this.findUserById(id)
+    if (!updatedUser) throw new ClientError('User not found.', 404)
 
-    updatedUser = await this.findUserById(id)
-    if (!updatedUser) throw new ClientError(`${type} not found.`, 404)
-
-    updatedUser.email = email.toLowerCase()
     updatedUser.fullName = fullName
     updatedUser.gender = gender
     updatedUser.dateOfBirth = new Date(dateOfBirth)

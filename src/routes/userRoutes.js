@@ -17,9 +17,15 @@ class UserRoutes {
     this.router.get('/students', this._userController.getStudents)
     this.router.get('/students/:id', this._userController.getStudent)
     this.router.post('/students', this._userController.addStudent)
-    this.router.put('/students/:id', this._userController.editStudent)
+    this.router.put('/students', this._userController.editStudent)
     this.router.delete('/students/:id', this._userController.deleteStudent)
     this.router.post('/students/picture', this._userController.editProfilePicture)
+
+    // Admin
+    this.router.put('/students/:id', this._userController.adminEditProfile)
+    this.router.put('/teachers/:id', this._userController.adminEditProfile)
+    this.router.post('/students/picture/:id', this._userController.adminEditProfilePicture)
+    this.router.post('/teachers/picture/:id', this._userController.adminEditProfilePicture)
   }
 }
 

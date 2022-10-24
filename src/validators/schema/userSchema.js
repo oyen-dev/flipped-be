@@ -15,7 +15,6 @@ const addUserSchema = Joi.object({
 
 const editUserSchema = Joi.object({
   id: Joi.string().required(),
-  email: Joi.string().email().required(),
   fullName: Joi.string().required(),
   gender: Joi.boolean().truthy('true', 'yes', 1, '1').falsy('false', 'no', 0, '0').required(),
   dateOfBirth: Joi.date().required(),

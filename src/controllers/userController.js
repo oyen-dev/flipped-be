@@ -25,6 +25,9 @@ class UserController {
     this.getStudent = this.getStudent.bind(this)
 
     this.editProfilePicture = this.editProfilePicture.bind(this)
+
+    this.adminEditProfile = this.adminEditProfile.bind(this)
+    this.adminEditProfilePicture = this.adminEditProfilePicture.bind(this)
   }
 
   async addTeacher (req, res) {
@@ -88,7 +91,7 @@ class UserController {
       this._validator.validateEditUser({ id, ...payload })
 
       // Update teacher
-      await this._userService.updateUserProfile(id, payload, 'Teacher')
+      await this._userService.updateUserProfile(id, payload)
 
       // Send email for notify
 
@@ -246,7 +249,6 @@ class UserController {
 
   async editStudent (req, res) {
     const token = req.headers.authorization
-    const id = req.params.id
     const payload = req.body
 
     try {
@@ -254,13 +256,13 @@ class UserController {
       if (!token) throw new ClientError('Unauthorized', 401)
 
       // Validate token
-      await this._tokenize.verify(token)
+      const { _id } = await this._tokenize.verify(token)
 
       // Validate payload
-      this._validator.validateEditUser({ id, ...payload })
+      this._validator.validateEditUser({ id: _id, ...payload })
 
-      // Update teacher
-      await this._userService.updateUserProfile(id, payload, 'Student')
+      // Update student
+      await this._userService.updateUserProfile(_id, payload)
 
       // Send email for notify
 
@@ -277,20 +279,19 @@ class UserController {
 
   async deleteStudent (req, res) {
     const token = req.headers.authorization
-    const id = req.params.id
 
     try {
       // Check token is exist
       if (!token) throw new ClientError('Unauthorized', 401)
 
       // Validate token
-      await this._tokenize.verify(token)
+      const { _id } = await this._tokenize.verify(token)
 
       // Validate payload
-      this._validator.validateDeleteUser({ id })
+      this._validator.validateDeleteUser({ id: _id })
 
       // Delete teacher
-      await this._userService.deleteUser(id, 'Student')
+      await this._userService.deleteUser(_id, 'Student')
 
       // Send email for notify
 
@@ -403,6 +404,89 @@ class UserController {
 
       // Send response
       const response = this._response.success(200, 'Edit profile picture success!')
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      // To do logger error
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async adminEditProfilePicture (req, res) {
+    const token = req.headers.authorization
+    const id = req.params.id
+    const file = req.files[0]
+
+    try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Make sure token is ADMIN
+      let user = await this._userService.findUserById(_id)
+      if (!user) throw new ClientError('Unauthorized', 401)
+      if (user.role !== 'ADMIN') throw new ClientError('Unauthorized', 401)
+
+      // Find user
+      user = await this._userService.findUserById(id)
+      if (!user) throw new ClientError('Invalid id', 404)
+
+      // Check file is exists
+      if (!file) throw new ClientError('Please upload your picture file!', 400)
+
+      // Validate mime type and file size
+      const { mimetype, size } = file
+      this._validator.validateEditPicture({ mimetype, size })
+
+      // Upload file to cloud storage
+      const imageUrl = await this._storageService.uploadImage(file)
+
+      // Update user profile picture
+      user.picture = imageUrl
+      user.updatedAt = new Date()
+      await user.save()
+
+      // Send response
+      const response = this._response.success(200, 'Edit profile picture success!')
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      // To do logger error
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async adminEditProfile (req, res) {
+    const token = req.headers.authorization
+    const payload = req.body
+    const id = req.params.id
+
+    try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Make sure token is ADMIN
+      const user = await this._userService.findUserById(_id)
+      if (!user) throw new ClientError('Unauthorized', 401)
+      if (user.role !== 'ADMIN') throw new ClientError('Unauthorized', 401)
+
+      // Validate payload
+      this._validator.validateEditUser({ id, ...payload })
+
+      // Update student
+      await this._userService.updateUserProfile(id, payload, 'Student')
+
+      // Send email for notify
+
+      // Send response
+      const response = this._response.success(200, 'Edit student success!')
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
