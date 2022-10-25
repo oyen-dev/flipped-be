@@ -63,7 +63,20 @@ class UserService {
     // Soft delete
     oldUser.isDeleted = true
     oldUser.deletedAt = new Date()
-    oldUser.willBeDeletedAt = new Date(new Date().setDate(new Date().getDate() + 30))
+    oldUser.willBeDeletedAt = new Date(new Date().setDate(new Date().getDate() + 90))
+    oldUser.updatedAt = new Date()
+
+    return await oldUser.save()
+  }
+
+  async restoreUser (id) {
+    const oldUser = await this.findUserById(id)
+    if (!oldUser) throw new ClientError('User not found', 404)
+
+    // Soft delete
+    oldUser.isDeleted = false
+    oldUser.deletedAt = null
+    oldUser.willBeDeletedAt = null
     oldUser.updatedAt = new Date()
 
     return await oldUser.save()
@@ -82,9 +95,9 @@ class UserService {
       fullName: { $regex: q, $options: 'i' }
     }).skip((page - 1) * limit)
       .limit(limit)
-      .sort({ fullName: 1 })
+      .sort(deleted ? { willBeDeletedAt: 1 } : { fullName: 1 })
       // only return _id, fullName
-      .select('_id fullName email isDeleted')
+      .select('_id fullName email isDeleted willBeDeletedAt')
       .exec()
 
     // Get total users

@@ -26,6 +26,8 @@ class UserRoutes {
     this.router.put('/teachers/:id', this._userController.adminEditProfile)
     this.router.delete('/students/:id', this._userController.adminDeleteUser)
     this.router.delete('/teachers/:id', this._userController.adminDeleteUser)
+    this.router.post('/students/:id', this._userController.adminRestoreUser)
+    this.router.post('/teachers/:id', this._userController.adminRestoreUser)
     this.router.post('/students/picture/:id', this._userController.adminEditProfilePicture)
     this.router.post('/teachers/picture/:id', this._userController.adminEditProfilePicture)
   }

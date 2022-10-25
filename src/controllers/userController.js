@@ -29,6 +29,7 @@ class UserController {
     this.adminEditProfile = this.adminEditProfile.bind(this)
     this.adminEditProfilePicture = this.adminEditProfilePicture.bind(this)
     this.adminDeleteUser = this.adminDeleteUser.bind(this)
+    this.adminRestoreUser = this.adminRestoreUser.bind(this)
   }
 
   async addTeacher (req, res) {
@@ -163,7 +164,7 @@ class UserController {
       }
 
       // Send response
-      const response = this._response.success(200, 'Get teachers success!', users, meta)
+      const response = this._response.success(200, 'Get teachers success!', { teachers: users }, meta)
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -520,6 +521,39 @@ class UserController {
       await this._userService.deleteUser(id)
 
       // Send email for notify
+
+      // Send response
+      const response = this._response.success(200, 'Delete student success!')
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      // To do logger error
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async adminRestoreUser (req, res) {
+    const token = req.headers.authorization
+    const id = req.params.id
+
+    try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Make sure token is ADMIN
+      const user = await this._userService.findUserById(_id)
+      if (!user) throw new ClientError('Unauthorized', 401)
+      if (user.role !== 'ADMIN') throw new ClientError('Unauthorized', 401)
+
+      // Validate payload
+      this._validator.validateDeleteUser({ id })
+
+      // Delete teacher
+      await this._userService.restoreUser(id)
 
       // Send response
       const response = this._response.success(200, 'Delete student success!')
