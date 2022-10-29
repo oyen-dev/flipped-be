@@ -80,6 +80,9 @@ class AuthController {
       // Check if account is actived
       if (!user.isActivated) throw new ClientError('Sorry, this account is not actived yet. Please check your email to activate.', 400)
 
+      // Check if account is deleted
+      if (user.isDeleted) throw new ClientError('Sorry, this account is deleted.', 400)
+
       // Check password
       const isValidPassword = await this._hashPassword.compare(password, user.password)
       if (!isValidPassword) throw new ClientError('You have entered an invalid username or password.', 400)
@@ -140,6 +143,9 @@ class AuthController {
       // Find user
       const user = await this._userService.findUserByEmail(email)
       if (!user) throw new ClientError('Sorry, this email is not registered.', 400)
+
+      // Check if account is deleted
+      if (user.isDeleted) throw new ClientError('Sorry, this account is deleted.', 400)
 
       // Generate token
       const tokenDetails = await this._authService.createToken(user)

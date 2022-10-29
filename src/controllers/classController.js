@@ -73,7 +73,7 @@ class ClassController {
 
       // Return response
       const data = {
-        id: newClass._id,
+        _id: newClass._id,
         name: newClass.name,
         invitationCode: newClass.invitationCode
       }

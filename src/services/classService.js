@@ -12,21 +12,30 @@ class ClassService {
 
   async getClasses (query) {
     // Destructure query
-    let { q, tId, sId, page, limit } = query
+    let { q, tId, sId, archived, deleted, page, limit } = query
 
     if (q === '' || q === undefined) q = ''
     if (tId === '' || tId === undefined) tId = ''
     if (sId === '' || sId === undefined) sId = ''
 
+    if (archived === '' || archived === undefined) archived = false
+    else if (archived === 'true') archived = true
+    else archived = false
+
+    if (deleted === '' || deleted === undefined) deleted = false
+    else if (deleted === 'true') deleted = true
+    else deleted = false
+
     // Get class based on q tId sId page and limit
     const classes = await Class.find({
-      isDeleted: false,
-      isArchived: false,
+      isDeleted: archived,
+      isArchived: deleted,
       name: { $regex: q, $options: 'i' },
       teachers: tId === '' ? { $exists: true } : { $in: [tId] },
       students: sId === '' ? { $exists: true } : { $in: [sId] }
     }).skip((page - 1) * limit)
       .limit(limit)
+      .sort({ name: 1 })
       .populate({ path: 'teachers', select: '_id fullName' })
       .populate({ path: 'gradeId', select: '_id name' })
       .populate({ path: 'students', select: '_id fullName' })
@@ -35,8 +44,8 @@ class ClassService {
 
     // Get total class based on q tId sId
     const count = await Class.countDocuments({
-      isDeleted: false,
-      isArchived: false,
+      isDeleted: archived,
+      isArchived: deleted,
       name: { $regex: q, $options: 'i' },
       teachers: tId === '' ? { $exists: true } : { $in: [tId] },
       students: sId === '' ? { $exists: true } : { $in: [sId] }

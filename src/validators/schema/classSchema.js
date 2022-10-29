@@ -14,6 +14,8 @@ const getClassesSchema = Joi.object({
   q: Joi.string().allow(''),
   tId: Joi.string().allow(''),
   sId: Joi.string().allow(''),
+  archived: Joi.string().allow(''),
+  deleted: Joi.string().allow(''),
   page: Joi.number().integer().min(1).required(),
   limit: Joi.number().integer().min(1).required()
 })
