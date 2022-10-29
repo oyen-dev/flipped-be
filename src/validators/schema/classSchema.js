@@ -24,8 +24,14 @@ const getClassSchema = Joi.object({
   id: Joi.string().required()
 })
 
+const archiveClassSchema = Joi.object({
+  id: Joi.string().required(),
+  archive: Joi.boolean().truthy('true', 'yes', 1, '1').falsy('false', 'no', 0, '0').required()
+})
+
 module.exports = {
   addClassSchema,
   getClassesSchema,
-  getClassSchema
+  getClassSchema,
+  archiveClassSchema
 }

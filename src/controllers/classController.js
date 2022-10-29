@@ -14,6 +14,7 @@ class ClassController {
     this.addClass = this.addClass.bind(this)
     this.getClasses = this.getClasses.bind(this)
     this.getClass = this.getClass.bind(this)
+    this.archiveClass = this.archiveClass.bind(this)
   }
 
   async addClass (req, res) {
@@ -141,6 +142,49 @@ class ClassController {
 
       // Response
       const response = this._response.success(200, 'Get class success!', classDetail)
+
+      return res.status(response.statsCode || 200).json(response)
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async archiveClass (req, res) {
+    const token = req.headers.authorization
+    const payload = req.body
+
+    try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Find user
+      const user = await this._userService.findUserById(_id)
+      if (!user) throw new ClientError('Unauthorized', 401)
+
+      // Make sure user is ADMIN or TEACHER
+      if (user.role !== 'ADMIN' && user.role !== 'TEACHER') throw new ClientError('Unauthorized', 401)
+
+      // Validate payload
+      this._validator.validateArchiveClass(payload)
+
+      // Destructure payload
+      const { id, archive } = payload
+
+      // Check classId is exist
+      const classData = await this._classService.findClassById(id)
+      if (!classData) throw new ClientError('Class not found', 404)
+
+      // Edit class archive
+      classData.isArchived = archive
+      classData.updatedAt = new Date()
+      await classData.save()
+
+      // Response
+      const response = this._response.success(200, `${archive ? 'Archived' : 'Unarchived'} class success!`)
 
       return res.status(response.statsCode || 200).json(response)
     } catch (error) {

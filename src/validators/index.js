@@ -13,7 +13,8 @@ const {
   editPictureSchema,
   addClassSchema,
   getClassesSchema,
-  getClassSchema
+  getClassSchema,
+  archiveClassSchema
 } = require('./schema')
 
 class Validator {
@@ -88,6 +89,11 @@ class Validator {
 
   validateGetClass (payload) {
     const { error } = getClassSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateArchiveClass (payload) {
+    const { error } = archiveClassSchema.validate(payload)
     if (error) throw new ClientError(error.message, 400)
   }
 }

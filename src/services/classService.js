@@ -28,8 +28,8 @@ class ClassService {
 
     // Get class based on q tId sId page and limit
     const classes = await Class.find({
-      isDeleted: archived,
-      isArchived: deleted,
+      isDeleted: deleted,
+      isArchived: archived,
       name: { $regex: q, $options: 'i' },
       teachers: tId === '' ? { $exists: true } : { $in: [tId] },
       students: sId === '' ? { $exists: true } : { $in: [sId] }
@@ -38,14 +38,13 @@ class ClassService {
       .sort({ name: 1 })
       .populate({ path: 'teachers', select: '_id fullName' })
       .populate({ path: 'gradeId', select: '_id name' })
-      .populate({ path: 'students', select: '_id fullName' })
       .select('_id name teachers gradeId schedule')
       .exec()
 
     // Get total class based on q tId sId
     const count = await Class.countDocuments({
-      isDeleted: archived,
-      isArchived: deleted,
+      isDeleted: deleted,
+      isArchived: archived,
       name: { $regex: q, $options: 'i' },
       teachers: tId === '' ? { $exists: true } : { $in: [tId] },
       students: sId === '' ? { $exists: true } : { $in: [sId] }
@@ -84,6 +83,10 @@ class ClassService {
 
     if (!classDetail) throw new ClientError('Class not found', 404)
     return classDetail
+  }
+
+  async findClassById (id) {
+    return await Class.findOne({ _id: id })
   }
 }
 
