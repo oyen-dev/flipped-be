@@ -29,9 +29,15 @@ const archiveClassSchema = Joi.object({
   archive: Joi.boolean().truthy('true', 'yes', 1, '1').falsy('false', 'no', 0, '0').required()
 })
 
+const deleteClassSchema = Joi.object({
+  id: Joi.string().required(),
+  deleted: Joi.boolean().truthy('true', 'yes', 1, '1').falsy('false', 'no', 0, '0').required()
+})
+
 module.exports = {
   addClassSchema,
   getClassesSchema,
   getClassSchema,
-  archiveClassSchema
+  archiveClassSchema,
+  deleteClassSchema
 }

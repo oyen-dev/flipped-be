@@ -88,6 +88,40 @@ class ClassService {
   async findClassById (id) {
     return await Class.findOne({ _id: id })
   }
+
+  async archiveClass (id, archive) {
+    // Check classId is exist
+    const classData = await this.findClassById(id)
+    if (!classData) throw new ClientError('Class not found', 404)
+
+    // Edit class archive
+    classData.isArchived = archive
+    classData.updatedAt = new Date()
+
+    await classData.save()
+  }
+
+  async deleteClass (id, deleted) {
+    const oldClass = await this.findClassById(id)
+    if (!oldClass) throw new ClientError('Class not found', 404)
+
+    // Soft delete class
+    oldClass.isDeleted = deleted
+
+    if (deleted) {
+      oldClass.isArchived = true
+      oldClass.deletedAt = new Date()
+      oldClass.willBeDeletedAt = new Date(new Date().setDate(new Date().getDate() + 90))
+    } else {
+      oldClass.isArchived = false
+      oldClass.deletedAt = null
+      oldClass.willBeDeletedAt = null
+    }
+
+    oldClass.updatedAt = new Date()
+
+    return await oldClass.save()
+  }
 }
 
 module.exports = {
