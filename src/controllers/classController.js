@@ -16,6 +16,7 @@ class ClassController {
     this.getClass = this.getClass.bind(this)
     this.archiveClass = this.archiveClass.bind(this)
     this.deleteClass = this.deleteClass.bind(this)
+    this.joinClass = this.joinClass.bind(this)
   }
 
   async addClass (req, res) {
@@ -217,6 +218,45 @@ class ClassController {
 
       // Response
       const response = this._response.success(200, `${deleted ? 'Delete' : 'Restore'} class success!`)
+
+      return res.status(response.statsCode || 200).json(response)
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async joinClass (req, res) {
+    const token = req.headers.authorization
+    const payload = req.body
+
+    try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Find user
+      const user = await this._userService.findUserById(_id)
+      if (!user) throw new ClientError('Unauthorized', 401)
+
+      // Make sure user is ADMIN or TEACHER
+      if (user.role !== 'STUDENT') throw new ClientError('Unauthorized to join class', 401)
+
+      // Validate payload
+      this._validator.validateJoinClass(payload)
+
+      // Destructure payload
+      const { invitation, join } = payload
+      const { _id: userId } = user
+
+      // Join class
+      const classDetail = await this._classService.joinClass(userId, invitation, join)
+      console.log(classDetail)
+
+      // Response
+      const response = this._response.success(200, `${join ? 'Join' : 'Leave'} class success!`, { _id: classDetail })
 
       return res.status(response.statsCode || 200).json(response)
     } catch (error) {

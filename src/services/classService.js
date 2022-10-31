@@ -1,5 +1,5 @@
 const { ClientError } = require('../errors')
-const { Class } = require('../models/class')
+const { Class, User } = require('../models')
 
 class ClassService {
   constructor () {
@@ -122,6 +122,31 @@ class ClassService {
     oldClass.updatedAt = new Date()
 
     return await oldClass.save()
+  }
+
+  async joinClass (userId, invitation, join) {
+    // Check invitation code is exist
+    const classData = await Class.findOne({ invitationCode: invitation })
+    if (!classData) throw new ClientError('Invalid invitation code', 404)
+
+    // Check if class is archived or deleted
+    if (classData.isArchived || classData.isDeleted) throw new ClientError('Unable to join class', 404)
+
+    // Check user is exist
+    const userData = await User.findOne({ _id: userId })
+    if (!userData) throw new ClientError('User not found', 404)
+
+    // Join or leave class
+    if (join) {
+      classData.students.push(userId)
+    } else {
+      classData.students.pull(userId)
+    }
+    classData.updatedAt = new Date()
+
+    await classData.save()
+
+    return classData._id
   }
 }
 

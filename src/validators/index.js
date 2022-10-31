@@ -15,7 +15,8 @@ const {
   getClassesSchema,
   getClassSchema,
   archiveClassSchema,
-  deleteClassSchema
+  deleteClassSchema,
+  joinClassSchema
 } = require('./schema')
 
 class Validator {
@@ -100,6 +101,11 @@ class Validator {
 
   validateDeleteClass (payload) {
     const { error } = deleteClassSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateJoinClass (payload) {
+    const { error } = joinClassSchema.validate(payload)
     if (error) throw new ClientError(error.message, 400)
   }
 }

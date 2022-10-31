@@ -34,10 +34,16 @@ const deleteClassSchema = Joi.object({
   deleted: Joi.boolean().truthy('true', 'yes', 1, '1').falsy('false', 'no', 0, '0').required()
 })
 
+const joinClassSchema = Joi.object({
+  invitation: Joi.string().required(),
+  join: Joi.boolean().truthy('true', 'yes', 1, '1').falsy('false', 'no', 0, '0').required()
+})
+
 module.exports = {
   addClassSchema,
   getClassesSchema,
   getClassSchema,
   archiveClassSchema,
-  deleteClassSchema
+  deleteClassSchema,
+  joinClassSchema
 }
