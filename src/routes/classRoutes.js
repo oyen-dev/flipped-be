@@ -8,6 +8,11 @@ class ClassRoutes {
 
     this.router.get('/class', this._classController.getClasses)
     this.router.get('/class/:id', this._classController.getClass)
+    this.router.get('/class/:id/posts', this._classController.getClassPosts)
+    this.router.get('/class/:id/students', this._classController.getClassStudents)
+    this.router.get('/class/:id/tasks', this._classController.getClassTasks)
+    this.router.get('/class/:id/evaluations', this._classController.getClassEvaluations)
+
     this.router.post('/class', this._classController.addClass)
     this.router.post('/class/archive', this._classController.archiveClass)
     this.router.post('/class/delete', this._classController.deleteClass)
