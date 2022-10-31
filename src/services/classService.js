@@ -37,6 +37,7 @@ class ClassService {
       .limit(limit)
       .sort({ name: 1 })
       .populate({ path: 'teachers', select: '_id fullName' })
+      .populate({ path: 'students', select: '_id fullName' })
       .populate({ path: 'gradeId', select: '_id name' })
       .select('_id name teachers gradeId schedule')
       .exec()
