@@ -8,6 +8,7 @@ module.exports = {
   ...require('./evaluation'),
   ...require('./grade'),
   ...require('./log'),
+  ...require('./onlineUser'),
   ...require('./post'),
   ...require('./presence'),
   ...require('./question'),

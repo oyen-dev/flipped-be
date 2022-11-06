@@ -3,6 +3,7 @@ const cors = require('cors')
 const multer = require('multer')
 const express = require('express')
 const mongoose = require('mongoose')
+const { Websocket } = require('./websocket')
 
 // Init express
 const app = express()
@@ -23,13 +24,15 @@ app.use(express.json())
 app.use(cors())
 
 // Services
-const { UserService, AuthService, MailService, StorageService, ClassService, GradeService } = require('./services')
+const { UserService, AuthService, MailService, StorageService, ClassService, GradeService, OnlineUserService, LogService } = require('./services')
 const userService = new UserService()
 const authService = new AuthService()
 const mailService = new MailService()
 const storageService = new StorageService()
 const classService = new ClassService()
 const gradeService = new GradeService()
+const onlineUserService = new OnlineUserService()
+const logService = new LogService()
 
 // Validator
 const { Validator } = require('./validators')
@@ -42,10 +45,11 @@ const hashPassword = new HashPassword()
 const tokenize = new Tokenize()
 
 // Controllers
-const { AuthController, UserController, ClassController } = require('./controllers')
+const { AuthController, UserController, ClassController, SocketController } = require('./controllers')
 const authController = new AuthController(authService, userService, mailService, validator, hashPassword, tokenize, response)
 const userController = new UserController(userService, authService, storageService, mailService, validator, hashPassword, tokenize, response)
 const classController = new ClassController(classService, userService, gradeService, storageService, validator, tokenize, response)
+const socketController = new SocketController(onlineUserService, logService)
 
 // Routes
 const { AuthRoutes, UserRoutes, ClassRoutes } = require('./routes')
@@ -90,13 +94,8 @@ app.use('/api/v1/users', userRoutes.router)
 app.use('/api/v1', classRoutes.router)
 
 // Websocket connection
-io.on('connection', socket => {
-  console.log(`User connected: ${socket.id}`)
-
-  socket.on('disconnect', () => {
-    console.log('user disconnected')
-  })
-})
+// eslint-disable-next-line no-unused-vars
+const ws = new Websocket(io, socketController)
 
 // Listen to port
 const PORT = process.env.PORT || 5000

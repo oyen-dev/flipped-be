@@ -4,5 +4,7 @@ module.exports = {
   ...require('./mailService'),
   ...require('./storageService'),
   ...require('./classService'),
-  ...require('./gradeService')
+  ...require('./gradeService'),
+  ...require('./onlineUserService'),
+  ...require('./logService')
 }

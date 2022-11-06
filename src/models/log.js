@@ -5,7 +5,7 @@ const logSchema = new Schema({
   _id: { type: String, default: () => { return `log-${nanoid(15)}` } },
   userId: { type: Schema.Types.String, ref: 'users' },
   action: { type: String, required: true },
-  createdAt: { type: Date, default: new Date() }
+  at: { type: Date, default: new Date() }
 })
 
 // Create model
