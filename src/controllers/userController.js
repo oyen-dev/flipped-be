@@ -1,9 +1,10 @@
 const { ClientError } = require('../errors')
 
 class UserController {
-  constructor (userService, authService, storageService, mailService, validator, hashPassword, tokenize, response) {
+  constructor (userService, classService, authService, storageService, mailService, validator, hashPassword, tokenize, response) {
     this.name = 'userController'
     this._userService = userService
+    this._classService = classService
     this._authService = authService
     this._storageService = storageService
     this._mailService = mailService
@@ -11,6 +12,8 @@ class UserController {
     this._hashPassword = hashPassword
     this._tokenize = tokenize
     this._response = response
+
+    this.getDashboard = this.getDashboard.bind(this)
 
     this.addTeacher = this.addTeacher.bind(this)
     this.editTeacher = this.editTeacher.bind(this)
@@ -558,6 +561,45 @@ class UserController {
       // Send response
       const response = this._response.success(200, 'Delete student success!')
 
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      // To do logger error
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async getDashboard (req, res) {
+    const token = req.headers.authorization
+
+    try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Make sure token is ADMIN
+      const user = await this._userService.findUserById(_id)
+      if (!user) throw new ClientError('Unauthorized', 401)
+
+      // Get user logs data
+      const recent = await this._userService.getLogs(_id)
+
+      // Get statistic
+      const statistic = await this._userService.getStatistic()
+
+      // Get recent class
+      const classes = await this._classService.getDashboardClass(user._id, user.role)
+
+      // Response
+      const response = this._response.success(200, 'Get dashboard success!', {
+        recent,
+        statistic,
+        classes
+      })
+
+      // Send response
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
       // To do logger error

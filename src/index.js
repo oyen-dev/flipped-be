@@ -47,7 +47,7 @@ const tokenize = new Tokenize()
 // Controllers
 const { AuthController, UserController, ClassController, SocketController } = require('./controllers')
 const authController = new AuthController(authService, userService, mailService, validator, hashPassword, tokenize, response)
-const userController = new UserController(userService, authService, storageService, mailService, validator, hashPassword, tokenize, response)
+const userController = new UserController(userService, classService, authService, storageService, mailService, validator, hashPassword, tokenize, response)
 const classController = new ClassController(classService, userService, gradeService, storageService, validator, tokenize, response)
 const socketController = new SocketController(onlineUserService, logService)
 

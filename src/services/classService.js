@@ -172,6 +172,54 @@ class ClassService {
 
     return classData._id
   }
+
+  async getDashboardClass (userId, role) {
+    let classes = []
+
+    if (role === 'ADMIN') {
+      // Select class based on isDeleted = false, isArchived = false, just only 3 first class
+      classes = await Class.find({
+        isDeleted: false,
+        isArchived: false
+      }).sort({ name: 1 })
+        .populate({ path: 'teachers', select: '_id fullName' })
+        .populate({ path: 'gradeId', select: '_id name' })
+        .select('_id name teachers gradeId students')
+        .limit(3)
+        .exec()
+    } else if (role === 'TEACHER') {
+      // Select class based on teacherId, isDeleted = false, isArchived = false, just only 3 first class
+      classes = await Class.find({
+        teachers: { $in: [userId] },
+        isDeleted: false,
+        isArchived: false
+      }).sort({ name: 1 })
+        .populate({ path: 'teachers', select: '_id fullName' })
+        .populate({ path: 'gradeId', select: '_id name' })
+        .select('_id name teachers gradeId students')
+        .limit(3)
+        .exec()
+    } else if (role === 'STUDENT') {
+      // Select class based on studentId, isDeleted = false, isArchived = false, just only 3 first class
+      classes = await Class.find({
+        students: { $in: [userId] },
+        isDeleted: false,
+        isArchived: false
+      }).sort({ name: 1 })
+        .populate({ path: 'teachers', select: '_id fullName' })
+        .populate({ path: 'gradeId', select: '_id name' })
+        .select('_id name teachers gradeId students')
+        .limit(3)
+        .exec()
+    }
+
+    // Change class.students to total of students not array
+    classes.forEach((item) => {
+      item.students = parseInt(item.students.length)
+    })
+
+    return classes
+  }
 }
 
 module.exports = {

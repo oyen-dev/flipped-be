@@ -5,6 +5,9 @@ class UserRoutes {
     this.router = express.Router()
     this._userController = userController
 
+    // Universal
+    this.router.get('/dashboard', this._userController.getDashboard)
+
     // Teacher
     this.router.get('/teachers', this._userController.getTeachers)
     this.router.get('/teachers/:id', this._userController.getTeacher)
