@@ -6,6 +6,15 @@ const mongoose = require('mongoose')
 
 // Init express
 const app = express()
+const server = require('http').createServer(app)
+
+// Init socket.io
+const io = require('socket.io')(server, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST']
+  }
+})
 
 // Init body-parser
 app.use(express.json())
@@ -80,6 +89,15 @@ app.use('/api/v1/auth', authRoutes.router)
 app.use('/api/v1/users', userRoutes.router)
 app.use('/api/v1', classRoutes.router)
 
+// Websocket connection
+io.on('connection', socket => {
+  console.log(`User connected: ${socket.id}`)
+
+  socket.on('disconnect', () => {
+    console.log('user disconnected')
+  })
+})
+
 // Listen to port
 const PORT = process.env.PORT || 5000
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`))
