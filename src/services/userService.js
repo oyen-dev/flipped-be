@@ -114,12 +114,11 @@ class UserService {
     }
   }
 
-  async getUser (type, id) {
+  async getUser (id) {
     const user = await User.findOne({
       _id: id,
       isDeleted: false,
-      isActivated: true,
-      role: type
+      isActivated: true
     }).select('_id email fullName gender dateOfBirth placeOfBirth role address phone picture')
     if (!user) throw new ClientError('User not found', 404)
 
