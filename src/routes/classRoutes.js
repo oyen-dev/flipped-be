@@ -1,10 +1,11 @@
 const express = require('express')
 
 class ClassRoutes {
-  constructor (classController) {
+  constructor (classController, postController) {
     this.name = 'ClassRouter'
     this.router = express.Router()
     this._classController = classController
+    this._postController = postController
 
     this.router.get('/', this._classController.getClasses)
     this.router.get('/:id', this._classController.getClass)
@@ -18,7 +19,7 @@ class ClassRoutes {
     this.router.post('/delete', this._classController.deleteClass)
     this.router.post('/join', this._classController.joinClass)
 
-    // this.router.post('/class/:id/post', this._classController.addPost)
+    this.router.post('/:id/post', this._postController.addPost)
   }
 }
 

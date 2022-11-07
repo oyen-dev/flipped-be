@@ -24,7 +24,19 @@ app.use(express.json())
 app.use(cors())
 
 // Services
-const { UserService, AuthService, MailService, StorageService, ClassService, GradeService, OnlineUserService, LogService, AttachmentService } = require('./services')
+const {
+  UserService,
+  AuthService,
+  MailService,
+  StorageService,
+  ClassService,
+  GradeService,
+  OnlineUserService,
+  LogService,
+  AttachmentService,
+  PostService,
+  TaskService
+} = require('./services')
 const userService = new UserService()
 const authService = new AuthService()
 const mailService = new MailService()
@@ -34,6 +46,8 @@ const gradeService = new GradeService()
 const onlineUserService = new OnlineUserService()
 const logService = new LogService()
 const attachmentService = new AttachmentService()
+const postService = new PostService()
+const taskService = new TaskService()
 
 // Validator
 const { Validator } = require('./validators')
@@ -46,18 +60,26 @@ const hashPassword = new HashPassword()
 const tokenize = new Tokenize()
 
 // Controllers
-const { AuthController, UserController, ClassController, SocketController, AttachmentController } = require('./controllers')
+const {
+  AuthController,
+  UserController,
+  ClassController,
+  SocketController,
+  AttachmentController,
+  PostController
+} = require('./controllers')
 const authController = new AuthController(authService, userService, mailService, validator, hashPassword, tokenize, response)
 const userController = new UserController(userService, classService, authService, storageService, mailService, validator, hashPassword, tokenize, response)
 const classController = new ClassController(classService, userService, gradeService, storageService, validator, tokenize, response)
 const socketController = new SocketController(onlineUserService, logService)
 const attachmentController = new AttachmentController(attachmentService, storageService, userService, validator, tokenize, response)
+const postController = new PostController(classService, userService, postService, taskService, attachmentService, validator, tokenize, response)
 
 // Routes
 const { AuthRoutes, UserRoutes, ClassRoutes, AttachmentRoutes } = require('./routes')
 const authRoutes = new AuthRoutes(authController)
 const userRoutes = new UserRoutes(userController)
-const classRoutes = new ClassRoutes(classController)
+const classRoutes = new ClassRoutes(classController, postController)
 const attachmentRoutes = new AttachmentRoutes(attachmentController)
 
 // Multer middleware

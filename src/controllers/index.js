@@ -3,5 +3,6 @@ module.exports = {
   ...require('./userController'),
   ...require('./classController'),
   ...require('./socketController'),
-  ...require('./attachmentController')
+  ...require('./attachmentController'),
+  ...require('./postController')
 }

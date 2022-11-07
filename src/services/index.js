@@ -8,5 +8,6 @@ module.exports = {
   ...require('./onlineUserService'),
   ...require('./logService'),
   ...require('./postService'),
-  ...require('./attachmentService')
+  ...require('./attachmentService'),
+  ...require('./taskService')
 }
