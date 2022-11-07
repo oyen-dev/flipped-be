@@ -13,6 +13,7 @@ class PostController {
     this._response = response
 
     this.addPost = this.addPost.bind(this)
+    this.getClassPosts = this.getClassPosts.bind(this)
   }
 
   async addPost (req, res) {
@@ -73,10 +74,40 @@ class PostController {
         await this._attachmentService.updateAttachmentPostId(attachment, post._id)
       }
 
+      // Add post to class
+      await this._classService.addPostToClass(classId, post._id)
+
       // Response
       const response = this._response.success(200, 'Post created!')
 
       return res.status(200).json(response)
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async getClassPosts (req, res) {
+    const token = req.headers.authorization
+    const id = req.params.id
+
+    try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      await this._tokenize.verify(token)
+
+      // Validate payload
+      this._validator.validateGetClass({ id })
+
+      // Get class
+      const classDetail = await this._classService.getClassPosts(id)
+
+      // Response
+      const response = this._response.success(200, 'Get class posts success!', classDetail)
+
+      return res.status(response.statsCode || 200).json(response)
     } catch (error) {
       console.log(error)
       return this._response.error(res, error)

@@ -97,7 +97,7 @@ class ClassService {
       populate: [
         { path: 'taskId', select: '_id deadline' },
         { path: 'teacherId', select: '_id fullName picture' },
-        { path: 'attachments', select: '_id type url' }
+        { path: 'attachments', select: '_id type url name' }
       ]
     }).select('_id posts')
     // .populate({ path: 'teachers', select: '_id fullName' })
@@ -219,6 +219,16 @@ class ClassService {
     })
 
     return classes
+  }
+
+  async addPostToClass (classId, postId) {
+    const classData = await this.findClassById(classId)
+    if (!classData) throw new ClientError('Class not found', 404)
+
+    classData.posts.push(postId)
+    classData.updatedAt = new Date()
+
+    await classData.save()
   }
 }
 

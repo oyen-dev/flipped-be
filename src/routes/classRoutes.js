@@ -9,7 +9,6 @@ class ClassRoutes {
 
     this.router.get('/', this._classController.getClasses)
     this.router.get('/:id', this._classController.getClass)
-    this.router.get('/:id/posts', this._classController.getClassPosts)
     this.router.get('/:id/students', this._classController.getClassStudents)
     this.router.get('/:id/tasks', this._classController.getClassTasks)
     this.router.get('/:id/evaluations', this._classController.getClassEvaluations)
@@ -19,6 +18,7 @@ class ClassRoutes {
     this.router.post('/delete', this._classController.deleteClass)
     this.router.post('/join', this._classController.joinClass)
 
+    this.router.get('/:id/posts', this._postController.getClassPosts)
     this.router.post('/:id/post', this._postController.addPost)
   }
 }

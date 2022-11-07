@@ -5,8 +5,8 @@ class AttachmentService {
     this.name = 'AttachmentService'
   }
 
-  async addAttachment (mimetype, url) {
-    return await Attachment.create({ type: mimetype, url })
+  async addAttachment (mimetype, url, name) {
+    return await Attachment.create({ type: mimetype, url, name })
   }
 
   async updateAttachmentPostId (attachmentId, postId) {

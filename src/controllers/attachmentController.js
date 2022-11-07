@@ -33,14 +33,14 @@ class AttachmentController {
       if (!file) throw new ClientError('Please upload your attachment file!', 400)
 
       // Validate mime type and file size
-      const { mimetype, size } = file
+      const { mimetype, originalname, size } = file
       this._validator.validateUploadAttachment({ mimetype, size })
 
       // Upload file to cloud storage
       const attachmentUrl = await this._storageService.uploadAttachment(file)
 
       // Save uri to db
-      const attachment = await this._attachmentService.addAttachment(mimetype, attachmentUrl)
+      const attachment = await this._attachmentService.addAttachment(mimetype, attachmentUrl, originalname)
 
       // Array of attachment
       const attachments = [attachment]
@@ -80,14 +80,14 @@ class AttachmentController {
       // Looping file
       for (const f of files) {
         // Validate mime type and file size
-        const { mimetype, size } = f
+        const { mimetype, originalname, size } = f
         this._validator.validateUploadAttachment({ mimetype, size })
 
         // Upload file to cloud storage
         const attachmentUrl = await this._storageService.uploadAttachment(f)
 
         // Save uri to db
-        const attachment = await this._attachmentService.addAttachment(mimetype, attachmentUrl)
+        const attachment = await this._attachmentService.addAttachment(mimetype, attachmentUrl, originalname)
 
         // Push to array
         attachments.push(attachment)

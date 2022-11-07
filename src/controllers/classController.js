@@ -18,7 +18,6 @@ class ClassController {
     this.deleteClass = this.deleteClass.bind(this)
     this.joinClass = this.joinClass.bind(this)
 
-    this.getClassPosts = this.getClassPosts.bind(this)
     this.getClassStudents = this.getClassStudents.bind(this)
     this.getClassEvaluations = this.getClassEvaluations.bind(this)
     this.getClassTasks = this.getClassTasks.bind(this)
@@ -149,33 +148,6 @@ class ClassController {
 
       // Response
       const response = this._response.success(200, 'Get class success!', classDetail)
-
-      return res.status(response.statsCode || 200).json(response)
-    } catch (error) {
-      console.log(error)
-      return this._response.error(res, error)
-    }
-  }
-
-  async getClassPosts (req, res) {
-    const token = req.headers.authorization
-    const id = req.params.id
-
-    try {
-      // Check token is exist
-      if (!token) throw new ClientError('Unauthorized', 401)
-
-      // Validate token
-      await this._tokenize.verify(token)
-
-      // Validate payload
-      this._validator.validateGetClass({ id })
-
-      // Get class
-      const classDetail = await this._classService.getClassPosts(id)
-
-      // Response
-      const response = this._response.success(200, 'Get class posts success!', classDetail)
 
       return res.status(response.statsCode || 200).json(response)
     } catch (error) {
@@ -372,37 +344,6 @@ class ClassController {
       const response = this._response.success(200, `${join ? 'Join' : 'Leave'} class success!`, { _id: classDetail })
 
       return res.status(response.statsCode || 200).json(response)
-    } catch (error) {
-      console.log(error)
-      return this._response.error(res, error)
-    }
-  }
-
-  async addPost (req, res) {
-    const token = req.headers.authorization
-    // const payload = req.body
-
-    try {
-      // Check token is exist
-      if (!token) throw new ClientError('Unauthorized', 401)
-
-      // Validate token
-      const { _id } = await this._tokenize.verify(token)
-
-      // Find user
-      const user = await this._userService.findUserById(_id)
-      if (!user) throw new ClientError('Unauthorized', 401)
-
-      // Make sure user is TEACHER
-      if (user.role !== 'TEACHER') throw new ClientError('Unauthorized to create post', 401)
-
-      // Make sure teacher is in class
-
-      // Validate payload
-
-      // Create post in class
-
-      // Response
     } catch (error) {
       console.log(error)
       return this._response.error(res, error)
