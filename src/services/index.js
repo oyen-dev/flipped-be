@@ -6,5 +6,7 @@ module.exports = {
   ...require('./classService'),
   ...require('./gradeService'),
   ...require('./onlineUserService'),
-  ...require('./logService')
+  ...require('./logService'),
+  ...require('./postService'),
+  ...require('./attachmentService')
 }

@@ -1,5 +1,6 @@
 module.exports = {
   ...require('./authSchema'),
   ...require('./userSchema'),
-  ...require('./classSchema')
+  ...require('./classSchema'),
+  ...require('./attachmentSchema')
 }

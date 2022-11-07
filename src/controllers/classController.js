@@ -377,6 +377,37 @@ class ClassController {
       return this._response.error(res, error)
     }
   }
+
+  async addPost (req, res) {
+    const token = req.headers.authorization
+    // const payload = req.body
+
+    try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Find user
+      const user = await this._userService.findUserById(_id)
+      if (!user) throw new ClientError('Unauthorized', 401)
+
+      // Make sure user is TEACHER
+      if (user.role !== 'TEACHER') throw new ClientError('Unauthorized to create post', 401)
+
+      // Make sure teacher is in class
+
+      // Validate payload
+
+      // Create post in class
+
+      // Response
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
 }
 
 module.exports = {
