@@ -14,6 +14,7 @@ class PostController {
 
     this.addPost = this.addPost.bind(this)
     this.getClassPosts = this.getClassPosts.bind(this)
+    this.getClassPost = this.getClassPost.bind(this)
   }
 
   async addPost (req, res) {
@@ -108,6 +109,50 @@ class PostController {
       const response = this._response.success(200, 'Get class posts success!', classDetail)
 
       return res.status(response.statsCode || 200).json(response)
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async getClassPost (req, res) {
+    const token = req.headers.authorization
+    const { id: classId, postId } = req.params
+
+    try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Find user
+      const user = await this._userService.findUserById(_id)
+      if (!user) throw new ClientError('Unauthorized', 401)
+
+      // Make sure user is TEACHER
+      if (user.role !== 'TEACHER') throw new ClientError('Unauthorized to create post', 401)
+
+      // Find class
+      const classData = await this._classService.getClass(classId)
+
+      // Make sure teacher is in class
+      for (const teacher of classData.teachers) {
+        if (!teacher._id.includes(user._id)) throw new ClientError('Unauthorized to post in this class', 401)
+      }
+
+      // Validate payload
+      this._validator.validateGetClassPost({ classId, postId })
+
+      // Get post
+      const post = await this._classService.getClassPost(classId, postId)
+
+      // Response
+      const response = this._response.success(200, 'Get class post success!', { post })
+
+      return res.status(response.statsCode || 200).json(response)
+
+      // return res.status(200).json({ message: 'Get class post success!' })
     } catch (error) {
       console.log(error)
       return this._response.error(res, error)

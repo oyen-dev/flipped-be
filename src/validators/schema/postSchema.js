@@ -13,6 +13,12 @@ const createPostSchema = Joi.object({
   })
 })
 
+const getClassPostSchema = Joi.object({
+  classId: Joi.string().required(),
+  postId: Joi.string().required()
+})
+
 module.exports = {
-  createPostSchema
+  createPostSchema,
+  getClassPostSchema
 }

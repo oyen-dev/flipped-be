@@ -19,6 +19,7 @@ class ClassRoutes {
     this.router.post('/join', this._classController.joinClass)
 
     this.router.get('/:id/posts', this._postController.getClassPosts)
+    this.router.get('/:id/posts/:postId', this._postController.getClassPost)
     this.router.post('/:id/post', this._postController.addPost)
   }
 }

@@ -93,21 +93,49 @@ class ClassService {
       isArchived: false
     }).populate({
       path: 'posts',
-      select: '_id title description teacherId attachments isTask taskId',
+      select: '_id title description teacherId attachments isTask taskId createdAt updatedAt',
       populate: [
         { path: 'taskId', select: '_id deadline' },
         { path: 'teacherId', select: '_id fullName picture' },
         { path: 'attachments', select: '_id type url name' }
       ]
     }).select('_id posts')
-    // .populate({ path: 'teachers', select: '_id fullName' })
-    // .populate({ path: 'students', select: '_id fullName' })
-    // .populate({ path: 'gradeId', select: '_id name' })
-    // .populate({ path: 'evaluations', select: '_id name' })
-    // .populate({ path: 'presences', select: '_id start end attendance' })
+      .exec()
 
     if (!classDetail) throw new ClientError('Class not found', 404)
+
+    // Sort post by createdAt
+    classDetail.posts.sort((a, b) => {
+      return new Date(b.createdAt) - new Date(a.createdAt)
+    })
+
     return classDetail
+  }
+
+  async getClassPost (classId, postId) {
+    const posts = await Class.findOne({
+      _id: classId,
+      isDeleted: false,
+      isArchived: false,
+      // posts is array of postId, just get the postId
+      posts: { $in: [postId] }
+    }).populate({
+      path: 'posts',
+      select: '_id title description attachments isTask taskId',
+      populate: [
+        { path: 'attachments', select: '_id name type url' },
+        { path: 'taskId', select: '_id deadline' }
+      ]
+    }).select('_id posts')
+      .exec()
+
+    if (!posts) throw new ClientError('Post not found', 404)
+
+    // Get the post
+    const index = posts.posts.findIndex(post => post._id === postId)
+    const post = posts.posts[index]
+
+    return post
   }
 
   async findClassById (id) {

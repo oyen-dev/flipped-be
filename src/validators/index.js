@@ -18,7 +18,8 @@ const {
   deleteClassSchema,
   joinClassSchema,
   uploadAttachmentSchema,
-  createPostSchema
+  createPostSchema,
+  getClassPostSchema
 } = require('./schema')
 
 class Validator {
@@ -118,6 +119,11 @@ class Validator {
 
   validateCreatePost (payload) {
     const { error } = createPostSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateGetClassPost (payload) {
+    const { error } = getClassPostSchema.validate(payload)
     if (error) throw new ClientError(error.message, 400)
   }
 }
