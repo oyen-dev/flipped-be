@@ -53,6 +53,23 @@ class StorageService {
       }).end(file.buffer)
     })
   }
+
+  async deleteFile (fileName) {
+    // delete file from gcp
+    return new Promise((resolve, reject) => {
+      if (!fileName) reject(new ClientError('File name is required', 400))
+
+      const blob = bucket.file(fileName)
+
+      blob.delete((err) => {
+        if (err) {
+          console.log(err)
+        } else {
+          resolve()
+        }
+      })
+    })
+  }
 }
 
 module.exports = {

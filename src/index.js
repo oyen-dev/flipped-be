@@ -73,7 +73,7 @@ const userController = new UserController(userService, classService, authService
 const classController = new ClassController(classService, userService, gradeService, storageService, validator, tokenize, response)
 const socketController = new SocketController(onlineUserService, logService)
 const attachmentController = new AttachmentController(attachmentService, storageService, userService, validator, tokenize, response)
-const postController = new PostController(classService, userService, postService, taskService, attachmentService, validator, tokenize, response)
+const postController = new PostController(classService, userService, postService, taskService, attachmentService, storageService, validator, tokenize, response)
 
 // Routes
 const { AuthRoutes, UserRoutes, ClassRoutes, AttachmentRoutes } = require('./routes')

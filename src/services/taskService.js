@@ -12,6 +12,12 @@ class TaskService {
   async updateTaskDeadline (_id, deadline) {
     return await Task.findByIdAndUpdate(_id, { deadline }, { new: true })
   }
+
+  async deleteTask (_id) {
+    return await Task.findByIdAndDelete(_id)
+
+    // To do : delete all submissions
+  }
 }
 
 module.exports = {

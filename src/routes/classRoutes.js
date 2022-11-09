@@ -18,10 +18,11 @@ class ClassRoutes {
     this.router.post('/delete', this._classController.deleteClass)
     this.router.post('/join', this._classController.joinClass)
 
+    this.router.post('/:id/post', this._postController.addPost)
     this.router.get('/:id/posts', this._postController.getClassPosts)
     this.router.get('/:id/posts/:postId', this._postController.getClassPost)
     this.router.put('/:id/posts/:postId', this._postController.updateClassPost)
-    this.router.post('/:id/post', this._postController.addPost)
+    this.router.delete('/:id/posts/:postId', this._postController.deletePost)
   }
 }
 

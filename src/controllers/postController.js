@@ -1,13 +1,14 @@
 const { ClientError } = require('../errors')
 
 class PostController {
-  constructor (classService, userService, postService, taskService, attachmentService, validator, tokenize, response) {
+  constructor (classService, userService, postService, taskService, attachmentService, storageService, validator, tokenize, response) {
     this.name = 'PostController'
     this._classService = classService
     this._userService = userService
     this._postService = postService
     this._taskService = taskService
     this._attachmentService = attachmentService
+    this._storageService = storageService
     this._validator = validator
     this._tokenize = tokenize
     this._response = response
@@ -16,6 +17,7 @@ class PostController {
     this.getClassPosts = this.getClassPosts.bind(this)
     this.getClassPost = this.getClassPost.bind(this)
     this.updateClassPost = this.updateClassPost.bind(this)
+    this.deletePost = this.deletePost.bind(this)
   }
 
   async addPost (req, res) {
@@ -220,6 +222,63 @@ class PostController {
 
       // Response
       const response = this._response.success(200, 'Update class post success!', { updatedPost })
+
+      return res.status(response.statsCode || 200).json(response)
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async deletePost (req, res) {
+    const token = req.headers.authorization
+    const { id: classId, postId } = req.params
+
+    try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Find user
+      const user = await this._userService.findUserById(_id)
+      if (!user) throw new ClientError('Unauthorized', 401)
+
+      // Make sure user is TEACHER
+      if (user.role !== 'TEACHER') throw new ClientError('Unauthorized to create post', 401)
+
+      // Find class
+      const classData = await this._classService.getClass(classId)
+
+      // Make sure teacher is in class
+      for (const teacher of classData.teachers) {
+        if (!teacher._id.includes(user._id)) throw new ClientError('Unauthorized to post in this class', 401)
+      }
+
+      // Validate payload
+      this._validator.validateDeleteClassPost({ classId, postId })
+
+      // If any attachment, delete it
+      const arrayAttachments = await this._postService.getAttachments(postId)
+      if (arrayAttachments.length > 0) {
+        for (const attachment of arrayAttachments) {
+          const fileName = attachment.url.split('/flipped-storage/')[1]
+          await this._storageService.deleteFile(fileName)
+        }
+      }
+
+      // If isTask is true, delete task
+      const post = await this._postService.getPostTaskInfo(postId)
+      if (post.isTask) {
+        await this._taskService.deleteTask(post.taskId)
+      }
+
+      // Delete post
+      await this._postService.deletePost(postId)
+
+      // Response
+      const response = this._response.success(200, 'Delete class post success!')
 
       return res.status(response.statsCode || 200).json(response)
     } catch (error) {

@@ -32,8 +32,14 @@ const getClassPostSchema = Joi.object({
   postId: Joi.string().required()
 })
 
+const deleteClassPostSchema = Joi.object({
+  classId: Joi.string().required(),
+  postId: Joi.string().required()
+})
+
 module.exports = {
   createPostSchema,
   getClassPostSchema,
-  updatePostSchema
+  updatePostSchema,
+  deleteClassPostSchema
 }
