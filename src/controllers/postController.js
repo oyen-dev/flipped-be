@@ -15,6 +15,7 @@ class PostController {
     this.addPost = this.addPost.bind(this)
     this.getClassPosts = this.getClassPosts.bind(this)
     this.getClassPost = this.getClassPost.bind(this)
+    this.updateClassPost = this.updateClassPost.bind(this)
   }
 
   async addPost (req, res) {
@@ -44,7 +45,7 @@ class PostController {
         if (!teacher._id.includes(user._id)) throw new ClientError('Unauthorized to post in this class', 401)
       }
 
-      //   Add classId to payload
+      // Add classId to payload
       payload.classId = classId
       payload.teacherId = user._id
 
@@ -153,6 +154,74 @@ class PostController {
       return res.status(response.statsCode || 200).json(response)
 
       // return res.status(200).json({ message: 'Get class post success!' })
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async updateClassPost (req, res) {
+    const token = req.headers.authorization
+    const { id: classId, postId } = req.params
+    const payload = req.body
+
+    try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Find user
+      const user = await this._userService.findUserById(_id)
+      if (!user) throw new ClientError('Unauthorized', 401)
+
+      // Make sure user is TEACHER
+      if (user.role !== 'TEACHER') throw new ClientError('Unauthorized to create post', 401)
+
+      // Find class
+      const classData = await this._classService.getClass(classId)
+
+      // Make sure teacher is in class
+      for (const teacher of classData.teachers) {
+        if (!teacher._id.includes(user._id)) throw new ClientError('Unauthorized to post in this class', 401)
+      }
+
+      // Add classId to payload
+      payload.classId = classId
+      payload.teacherId = user._id
+
+      // Validate payload
+      this._validator.validateUpdatePost(payload)
+
+      // Update post
+      const updatePostPayload = {
+        classId: payload.classId,
+        teacherId: payload.teacherId,
+        title: payload.title,
+        description: payload.description,
+        attachments: payload.attachments,
+        isTask: payload.isTask,
+        updatedAt: new Date()
+      }
+      const updatedPost = await this._postService.updatePost(postId, updatePostPayload)
+
+      // If isTask is true, update task
+      if (payload.isTask) {
+        // Check if taskId is exist, if not, create new task
+        if (!updatedPost.taskId) {
+          const task = await this._taskService.createTask(payload.deadline, updatedPost._id)
+          updatedPost.taskId = task._id
+          await updatedPost.save()
+        } else {
+          await this._taskService.updateTaskDeadline(updatedPost.taskId, payload.deadline)
+        }
+      }
+
+      // Response
+      const response = this._response.success(200, 'Update class post success!', { updatedPost })
+
+      return res.status(response.statsCode || 200).json(response)
     } catch (error) {
       console.log(error)
       return this._response.error(res, error)
