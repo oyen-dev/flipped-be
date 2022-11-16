@@ -197,11 +197,34 @@ class ClassController {
       // Validate payload
       this._validator.validateGetClass({ id })
 
-      // Get class
-      const classDetail = await this._classService.getClassPosts(id)
+      // Get class student
+      let { students } = await this._classService.getClassStudents(id)
+
+      // Map students, only get 1 logs, other delete
+      students = students.map((student) => {
+        const { logs } = student
+        const newLogs = logs.slice(0, 1)
+        return {
+          ...student._doc,
+          logs: newLogs
+        }
+      })
+
+      // Sort students by fullName
+      students.sort((a, b) => {
+        const nameA = a.fullName.toUpperCase()
+        const nameB = b.fullName.toUpperCase()
+        if (nameA < nameB) {
+          return -1
+        }
+        if (nameA > nameB) {
+          return 1
+        }
+        return 0
+      })
 
       // Response
-      const response = this._response.success(200, 'Get class students success!', classDetail)
+      const response = this._response.success(200, 'Get class students success!', { students })
 
       return res.status(response.statsCode || 200).json(response)
     } catch (error) {

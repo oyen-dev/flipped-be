@@ -258,6 +258,21 @@ class ClassService {
 
     await classData.save()
   }
+
+  async getClassStudents (classId) {
+    const students = await Class.findOne({
+      _id: classId,
+      isDeleted: false,
+      isArchived: false
+    })
+      .populate({ path: 'students', select: '_id fullName picture logs', populate: { path: 'logs', select: '_id action at' } })
+      .select('_id students')
+      .exec()
+
+    if (!students) throw new ClientError('Class not found', 404)
+
+    return students
+  }
 }
 
 module.exports = {

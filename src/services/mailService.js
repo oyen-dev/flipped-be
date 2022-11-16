@@ -36,18 +36,14 @@ class MailService {
     })
 
     // Request Access Token
-    const accessToken = await new Promise((resolve, reject) => {
-      oauth2Client.getAccessToken((err, token) => {
-        if (err) {
-          reject('Failed to create access token')
-        }
-        resolve(token)
-      })
-    })
+    const accessToken = oauth2Client.getAccessToken()
 
     // Create Transporter
     const transporter = nodemailer.createTransport({
       service: 'gmail',
+      tls: {
+        rejectUnauthorized: false
+      },
       auth: {
         type: 'OAuth2',
         user: process.env.OAUTH_EMAIL,
