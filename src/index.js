@@ -86,7 +86,7 @@ const attachmentRoutes = new AttachmentRoutes(attachmentController)
 const multerMid = multer({
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 10 * 1024 * 1024 // no larger than 10mb
+    fileSize: 25 * 1024 * 1024 // no larger than 25mb
   }
 })
 
@@ -102,7 +102,7 @@ app.use(multerMid.array('files', 10))
 // Catch error when file is too large
 app.use((err, req, res, next) => {
   if (err instanceof multer.MulterError) {
-    const payload = response.fail(400, 'File is too large, max size is 10mb')
+    const payload = response.fail(400, 'File is too large, max size is 25mb')
 
     return res.status(400).json(payload)
   }
