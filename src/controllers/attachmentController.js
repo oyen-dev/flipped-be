@@ -12,6 +12,7 @@ class AttachmentController {
 
     this.uploadAttachment = this.uploadAttachment.bind(this)
     this.uploadMultipleAttachment = this.uploadMultipleAttachment.bind(this)
+    this.getAttachment = this.getAttachment.bind(this)
   }
 
   async uploadAttachment (req, res) {
@@ -95,6 +96,38 @@ class AttachmentController {
 
       // Send response
       const response = this._response.success(200, 'Upload multiple attachment success!', { attachments })
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      // To do logger error
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async getAttachment (req, res) {
+    const token = req.headers.authorization
+    const { attachmentId } = req.params
+
+    try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Find user
+      const user = await this._userService.findUserById(_id)
+      if (!user) throw new ClientError('Unauthorized', 401)
+
+      // Validate payload
+      this._validator.validateGetAttachment({ attachmentId })
+
+      // Get attachment
+      const attachment = await this._attachmentService.getAttachmentById(attachmentId)
+
+      // Response
+      const response = this._response.success(200, 'Get attachment success!', { attachment })
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {

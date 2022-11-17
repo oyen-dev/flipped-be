@@ -17,6 +17,11 @@ const uploadAttachmentSchema = Joi.object({
   size: Joi.number().integer().max(25 * 1024 * 1024).required()
 })
 
+const getAttachmentSchema = Joi.object({
+  attachmentId: Joi.string().required()
+})
+
 module.exports = {
-  uploadAttachmentSchema
+  uploadAttachmentSchema,
+  getAttachmentSchema
 }
