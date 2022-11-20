@@ -1,5 +1,5 @@
 const { tSubmission } = require('../models')
-
+const { ClientError } = require('../errors')
 class SubmissionService {
   constructor () {
     this.name = 'SubmissionService'
@@ -31,6 +31,20 @@ class SubmissionService {
     if (res) return true
 
     return false
+  }
+
+  async getSubmissionDetail (taskId, studentId) {
+    const submission = await tSubmission.findOne({ taskId, studentId })
+      .populate([
+        { path: 'studentId', select: '_id fullName' },
+        { path: 'attachments', select: '_id name type url' }
+      ])
+      .select('_id studentId answers attachments points reaction feedback createdAt updatedAt')
+      .exec()
+
+    if (!submission) throw new ClientError('No submission found', 404)
+
+    return submission
   }
 }
 
