@@ -1,5 +1,5 @@
 const { tSubmission } = require('../models')
-const { ClientError } = require('../errors')
+// const { ClientError } = require('../errors')
 class SubmissionService {
   constructor () {
     this.name = 'SubmissionService'
@@ -41,8 +41,6 @@ class SubmissionService {
       ])
       .select('_id studentId answers attachments points reaction feedback createdAt updatedAt')
       .exec()
-
-    if (!submission) throw new ClientError('No submission found', 404)
 
     return submission
   }
