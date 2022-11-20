@@ -26,6 +26,8 @@ class ClassRoutes {
 
     this.router.get('/:classId/posts/:postId/submissions', this._postController.getTaskSubmissions)
     this.router.post('/:classId/posts/:postId/submissions', this._postController.addSubmission)
+
+    this.router.get('/:classId/posts/:postId/status', this._postController.checkSubmissionStatus)
   }
 }
 

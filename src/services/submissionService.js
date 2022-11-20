@@ -24,6 +24,14 @@ class SubmissionService {
   async checkDuplicateSubmission (taskId, studentId) {
     return await tSubmission.findOne({ taskId, studentId })
   }
+
+  async getSubmissionByTaskAndStudent (taskId, studentId) {
+    const res = await tSubmission.findOne({ taskId, studentId })
+
+    if (res) return true
+
+    return false
+  }
 }
 
 module.exports = {
