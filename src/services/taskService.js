@@ -1,4 +1,5 @@
 const { Task } = require('../models')
+const { ClientError } = require('../errors')
 
 class TaskService {
   constructor () {
@@ -21,6 +22,26 @@ class TaskService {
 
   async getTaskById (_id) {
     return await Task.findById(_id)
+  }
+
+  async getTaskSubmissions (_id) {
+    const submissions = await Task.findById(_id)
+      .populate([
+        {
+          path: 'submissions',
+          populate: [
+            { path: 'studentId', select: '_id fullName' },
+            { path: 'attachments', select: '_id name type url' }
+          ],
+          select: '_id studentId answers attachments points reaction feedback createdAt updatedAt'
+        }
+      ])
+      .select('submissions')
+      .exec()
+
+    if (!submissions) throw new ClientError('No submissions found')
+
+    return submissions
   }
 }
 

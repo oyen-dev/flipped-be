@@ -23,6 +23,7 @@ class PostController {
 
     // Submission
     this.addSubmission = this.addSubmission.bind(this)
+    this.getTaskSubmissions = this.getTaskSubmissions.bind(this)
   }
 
   // Post
@@ -366,6 +367,52 @@ class PostController {
 
       // Response
       const response = this._response.success(200, 'Add submission success!', { submission })
+
+      return res.status(response.statsCode || 200).json(response)
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async getTaskSubmissions (req, res) {
+    const token = req.headers.authorization
+    const { classId, postId } = req.params
+
+    try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Find user
+      const user = await this._userService.findUserById(_id)
+      if (!user) throw new ClientError('Unauthorized', 401)
+
+      // Make sure user is TEACHER or ADMIN
+      if (user.role === 'STUDENT') throw new ClientError('Unauthorized to get submissions', 401)
+
+      // Find class
+      const classData = await this._classService.getClass(classId)
+      if (!classData) throw new ClientError('Class not found', 404)
+
+      // Find post
+      const post = await this._postService.getPostById(postId)
+      if (!post) throw new ClientError('Post not found', 404)
+
+      // Make sure post is task
+      if (!post.isTask) throw new ClientError('Post is not task', 400)
+
+      // Find task
+      const task = await this._taskService.getTaskById(post.taskId)
+      if (!task) throw new ClientError('Task not found', 404)
+
+      // Find submissions
+      const submissions = await this._taskService.getTaskSubmissions(task._id)
+
+      // Response
+      const response = this._response.success(200, 'Get task submissions success!', submissions)
 
       return res.status(response.statsCode || 200).json(response)
     } catch (error) {
