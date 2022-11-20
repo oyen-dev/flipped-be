@@ -140,17 +140,6 @@ class PostController {
       const user = await this._userService.findUserById(_id)
       if (!user) throw new ClientError('Unauthorized', 401)
 
-      // Make sure user is TEACHER
-      if (user.role !== 'TEACHER') throw new ClientError('Unauthorized to create post', 401)
-
-      // Find class
-      const classData = await this._classService.getClass(classId)
-
-      // Make sure teacher is in class
-      for (const teacher of classData.teachers) {
-        if (!teacher._id.includes(user._id)) throw new ClientError('Unauthorized to post in this class', 401)
-      }
-
       // Validate payload
       this._validator.validateGetClassPost({ classId, postId })
 
