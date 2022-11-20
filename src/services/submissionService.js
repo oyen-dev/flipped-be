@@ -33,6 +33,10 @@ class SubmissionService {
     return false
   }
 
+  async getSubmissionByTaskAndStudentFull (taskId, studentId) {
+    return await tSubmission.findOne({ taskId, studentId })
+  }
+
   async getSubmissionDetail (taskId, studentId) {
     const submission = await tSubmission.findOne({ taskId, studentId })
       .populate([

@@ -26,6 +26,7 @@ class PostController {
     this.getTaskSubmission = this.getTaskSubmission.bind(this)
     this.getTaskSubmissions = this.getTaskSubmissions.bind(this)
     this.checkSubmissionStatus = this.checkSubmissionStatus.bind(this)
+    this.updateSubmission = this.updateSubmission.bind(this)
   }
 
   // Post
@@ -503,6 +504,64 @@ class PostController {
 
       // Response
       const response = this._response.success(200, 'Check submission status success!', { isSubmitted })
+
+      return res.status(response.statsCode || 200).json(response)
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async updateSubmission (req, res) {
+    const token = req.headers.authorization
+    const { classId, postId } = req.params
+    const payload = req.body
+
+    try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Find user
+      const user = await this._userService.findUserById(_id)
+      if (!user) throw new ClientError('Unauthorized', 401)
+
+      // Find class
+      const classData = await this._classService.getClassStudents(classId)
+      if (!classData) throw new ClientError('Class not found', 404)
+
+      // Make sure student is in class
+      let isStudentInClass = false
+      for (const student of classData.students) {
+        if (student._id.includes(user._id)) {
+          isStudentInClass = true
+          break
+        }
+      }
+      if (!isStudentInClass) throw new ClientError('Unauthorized to update submission in this class', 401)
+
+      // Find post
+      const post = await this._postService.getPostById(postId)
+      if (!post) throw new ClientError('Post not found', 404)
+
+      // Make sure post is task
+      if (!post.isTask) throw new ClientError('Post is not task', 400)
+
+      // Find task
+      const task = await this._taskService.getTaskById(post.taskId)
+      if (!task) throw new ClientError('Task not found', 404)
+
+      // Find submission
+      const submission = await this._submissionService.getSubmissionByTaskAndStudentFull(task._id, user._id)
+      if (!submission) throw new ClientError('Submission not found', 404)
+
+      // Update submission
+      const updatedSubmission = await this._submissionService.updateSubmission(submission._id, payload)
+
+      // Response
+      const response = this._response.success(200, 'Update submission success!', { submission: updatedSubmission })
 
       return res.status(response.statsCode || 200).json(response)
     } catch (error) {
