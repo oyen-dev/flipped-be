@@ -1,9 +1,10 @@
 const { ClientError } = require('../errors')
 
 class UserController {
-  constructor (userService, authService, storageService, mailService, validator, hashPassword, tokenize, response) {
+  constructor (userService, classService, authService, storageService, mailService, validator, hashPassword, tokenize, response) {
     this.name = 'userController'
     this._userService = userService
+    this._classService = classService
     this._authService = authService
     this._storageService = storageService
     this._mailService = mailService
@@ -12,8 +13,11 @@ class UserController {
     this._tokenize = tokenize
     this._response = response
 
+    this.getUser = this.getUser.bind(this)
+    this.getDashboard = this.getDashboard.bind(this)
+    this.editProfile = this.editProfile.bind(this)
+
     this.addTeacher = this.addTeacher.bind(this)
-    this.editTeacher = this.editTeacher.bind(this)
     this.deleteTeacher = this.deleteTeacher.bind(this)
     this.getTeachers = this.getTeachers.bind(this)
     this.getTeacher = this.getTeacher.bind(this)
@@ -30,6 +34,65 @@ class UserController {
     this.adminEditProfilePicture = this.adminEditProfilePicture.bind(this)
     this.adminDeleteUser = this.adminDeleteUser.bind(this)
     this.adminRestoreUser = this.adminRestoreUser.bind(this)
+  }
+
+  async getUser (req, res) {
+    const token = req.headers.authorization
+
+    try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Validate payload
+      this._validator.validateGetUser({ id: _id })
+
+      // Get teacher
+      const user = await this._userService.getUser(_id)
+
+      // To do get enrolled class list
+
+      // Send response
+      const response = this._response.success(200, 'Get user success!', user)
+
+      return res.status(200).json(response)
+    } catch (error) {
+      // To do logger error
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async editProfile (req, res) {
+    const token = req.headers.authorization
+    const payload = req.body
+
+    try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Validate payload
+      this._validator.validateEditUser({ id: _id, ...payload })
+
+      // Update teacher
+      await this._userService.updateUserProfile(_id, payload)
+
+      // Send email for notify
+
+      // Send response
+      const response = this._response.success(200, 'Edit profile success!')
+
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      // To do logger error
+      console.log(error)
+      return this._response.error(res, error)
+    }
   }
 
   async addTeacher (req, res) {
@@ -68,37 +131,6 @@ class UserController {
 
       // Send response
       const response = this._response.success(201, 'Add teacher success, please check email to set password!')
-
-      return res.status(response.statusCode || 200).json(response)
-    } catch (error) {
-      // To do logger error
-      console.log(error)
-      return this._response.error(res, error)
-    }
-  }
-
-  async editTeacher (req, res) {
-    const token = req.headers.authorization
-    const id = req.params.id
-    const payload = req.body
-
-    try {
-      // Check token is exist
-      if (!token) throw new ClientError('Unauthorized', 401)
-
-      // Validate token
-      await this._tokenize.verify(token)
-
-      // Validate payload
-      this._validator.validateEditUser({ id, ...payload })
-
-      // Update teacher
-      await this._userService.updateUserProfile(id, payload)
-
-      // Send email for notify
-
-      // Send response
-      const response = this._response.success(200, 'Edit teacher success!')
 
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
@@ -189,7 +221,7 @@ class UserController {
       this._validator.validateGetUser({ id })
 
       // Get teacher
-      const user = await this._userService.getUser('TEACHER', id)
+      const user = await this._userService.getUser(id)
 
       // To do get enrolled class list
 
@@ -359,7 +391,7 @@ class UserController {
       this._validator.validateGetUser({ id })
 
       // Get teacher
-      const user = await this._userService.getUser('STUDENT', id)
+      const user = await this._userService.getUser(id)
 
       // To do get enrolled class list
 
@@ -558,6 +590,45 @@ class UserController {
       // Send response
       const response = this._response.success(200, 'Delete student success!')
 
+      return res.status(response.statusCode || 200).json(response)
+    } catch (error) {
+      // To do logger error
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async getDashboard (req, res) {
+    const token = req.headers.authorization
+
+    try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Make sure token is ADMIN
+      const user = await this._userService.findUserById(_id)
+      if (!user) throw new ClientError('Unauthorized', 401)
+
+      // Get user logs data
+      const recent = await this._userService.getLogs(_id)
+
+      // Get statistic
+      const statistic = await this._userService.getStatistic()
+
+      // Get recent class
+      const classes = await this._classService.getDashboardClass(user._id, user.role)
+
+      // Response
+      const response = this._response.success(200, 'Get dashboard success!', {
+        recent,
+        statistic,
+        classes
+      })
+
+      // Send response
       return res.status(response.statusCode || 200).json(response)
     } catch (error) {
       // To do logger error

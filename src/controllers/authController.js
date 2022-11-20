@@ -152,7 +152,7 @@ class AuthController {
       const { token } = tokenDetails
 
       // Send email
-      const url = process.env.CLIENT_URL || 'http://localhost:3000'
+      const url = process.env.CLIENT_URL || 'http://localhost:5173'
       const message = {
         name: user.fullName,
         email,

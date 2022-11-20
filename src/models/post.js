@@ -10,8 +10,8 @@ const postSchema = new Schema({
   attachments: [{ type: Schema.Types.String, ref: 'attachments' }],
   isTask: { type: Boolean, default: false },
   taskId: { type: Schema.Types.String, ref: 'tasks', default: null },
-  createdAt: { type: Date, default: new Date() },
-  updatedAt: { type: Date, default: new Date() }
+  createdAt: { type: Date, default: () => { return new Date() } },
+  updatedAt: { type: Date, default: () => { return new Date() } }
 })
 
 // Create model

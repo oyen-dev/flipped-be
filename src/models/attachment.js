@@ -3,11 +3,12 @@ const { nanoid } = require('nanoid')
 
 const attachmentSchema = new Schema({
   _id: { type: String, default: () => { return `att-${nanoid(15)}` } },
-  postId: { type: Schema.Types.String, ref: 'posts' },
+  postId: { type: Schema.Types.String, ref: 'posts', default: null },
+  name: { type: String, required: true },
   type: { type: String, required: true },
   url: { type: String, required: true },
-  createdAt: { type: Date, default: new Date() },
-  updatedAt: { type: Date, default: new Date() }
+  createdAt: { type: Date, default: () => { return new Date() } },
+  updatedAt: { type: Date, default: () => { return new Date() } }
 })
 
 // Create model

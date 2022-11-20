@@ -3,9 +3,19 @@ const cors = require('cors')
 const multer = require('multer')
 const express = require('express')
 const mongoose = require('mongoose')
+const { Websocket } = require('./websocket')
 
 // Init express
 const app = express()
+const server = require('http').createServer(app)
+
+// Init socket.io
+const io = require('socket.io')(server, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST']
+  }
+})
 
 // Init body-parser
 app.use(express.json())
@@ -14,13 +24,32 @@ app.use(express.json())
 app.use(cors())
 
 // Services
-const { UserService, AuthService, MailService, StorageService, ClassService, GradeService } = require('./services')
+const {
+  UserService,
+  AuthService,
+  MailService,
+  StorageService,
+  ClassService,
+  GradeService,
+  OnlineUserService,
+  LogService,
+  AttachmentService,
+  PostService,
+  TaskService,
+  SubmissionService
+} = require('./services')
 const userService = new UserService()
 const authService = new AuthService()
 const mailService = new MailService()
 const storageService = new StorageService()
 const classService = new ClassService()
 const gradeService = new GradeService()
+const onlineUserService = new OnlineUserService()
+const logService = new LogService()
+const attachmentService = new AttachmentService()
+const postService = new PostService()
+const taskService = new TaskService()
+const submissionService = new SubmissionService()
 
 // Validator
 const { Validator } = require('./validators')
@@ -33,22 +62,33 @@ const hashPassword = new HashPassword()
 const tokenize = new Tokenize()
 
 // Controllers
-const { AuthController, UserController, ClassController } = require('./controllers')
+const {
+  AuthController,
+  UserController,
+  ClassController,
+  SocketController,
+  AttachmentController,
+  PostController
+} = require('./controllers')
 const authController = new AuthController(authService, userService, mailService, validator, hashPassword, tokenize, response)
-const userController = new UserController(userService, authService, storageService, mailService, validator, hashPassword, tokenize, response)
+const userController = new UserController(userService, classService, authService, storageService, mailService, validator, hashPassword, tokenize, response)
 const classController = new ClassController(classService, userService, gradeService, storageService, validator, tokenize, response)
+const socketController = new SocketController(onlineUserService, logService)
+const attachmentController = new AttachmentController(attachmentService, storageService, userService, validator, tokenize, response)
+const postController = new PostController(classService, userService, postService, taskService, submissionService, attachmentService, storageService, validator, tokenize, response)
 
 // Routes
-const { AuthRoutes, UserRoutes, ClassRoutes } = require('./routes')
+const { AuthRoutes, UserRoutes, ClassRoutes, AttachmentRoutes } = require('./routes')
 const authRoutes = new AuthRoutes(authController)
 const userRoutes = new UserRoutes(userController)
-const classRoutes = new ClassRoutes(classController)
+const classRoutes = new ClassRoutes(classController, postController)
+const attachmentRoutes = new AttachmentRoutes(attachmentController)
 
 // Multer middleware
 const multerMid = multer({
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 10 * 1024 * 1024 // no larger than 10mb
+    fileSize: 25 * 1024 * 1024 // no larger than 25mb
   }
 })
 
@@ -64,7 +104,7 @@ app.use(multerMid.array('files', 10))
 // Catch error when file is too large
 app.use((err, req, res, next) => {
   if (err instanceof multer.MulterError) {
-    const payload = response.fail(400, 'File is too large, max size is 10mb')
+    const payload = response.fail(400, 'File is too large, max size is 25mb')
 
     return res.status(400).json(payload)
   }
@@ -78,8 +118,13 @@ app.get('/', (req, res) => {
 // Routes
 app.use('/api/v1/auth', authRoutes.router)
 app.use('/api/v1/users', userRoutes.router)
-app.use('/api/v1', classRoutes.router)
+app.use('/api/v1/class', classRoutes.router)
+app.use('/api/v1/attachment', attachmentRoutes.router)
+
+// Websocket connection
+// eslint-disable-next-line no-unused-vars
+const ws = new Websocket(io, socketController)
 
 // Listen to port
 const PORT = process.env.PORT || 5000
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`))
