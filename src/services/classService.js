@@ -112,6 +112,34 @@ class ClassService {
     return classDetail
   }
 
+  async getClassTasks (id) {
+    const classDetail = await Class.findOne({
+      _id: id,
+      isDeleted: false,
+      isArchived: false
+    }).populate({
+      path: 'posts',
+      // Get only posts that property isTask is true
+      match: { isTask: true },
+      select: '_id title description teacherId attachments isTask taskId createdAt updatedAt',
+      populate: [
+        { path: 'taskId', select: '_id deadline submissions' },
+        { path: 'teacherId', select: '_id fullName picture' },
+        { path: 'attachments', select: '_id type url name' }
+      ]
+    }).select('_id posts')
+      .exec()
+
+    if (!classDetail) throw new ClientError('Class not found', 404)
+
+    // Sort post by createdAt
+    classDetail.posts.sort((a, b) => {
+      return new Date(b.createdAt) - new Date(a.createdAt)
+    })
+
+    return classDetail
+  }
+
   async getClassPost (classId, postId) {
     const posts = await Class.findOne({
       _id: classId,

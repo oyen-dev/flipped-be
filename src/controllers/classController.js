@@ -171,7 +171,7 @@ class ClassController {
       this._validator.validateGetClass({ id })
 
       // Get class
-      const classDetail = await this._classService.getClassPosts(id)
+      const classDetail = await this._classService.getClassTasks(id)
 
       // Response
       const response = this._response.success(200, 'Get class tasks success!', classDetail)
