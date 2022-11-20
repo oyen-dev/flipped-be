@@ -23,6 +23,8 @@ class ClassRoutes {
     this.router.get('/:id/posts/:postId', this._postController.getClassPost)
     this.router.put('/:id/posts/:postId', this._postController.updateClassPost)
     this.router.delete('/:id/posts/:postId', this._postController.deletePost)
+
+    this.router.post('/:classId/posts/:postId/submissions', this._postController.addSubmission)
   }
 }
 

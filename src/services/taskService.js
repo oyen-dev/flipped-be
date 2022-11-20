@@ -18,6 +18,10 @@ class TaskService {
 
     // To do : delete all submissions
   }
+
+  async getTaskById (_id) {
+    return await Task.findById(_id)
+  }
 }
 
 module.exports = {

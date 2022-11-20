@@ -1,25 +1,31 @@
 const { ClientError } = require('../errors')
 
 class PostController {
-  constructor (classService, userService, postService, taskService, attachmentService, storageService, validator, tokenize, response) {
+  constructor (classService, userService, postService, taskService, submissionService, attachmentService, storageService, validator, tokenize, response) {
     this.name = 'PostController'
     this._classService = classService
     this._userService = userService
     this._postService = postService
     this._taskService = taskService
+    this._submissionService = submissionService
     this._attachmentService = attachmentService
     this._storageService = storageService
     this._validator = validator
     this._tokenize = tokenize
     this._response = response
 
+    // Post
     this.addPost = this.addPost.bind(this)
     this.getClassPosts = this.getClassPosts.bind(this)
     this.getClassPost = this.getClassPost.bind(this)
     this.updateClassPost = this.updateClassPost.bind(this)
     this.deletePost = this.deletePost.bind(this)
+
+    // Submission
+    this.addSubmission = this.addSubmission.bind(this)
   }
 
+  // Post
   async addPost (req, res) {
     const token = req.headers.authorization
     const classId = req.params.id
@@ -252,9 +258,14 @@ class PostController {
       const classData = await this._classService.getClass(classId)
 
       // Make sure teacher is in class
+      let isTeacherInClass = false
       for (const teacher of classData.teachers) {
-        if (!teacher._id.includes(user._id)) throw new ClientError('Unauthorized to post in this class', 401)
+        if (teacher._id.includes(user._id)) {
+          isTeacherInClass = true
+          break
+        }
       }
+      if (!isTeacherInClass) throw new ClientError('Unauthorized to post in this class', 401)
 
       // Validate payload
       this._validator.validateDeleteClassPost({ classId, postId })
@@ -277,8 +288,84 @@ class PostController {
       // Delete post
       await this._postService.deletePost(postId)
 
+      // Remove post from class
+      await this._classService.removePostFromClass(classId, postId)
+
       // Response
       const response = this._response.success(200, 'Delete class post success!')
+
+      return res.status(response.statsCode || 200).json(response)
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  // Submission
+  async addSubmission (req, res) {
+    const token = req.headers.authorization
+    const { classId, postId } = req.params
+    const payload = req.body
+
+    try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Find user
+      const user = await this._userService.findUserById(_id)
+      if (!user) throw new ClientError('Unauthorized', 401)
+
+      // Make sure user is STUDENT
+      if (user.role !== 'STUDENT') throw new ClientError('Unauthorized to create submission', 401)
+
+      // Find class
+      const classData = await this._classService.getClassStudents(classId)
+      if (!classData) throw new ClientError('Class not found', 404)
+
+      // Make sure student is in class
+      let isStudentInClass = false
+      for (const student of classData.students) {
+        if (student._id.includes(user._id)) {
+          isStudentInClass = true
+          break
+        }
+      }
+      if (!isStudentInClass) throw new ClientError('Unauthorized to create submission in this class', 401)
+
+      // Find post
+      const post = await this._postService.getPostById(postId)
+      if (!post) throw new ClientError('Post not found', 404)
+
+      // Make sure post is task
+      if (!post.isTask) throw new ClientError('Post is not task', 400)
+
+      // Find task
+      const task = await this._taskService.getTaskById(post.taskId)
+      if (!task) throw new ClientError('Task not found', 404)
+
+      // Add taskId and studentId to payload
+      payload.taskId = post.taskId
+      payload.studentId = user._id
+
+      // Validate payload
+      this._validator.validateCreateSubmission(payload)
+
+      // Make sure no duplicate submission based on taskId and studentId
+      const isDuplicateSubmission = await this._submissionService.checkDuplicateSubmission(payload.taskId, payload.studentId)
+      if (isDuplicateSubmission) throw new ClientError('Duplicate submission', 400)
+
+      // Create submission
+      const submission = await this._submissionService.createSubmission(payload)
+
+      // Add submissionId to task
+      task.submissions.push(submission._id)
+      await task.save()
+
+      // Response
+      const response = this._response.success(200, 'Add submission success!', { submission })
 
       return res.status(response.statsCode || 200).json(response)
     } catch (error) {

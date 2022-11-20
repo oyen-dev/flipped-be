@@ -301,6 +301,16 @@ class ClassService {
 
     return students
   }
+
+  async removePostFromClass (classId, postId) {
+    const classData = await this.findClassById(classId)
+    if (!classData) throw new ClientError('Class not found', 404)
+
+    classData.posts.pull(postId)
+    classData.updatedAt = new Date()
+
+    await classData.save()
+  }
 }
 
 module.exports = {

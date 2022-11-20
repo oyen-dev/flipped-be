@@ -9,5 +9,6 @@ module.exports = {
   ...require('./logService'),
   ...require('./postService'),
   ...require('./attachmentService'),
-  ...require('./taskService')
+  ...require('./taskService'),
+  ...require('./submissionService')
 }

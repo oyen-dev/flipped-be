@@ -37,9 +37,17 @@ const deleteClassPostSchema = Joi.object({
   postId: Joi.string().required()
 })
 
+const createSubmissionSchema = Joi.object({
+  taskId: Joi.string().required(),
+  studentId: Joi.string().required(),
+  answers: Joi.string().allow(''),
+  attachments: Joi.array().items(Joi.string())
+})
+
 module.exports = {
   createPostSchema,
   getClassPostSchema,
   updatePostSchema,
-  deleteClassPostSchema
+  deleteClassPostSchema,
+  createSubmissionSchema
 }

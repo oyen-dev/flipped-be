@@ -35,7 +35,8 @@ const {
   LogService,
   AttachmentService,
   PostService,
-  TaskService
+  TaskService,
+  SubmissionService
 } = require('./services')
 const userService = new UserService()
 const authService = new AuthService()
@@ -48,6 +49,7 @@ const logService = new LogService()
 const attachmentService = new AttachmentService()
 const postService = new PostService()
 const taskService = new TaskService()
+const submissionService = new SubmissionService()
 
 // Validator
 const { Validator } = require('./validators')
@@ -73,7 +75,7 @@ const userController = new UserController(userService, classService, authService
 const classController = new ClassController(classService, userService, gradeService, storageService, validator, tokenize, response)
 const socketController = new SocketController(onlineUserService, logService)
 const attachmentController = new AttachmentController(attachmentService, storageService, userService, validator, tokenize, response)
-const postController = new PostController(classService, userService, postService, taskService, attachmentService, storageService, validator, tokenize, response)
+const postController = new PostController(classService, userService, postService, taskService, submissionService, attachmentService, storageService, validator, tokenize, response)
 
 // Routes
 const { AuthRoutes, UserRoutes, ClassRoutes, AttachmentRoutes } = require('./routes')

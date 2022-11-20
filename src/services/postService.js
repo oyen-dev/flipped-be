@@ -29,6 +29,10 @@ class PostService {
   async deletePost (_id) {
     return await Post.findByIdAndDelete(_id)
   }
+
+  async getPostById (_id) {
+    return await Post.findById(_id)
+  }
 }
 
 module.exports = {
