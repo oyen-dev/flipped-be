@@ -46,9 +46,6 @@
     "nodemon": "^2.0.20",
     "supertest": "^6.3.1"
   },
-  "imports": {
-    "#services/*": "./src/services/*"
-  },
   "jest": {
     "testEnvironment": "node",
     "coveragePathIgnorePatterns": [
