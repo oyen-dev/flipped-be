@@ -53,9 +53,14 @@ class PostController {
       const classData = await this._classService.getClass(classId)
 
       // Make sure teacher is in class
+      let isTeacherInClass = false
       for (const teacher of classData.teachers) {
-        if (!teacher._id.includes(user._id)) throw new ClientError('Unauthorized to post in this class', 401)
+        if (teacher._id.includes(user._id)) {
+          isTeacherInClass = true
+          break
+        }
       }
+      if (!isTeacherInClass) throw new ClientError('Unauthorized to create post', 401)
 
       // Add classId to payload
       payload.classId = classId
@@ -184,9 +189,14 @@ class PostController {
       const classData = await this._classService.getClass(classId)
 
       // Make sure teacher is in class
+      let isTeacherInClass = false
       for (const teacher of classData.teachers) {
-        if (!teacher._id.includes(user._id)) throw new ClientError('Unauthorized to post in this class', 401)
+        if (teacher._id.includes(user._id)) {
+          isTeacherInClass = true
+          break
+        }
       }
+      if (!isTeacherInClass) throw new ClientError('Unauthorized to create post', 401)
 
       // Add classId to payload
       payload.classId = classId
@@ -389,6 +399,16 @@ class PostController {
       const classData = await this._classService.getClass(classId)
       if (!classData) throw new ClientError('Class not found', 404)
 
+      // Make sure teacher is in class
+      let isTeacherInClass = false
+      for (const teacher of classData.teachers) {
+        if (teacher._id.includes(user._id)) {
+          isTeacherInClass = true
+          break
+        }
+      }
+      if (!isTeacherInClass) throw new ClientError('Unauthorized to see submissions', 401)
+
       // Find post
       const post = await this._postService.getPostById(postId)
       if (!post) throw new ClientError('Post not found', 404)
@@ -400,10 +420,44 @@ class PostController {
       const task = await this._taskService.getTaskById(post.taskId)
       if (!task) throw new ClientError('Task not found', 404)
 
-      // Find submissions
-      const submissions = await this._taskService.getTaskSubmissions(task._id)
+      // Get class student
+      let { students } = await this._classService.getClassStudents(classId)
 
-      // Response
+      // Map students, only get 1 logs, other delete
+      students = students.map((student) => {
+        return {
+          _id: student._id,
+          fullName: student.fullName
+        }
+      })
+
+      // Sort students by fullName
+      students.sort((a, b) => {
+        const nameA = a.fullName.toUpperCase()
+        const nameB = b.fullName.toUpperCase()
+        if (nameA < nameB) {
+          return -1
+        }
+        if (nameA > nameB) {
+          return 1
+        }
+        return 0
+      })
+
+      // Get all submissions by taskId
+      const allSubmissions = await this._submissionService.getSubmissionsByTaskId(task._id)
+
+      // Map students with their submission
+      const submissions = []
+      for (const student of students) {
+        const submission = allSubmissions.find((submission) => submission.studentId.includes(student._id))
+        submissions.push({
+          student,
+          submission: submission || null
+        })
+      }
+
+      // // Response
       const response = this._response.success(200, 'Get task submissions success!', submissions)
 
       return res.status(response.statsCode || 200).json(response)

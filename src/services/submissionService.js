@@ -48,6 +48,12 @@ class SubmissionService {
 
     return submission
   }
+
+  async getSubmissionsByTaskId (taskId) {
+    return await tSubmission.find({ taskId })
+      .select('_id studentId createdAt reaction points')
+      .exec()
+  }
 }
 
 module.exports = {

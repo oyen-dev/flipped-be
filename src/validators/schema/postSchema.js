@@ -41,7 +41,8 @@ const createSubmissionSchema = Joi.object({
   taskId: Joi.string().required(),
   studentId: Joi.string().required(),
   answers: Joi.string().allow(''),
-  attachments: Joi.array().items(Joi.string())
+  attachments: Joi.array().items(Joi.string()),
+  reaction: Joi.number().required()
 })
 
 module.exports = {
