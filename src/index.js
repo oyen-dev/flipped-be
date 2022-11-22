@@ -36,7 +36,8 @@ const {
   AttachmentService,
   PostService,
   TaskService,
-  SubmissionService
+  SubmissionService,
+  PresenceService
 } = require('./services')
 const userService = new UserService()
 const authService = new AuthService()
@@ -50,6 +51,7 @@ const attachmentService = new AttachmentService()
 const postService = new PostService()
 const taskService = new TaskService()
 const submissionService = new SubmissionService()
+const presenceService = new PresenceService()
 
 // Validator
 const { Validator } = require('./validators')

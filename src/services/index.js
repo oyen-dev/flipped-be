@@ -10,5 +10,6 @@ module.exports = {
   ...require('./postService'),
   ...require('./attachmentService'),
   ...require('./taskService'),
-  ...require('./submissionService')
+  ...require('./submissionService'),
+  ...require('./presenceService')
 }
