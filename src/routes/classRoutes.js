@@ -1,7 +1,7 @@
 const express = require('express')
 
 class ClassRoutes {
-  constructor (classController, postController) {
+  constructor (classController, postController, presenceRoutes) {
     this.name = 'ClassRouter'
     this.router = express.Router()
     this._classController = classController
@@ -29,6 +29,8 @@ class ClassRoutes {
     this.router.post('/:classId/posts/:postId/submissions', this._postController.addSubmission)
 
     this.router.get('/:classId/posts/:postId/status', this._postController.checkSubmissionStatus)
+
+    this.router.use('/:classId/presences', presenceRoutes.router)
   }
 }
 

@@ -4,5 +4,6 @@ module.exports = {
   ...require('./classController'),
   ...require('./socketController'),
   ...require('./attachmentController'),
-  ...require('./postController')
+  ...require('./postController'),
+  ...require('./presenceController')
 }
