@@ -1,6 +1,7 @@
 const request = require('supertest')
 const { app } = require('../src')
 const { ClassService, GradeService, UserService } = require('../src/services')
+const { Tokenize } = require('../src/utils')
 const db = require('./database')
 
 describe('Presence Route', () => {
@@ -21,12 +22,18 @@ describe('Presence Route', () => {
     placeOfBirth: 'Medan',
     address: 'Jl. Sudirman Kelurahan Butuh Kec. Pakisaji Kota Magelang'
   }
+  const sampleStudentData = {
+    ...sampleTeacherData,
+    email: 'student@example.com',
+    fullName: 'Example Student'
+  }
 
   let sampleClass
 
   let classService
   let gradeService
   let userService
+  let tokenize
 
   const createSampleClass = async () => {
     const grade = await gradeService.addGrade('11')
@@ -39,10 +46,20 @@ describe('Presence Route', () => {
     return await classService.addClass(classData)
   }
 
+  const createSampleStudent = async () => {
+    return await userService.directCreateUser(sampleStudentData, 'STUDENT')
+  }
+
+  const createStudentToken = async () => {
+    const student = await createSampleStudent()
+    return await tokenize.sign(student, false)
+  }
+
   beforeAll(async () => {
     classService = new ClassService()
     gradeService = new GradeService()
     userService = new UserService()
+    tokenize = new Tokenize()
     await db.connectDatabase()
   })
   beforeEach(async () => {
@@ -57,6 +74,15 @@ describe('Presence Route', () => {
         .get(`/api/v1/class/${sampleClass._id}/presences`)
 
       expect(res.statusCode).toEqual(401)
+    })
+
+    it('returns status code 403 when authenticated user neither admin nor teacher', async () => {
+      const studentToken = await createStudentToken()
+      const res = await request(app)
+        .get(`/api/v1/class/${sampleClass._id}/presences`)
+        .set('Authorization', 'Bearer ' + studentToken)
+
+      expect(res.statusCode).toEqual(403)
     })
   })
 })
