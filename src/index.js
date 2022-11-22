@@ -64,8 +64,9 @@ const hashPassword = new HashPassword()
 const tokenize = new Tokenize()
 
 // Middlewares
-const { getTokenVerifier } = require('./middlewares')
+const { getTokenVerifier, getNeedRolesFunc } = require('./middlewares')
 const verifyToken = getTokenVerifier(userService, tokenize, response)
+const needRoles = getNeedRolesFunc(response)
 
 // Controllers
 const {
@@ -90,7 +91,7 @@ const { AuthRoutes, UserRoutes, ClassRoutes, AttachmentRoutes, PresenceRoutes } 
 const authRoutes = new AuthRoutes(authController)
 const userRoutes = new UserRoutes(userController)
 const attachmentRoutes = new AttachmentRoutes(attachmentController)
-const presenceRoutes = new PresenceRoutes(verifyToken, presenceController)
+const presenceRoutes = new PresenceRoutes(verifyToken, needRoles, presenceController)
 const classRoutes = new ClassRoutes(classController, postController, presenceRoutes)
 
 // Multer middleware

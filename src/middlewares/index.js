@@ -1,3 +1,4 @@
 module.exports = {
-  ...require('./verify-token')
+  ...require('./verify-token'),
+  ...require('./roleChecker')
 }
