@@ -55,6 +55,16 @@ describe('Presence Route', () => {
     return await tokenize.sign(student, false)
   }
 
+  const createTokenFromExistingUser = async (userId) => {
+    const user = await userService.findUserById(userId)
+    if (!user) throw new Error('User not found')
+    return await tokenize.sign(user, false)
+  }
+
+  const createTeacherTokenFromClass = async (classroom) => {
+    return await createTokenFromExistingUser(classroom.teachers[0])
+  }
+
   beforeAll(async () => {
     classService = new ClassService()
     gradeService = new GradeService()
@@ -83,6 +93,14 @@ describe('Presence Route', () => {
         .set('Authorization', 'Bearer ' + studentToken)
 
       expect(res.statusCode).toEqual(403)
+    })
+
+    it('returns status code 404 when class id is not exists', async () => {
+      const res = await request(app)
+        .get('/api/v1/class/random-class-id/presences')
+        .set('Authorization', 'Bearer ' + await createTeacherTokenFromClass(sampleClass))
+
+      expect(res.statusCode).toEqual(404)
     })
   })
 })
