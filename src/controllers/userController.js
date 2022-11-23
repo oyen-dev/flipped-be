@@ -1,4 +1,5 @@
 const { ClientError } = require('../errors')
+const { bindAll } = require('../utils/classBinder')
 
 class UserController {
   constructor (userService, authService, storageService, mailService, validator, hashPassword, tokenize, response) {
@@ -12,24 +13,7 @@ class UserController {
     this._tokenize = tokenize
     this._response = response
 
-    this.addTeacher = this.addTeacher.bind(this)
-    this.editTeacher = this.editTeacher.bind(this)
-    this.deleteTeacher = this.deleteTeacher.bind(this)
-    this.getTeachers = this.getTeachers.bind(this)
-    this.getTeacher = this.getTeacher.bind(this)
-
-    this.addStudent = this.addStudent.bind(this)
-    this.editStudent = this.editStudent.bind(this)
-    this.deleteStudent = this.deleteStudent.bind(this)
-    this.getStudents = this.getStudents.bind(this)
-    this.getStudent = this.getStudent.bind(this)
-
-    this.editProfilePicture = this.editProfilePicture.bind(this)
-
-    this.adminEditProfile = this.adminEditProfile.bind(this)
-    this.adminEditProfilePicture = this.adminEditProfilePicture.bind(this)
-    this.adminDeleteUser = this.adminDeleteUser.bind(this)
-    this.adminRestoreUser = this.adminRestoreUser.bind(this)
+    bindAll(this)
   }
 
   async addTeacher (req, res) {
