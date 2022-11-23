@@ -1,9 +1,9 @@
-const express = require('express')
+const { MyRouter } = require('../myserver')
 
 class ClassRoutes {
   constructor (classController) {
     this.name = 'ClassRouter'
-    this.router = express.Router()
+    this.router = MyRouter()
     this._classController = classController
 
     this.router.get('/class', this._classController.getClasses)
