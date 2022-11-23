@@ -38,7 +38,7 @@ class DocumentNotFoundError extends ResponseError {
 
 class InternalServerError extends ResponseError {
   constructor (message) {
-    super(message, 505)
+    super(message, 500)
   }
 }
 
