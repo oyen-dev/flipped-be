@@ -1,4 +1,5 @@
 const { ClientError } = require('../errors')
+const { bindAll } = require('../utils/classBinder')
 class AuthController {
   constructor (authService, userService, mailService, validator, hashPassword, tokenize, response) {
     this.name = 'authController'
@@ -10,13 +11,7 @@ class AuthController {
     this._tokenize = tokenize
     this._response = response
 
-    this.register = this.register.bind(this)
-    this.login = this.login.bind(this)
-    this.getAuthProfile = this.getAuthProfile.bind(this)
-    this.forgotPassword = this.forgotPassword.bind(this)
-    this.resetPassword = this.resetPassword.bind(this)
-    this.checkToken = this.checkToken.bind(this)
-    this.verifyAccount = this.verifyAccount.bind(this)
+    bindAll(this)
   }
 
   async register (req, res) {
