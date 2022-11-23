@@ -1,5 +1,5 @@
 const request = require('supertest')
-const { DocumentNotFoundError, UnauthorizedError } = require('../../src/errors')
+const { DocumentNotFoundError, UnauthorizedError, InternalServerError } = require('../../src/errors')
 const { User } = require('../../src/models')
 const { handleError } = require('../../src/middlewares')
 const { MyServer } = require('../../src/myserver')
@@ -11,6 +11,7 @@ const getThrowerHandler = (err) => async (req, res, next) => {
 describe('handleError', () => {
   const documentNotFound = new DocumentNotFoundError(User, '121')
   const unauthorized = new UnauthorizedError()
+  const serverError = new InternalServerError('Database connection is fail')
 
   const testError = async (path, error) => {
     const server = MyServer()
@@ -38,5 +39,15 @@ describe('handleError', () => {
   it('returns message Unauthorized when an UnauthorizedError thrown', async () => {
     const response = await testError('/testing-unauthorized-2', unauthorized)
     expect(response.body.message).toContain('Unauthorized')
+  })
+
+  it('returns 500 when an InternalServerError thrown', async () => {
+    const response = await testError('/testing-server-error-1', serverError)
+    expect(response.statusCode).toBe(500)
+  })
+
+  it('returns valid message when an InternalServerError thrown', async () => {
+    const response = await testError('/testing-server-error-1', serverError)
+    expect(response.body.message).toBe('Database connection is fail')
   })
 })
