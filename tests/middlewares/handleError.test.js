@@ -12,6 +12,7 @@ describe('handleError', () => {
   const documentNotFound = new DocumentNotFoundError(User, '121')
   const unauthorized = new UnauthorizedError()
   const serverError = new InternalServerError('Database connection is fail')
+  const customError = new Error('Failed to send email')
 
   const testError = async (path, error) => {
     const server = MyServer()
@@ -49,5 +50,15 @@ describe('handleError', () => {
   it('returns valid message when an InternalServerError thrown', async () => {
     const response = await testError('/testing-server-error-1', serverError)
     expect(response.body.message).toBe('Database connection is fail')
+  })
+
+  it('returns 500 when unknown error type thrown', async () => {
+    const response = await testError('/testing-custom-error-1', customError)
+    expect(response.statusCode).toBe(500)
+  })
+
+  it('returns valid message when unknown error type thrown', async () => {
+    const response = await testError('/testing-custom-error-2', customError)
+    expect(response.body.message).toBe('Failed to send email')
   })
 })
