@@ -3,9 +3,10 @@ const cors = require('cors')
 const multer = require('multer')
 const express = require('express')
 const mongoose = require('mongoose')
+const { MyServer } = require('./myserver')
 
 // Init express
-const app = express()
+const app = MyServer()
 
 // Init body-parser
 app.use(express.json())
@@ -81,6 +82,10 @@ app.get('/', (req, res) => {
 app.use('/api/v1/auth', authRoutes.router)
 app.use('/api/v1/users', userRoutes.router)
 app.use('/api/v1', classRoutes.router)
+
+// Middlewares
+const { handleError } = require('./middlewares')
+app.use(handleError)
 
 // Listen to port
 const PORT = process.env.PORT || 5000
