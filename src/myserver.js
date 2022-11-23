@@ -5,12 +5,12 @@ const { isAsyncFunction } = require('util/types')
 const slice = Array.prototype.slice
 
 const handleAsyncFunctionError = (args) => {
-  if (args.length > 1 && isAsyncFunction(args[1])) {
+  if (args.length > 1 && (isAsyncFunction(args[1]) || args[1].constructor.name === 'AsyncFunction')) {
     const newArgs = [
       ...args
     ]
     newArgs[1] = (req, res, next) => {
-      args[1]().catch(err => next(err))
+      args[1](req, res, next).catch(err => next(err))
     }
     return newArgs
   }
