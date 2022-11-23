@@ -1,12 +1,22 @@
-const handleError = async (err, req, res, next) => {
-  const { statusCode, message = 'An error occured' } = err
-  const msg = message.replace(/['"]+/g, '')
+const { ResponseError } = require('../errors')
 
-  res.status(statusCode).json({
-    status: false,
-    message: msg,
-    statusCode
-  })
+const handleError = async (err, req, res, next) => {
+  if (err instanceof ResponseError) {
+    const { statusCode, message = 'An error occured' } = err
+    const msg = message.replace(/['"]+/g, '')
+
+    res.status(statusCode).json({
+      status: false,
+      message: msg,
+      statusCode
+    })
+  } else {
+    res.status(500).json({
+      status: false,
+      message: err.message || '',
+      statusCode: 500
+    })
+  }
 }
 
 module.exports = {
