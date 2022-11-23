@@ -53,10 +53,12 @@ const multerMid = multer({
 })
 
 // Connect to mongodb
-mongoose.connect(process.env.DATABASE_URL, {
-  useNewURLParser: true,
-  useUnifiedTopology: true
-}).then(console.log('connected to db')).catch((err) => console.log(err))
+if (process.env.NODE_ENV !== 'test') {
+  mongoose.connect(process.env.DATABASE_URL, {
+    useNewURLParser: true,
+    useUnifiedTopology: true
+  }).then(console.log('connected to db')).catch((err) => console.log(err))
+}
 
 // Use multer middleware single file
 app.use(multerMid.array('files', 10))
@@ -83,3 +85,7 @@ app.use('/api/v1', classRoutes.router)
 // Listen to port
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+
+module.exports = {
+  app
+}
