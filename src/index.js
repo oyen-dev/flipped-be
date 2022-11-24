@@ -3,9 +3,10 @@ const cors = require('cors')
 const multer = require('multer')
 const express = require('express')
 const mongoose = require('mongoose')
+const { MyServer } = require('./myserver')
 
 // Init express
-const app = express()
+const app = MyServer()
 
 // Init body-parser
 app.use(express.json())
@@ -53,22 +54,15 @@ const multerMid = multer({
 })
 
 // Connect to mongodb
-mongoose.connect(process.env.DATABASE_URL, {
-  useNewURLParser: true,
-  useUnifiedTopology: true
-}).then(console.log('connected to db')).catch((err) => console.log(err))
+if (process.env.NODE_ENV !== 'test') {
+  mongoose.connect(process.env.DATABASE_URL, {
+    useNewURLParser: true,
+    useUnifiedTopology: true
+  }).then(console.log('connected to db')).catch((err) => console.log(err))
+}
 
 // Use multer middleware single file
 app.use(multerMid.array('files', 10))
-
-// Catch error when file is too large
-app.use((err, req, res, next) => {
-  if (err instanceof multer.MulterError) {
-    const payload = response.fail(400, 'File is too large, max size is 10mb')
-
-    return res.status(400).json(payload)
-  }
-})
 
 // Simple route
 app.get('/', (req, res) => {
@@ -80,6 +74,14 @@ app.use('/api/v1/auth', authRoutes.router)
 app.use('/api/v1/users', userRoutes.router)
 app.use('/api/v1', classRoutes.router)
 
+// Middlewares
+const { handleError } = require('./middlewares')
+app.use(handleError)
+
 // Listen to port
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+
+module.exports = {
+  app
+}

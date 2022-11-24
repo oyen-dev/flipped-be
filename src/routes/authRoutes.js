@@ -1,8 +1,8 @@
-const express = require('express')
+const { MyRouter } = require('../myserver')
 
 class AuthRoutes {
   constructor (authContoller) {
-    this.router = express.Router()
+    this.router = MyRouter()
     this._authController = authContoller
 
     this.router.post('/register', this._authController.register)
