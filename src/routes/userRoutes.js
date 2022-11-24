@@ -1,8 +1,8 @@
-const express = require('express')
+const { MyRouter } = require('../myserver')
 
 class UserRoutes {
   constructor (userController) {
-    this.router = express.Router()
+    this.router = MyRouter()
     this._userController = userController
 
     // Universal

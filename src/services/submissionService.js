@@ -33,6 +33,10 @@ class SubmissionService {
     return false
   }
 
+  async getSubmissionByTaskAndStudentFull (taskId, studentId) {
+    return await tSubmission.findOne({ taskId, studentId })
+  }
+
   async getSubmissionDetail (taskId, studentId) {
     const submission = await tSubmission.findOne({ taskId, studentId })
       .populate([
@@ -43,6 +47,12 @@ class SubmissionService {
       .exec()
 
     return submission
+  }
+
+  async getSubmissionsByTaskId (taskId) {
+    return await tSubmission.find({ taskId })
+      .select('_id studentId updatedAt reaction points')
+      .exec()
   }
 }
 

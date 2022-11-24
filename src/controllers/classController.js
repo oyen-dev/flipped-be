@@ -1,4 +1,5 @@
 const { ClientError } = require('../errors')
+const { bindAll } = require('../utils/classBinder')
 
 class ClassController {
   constructor (classService, userService, gradeService, storageService, validator, tokenize, response) {
@@ -11,149 +12,124 @@ class ClassController {
     this._tokenize = tokenize
     this._response = response
 
-    this.addClass = this.addClass.bind(this)
-    this.getClasses = this.getClasses.bind(this)
-    this.getClass = this.getClass.bind(this)
-    this.archiveClass = this.archiveClass.bind(this)
-    this.deleteClass = this.deleteClass.bind(this)
-    this.joinClass = this.joinClass.bind(this)
-
-    this.getClassStudents = this.getClassStudents.bind(this)
-    this.getClassEvaluations = this.getClassEvaluations.bind(this)
-    this.getClassTasks = this.getClassTasks.bind(this)
+    bindAll(this)
   }
 
   async addClass (req, res) {
     const payload = req.body
     const token = req.headers.authorization
 
-    try {
-      // Check token is exist
-      if (!token) throw new ClientError('Unauthorized', 401)
+    // Check token is exist
+    if (!token) throw new ClientError('Unauthorized', 401)
 
-      // Validate token
-      const { _id } = await this._tokenize.verify(token)
+    // Validate token
+    const { _id } = await this._tokenize.verify(token)
 
-      // Find user
-      const user = await this._userService.findUserById(_id)
-      if (!user) throw new ClientError('Unauthorized', 401)
+    // Find user
+    const user = await this._userService.findUserById(_id)
+    if (!user) throw new ClientError('Unauthorized', 401)
 
-      // Make sure user is ADMIN or TEACHER
-      if (user.role !== 'ADMIN' && user.role !== 'TEACHER') throw new ClientError('Unauthorized', 401)
+    // Make sure user is ADMIN or TEACHER
+    if (user.role !== 'ADMIN' && user.role !== 'TEACHER') throw new ClientError('Unauthorized', 401)
 
-      // Validate payload
-      this._validator.validateAddClass(payload)
+    // Validate payload
+    this._validator.validateAddClass(payload)
 
-      // Destructure payload
-      const { name, teachers, schedule, grade } = payload
+    // Destructure payload
+    const { name, teachers, schedule, grade } = payload
 
-      // Make array of schedule
-      const scheduleArray = schedule.map((item) => {
-        return {
-          start: new Date(item.start),
-          end: new Date(item.end)
-        }
-      })
-
-      // Remove duplicate teachers
-      const uniqueTeachers = [...new Set(teachers)]
-
-      // Validate teacherId inside teachers array
-      for (let i = 0; i < uniqueTeachers.length; i++) {
-        const teacher = await this._userService.findUserById(teachers[i])
-        if (!teacher) throw new ClientError('Teacher not found', 404)
-        if (teacher.role !== 'TEACHER') throw new ClientError('Teacher not found', 404)
+    // Make array of schedule
+    const scheduleArray = schedule.map((item) => {
+      return {
+        start: new Date(item.start),
+        end: new Date(item.end)
       }
+    })
 
-      // Verify grade is exist
-      let gradeId = await this._gradeService.getGradeByName(grade)
-      if (!gradeId) gradeId = await this._gradeService.addGrade(grade)
+    // Remove duplicate teachers
+    const uniqueTeachers = [...new Set(teachers)]
 
-      // Add class
-      const classObj = {
-        teachers: [...uniqueTeachers],
-        schedule: [...scheduleArray],
-        name,
-        gradeId: gradeId._id
-      }
-      const newClass = await this._classService.addClass(classObj)
-
-      // Return response
-      const data = {
-        _id: newClass._id,
-        name: newClass.name,
-        invitationCode: newClass.invitationCode
-      }
-      const response = this._response.success(200, 'Add class success!', data)
-
-      return res.status(response.statsCode || 200).json(response)
-    } catch (error) {
-      // To do logger error
-      console.log(error)
-      return this._response.error(res, error)
+    // Validate teacherId inside teachers array
+    for (let i = 0; i < uniqueTeachers.length; i++) {
+      const teacher = await this._userService.findUserById(teachers[i])
+      if (!teacher) throw new ClientError('Teacher not found', 404)
+      if (teacher.role !== 'TEACHER') throw new ClientError('Teacher not found', 404)
     }
+
+    // Verify grade is exist
+    let gradeId = await this._gradeService.getGradeByName(grade)
+    if (!gradeId) gradeId = await this._gradeService.addGrade(grade)
+
+    // Add class
+    const classObj = {
+      teachers: [...uniqueTeachers],
+      schedule: [...scheduleArray],
+      name,
+      gradeId: gradeId._id
+    }
+    const newClass = await this._classService.addClass(classObj)
+
+    // Return response
+    const data = {
+      _id: newClass._id,
+      name: newClass.name,
+      invitationCode: newClass.invitationCode
+    }
+    const response = this._response.success(200, 'Add class success!', data)
+
+    return res.status(response.statsCode || 200).json(response)
   }
 
   async getClasses (req, res) {
     const token = req.headers.authorization
     const query = req.query
 
-    try {
-      // Check token is exist
-      if (!token) throw new ClientError('Unauthorized', 401)
+    // Check token is exist
+    if (!token) throw new ClientError('Unauthorized', 401)
 
-      // Validate token
-      await this._tokenize.verify(token)
+    // Validate token
+    await this._tokenize.verify(token)
 
-      // Validate payload
-      this._validator.validateGetClasses(query)
+    // Validate payload
+    this._validator.validateGetClasses(query)
 
-      // Get class
-      const classData = await this._classService.getClasses(query)
-      const { page, limit } = query
-      const { classes, count } = classData
-      const meta = {
-        count,
-        limit,
-        page,
-        totalPages: Math.ceil(count / limit)
-      }
-
-      // Response
-      const response = this._response.success(200, 'Get class success!', classes, meta)
-
-      return res.status(200).json(response)
-    } catch (error) {
-      console.log(error)
-      return this._response.error(res, error)
+    // Get class
+    const classData = await this._classService.getClasses(query)
+    const { page, limit } = query
+    const { classes, count } = classData
+    const meta = {
+      count,
+      limit,
+      page,
+      totalPages: Math.ceil(count / limit)
     }
+
+    // Response
+    const response = this._response.success(200, 'Get class success!', classes, meta)
+
+    return res.status(200).json(response)
   }
 
   async getClass (req, res) {
     const token = req.headers.authorization
     const id = req.params.id
 
-    try {
-      // Check token is exist
-      if (!token) throw new ClientError('Unauthorized', 401)
+    // Check token is exist
+    if (!token) throw new ClientError('Unauthorized', 401)
 
-      // Validate token
-      await this._tokenize.verify(token)
+    // Validate token
+    await this._tokenize.verify(token)
 
-      // Validate payload
-      this._validator.validateGetClass({ id })
+    // Validate payload
+    this._validator.validateGetClass({ id })
 
-      // Get class
-      const classDetail = await this._classService.getClass(id)
+    // Get class
+    const classDetail = await this._classService.getClass(id)
 
-      // Response
-      const response = this._response.success(200, 'Get class success!', classDetail)
+    // Response
+    const response = this._response.success(200, 'Get class success!', classDetail)
 
-      return res.status(response.statsCode || 200).json(response)
-    } catch (error) {
-      console.log(error)
-      return this._response.error(res, error)
-    }
+    return res.status(response.statsCode || 200).json(response)
   }
 
   async getClassTasks (req, res) {
@@ -264,74 +240,64 @@ class ClassController {
     const token = req.headers.authorization
     const payload = req.body
 
-    try {
-      // Check token is exist
-      if (!token) throw new ClientError('Unauthorized', 401)
+    // Check token is exist
+    if (!token) throw new ClientError('Unauthorized', 401)
 
-      // Validate token
-      const { _id } = await this._tokenize.verify(token)
+    // Validate token
+    const { _id } = await this._tokenize.verify(token)
 
-      // Find user
-      const user = await this._userService.findUserById(_id)
-      if (!user) throw new ClientError('Unauthorized', 401)
+    // Find user
+    const user = await this._userService.findUserById(_id)
+    if (!user) throw new ClientError('Unauthorized', 401)
 
-      // Make sure user is ADMIN or TEACHER
-      if (user.role !== 'ADMIN' && user.role !== 'TEACHER') throw new ClientError('Unauthorized', 401)
+    // Make sure user is ADMIN or TEACHER
+    if (user.role !== 'ADMIN' && user.role !== 'TEACHER') throw new ClientError('Unauthorized', 401)
 
-      // Validate payload
-      this._validator.validateArchiveClass(payload)
+    // Validate payload
+    this._validator.validateArchiveClass(payload)
 
-      // Destructure payload
-      const { id, archive } = payload
+    // Destructure payload
+    const { id, archive } = payload
 
-      // Archive class
-      await this._classService.archiveClass(id, archive)
+    // Archive class
+    await this._classService.archiveClass(id, archive)
 
-      // Response
-      const response = this._response.success(200, `${archive ? 'Archive' : 'Restore'} class success!`)
+    // Response
+    const response = this._response.success(200, `${archive ? 'Archive' : 'Restore'} class success!`)
 
-      return res.status(response.statsCode || 200).json(response)
-    } catch (error) {
-      console.log(error)
-      return this._response.error(res, error)
-    }
+    return res.status(response.statsCode || 200).json(response)
   }
 
   async deleteClass (req, res) {
     const token = req.headers.authorization
     const payload = req.body
 
-    try {
-      // Check token is exist
-      if (!token) throw new ClientError('Unauthorized', 401)
+    // Check token is exist
+    if (!token) throw new ClientError('Unauthorized', 401)
 
-      // Validate token
-      const { _id } = await this._tokenize.verify(token)
+    // Validate token
+    const { _id } = await this._tokenize.verify(token)
 
-      // Find user
-      const user = await this._userService.findUserById(_id)
-      if (!user) throw new ClientError('Unauthorized', 401)
+    // Find user
+    const user = await this._userService.findUserById(_id)
+    if (!user) throw new ClientError('Unauthorized', 401)
 
-      // Make sure user is ADMIN or TEACHER
-      if (user.role !== 'ADMIN' && user.role !== 'TEACHER') throw new ClientError('Unauthorized', 401)
+    // Make sure user is ADMIN or TEACHER
+    if (user.role !== 'ADMIN' && user.role !== 'TEACHER') throw new ClientError('Unauthorized', 401)
 
-      // Validate payload
-      this._validator.validateDeleteClass(payload)
+    // Validate payload
+    this._validator.validateDeleteClass(payload)
 
-      // Destructure payload
-      const { id, deleted } = payload
+    // Destructure payload
+    const { id, deleted } = payload
 
-      // Delete class
-      await this._classService.deleteClass(id, deleted)
+    // Delete class
+    await this._classService.deleteClass(id, deleted)
 
-      // Response
-      const response = this._response.success(200, `${deleted ? 'Delete' : 'Restore'} class success!`)
+    // Response
+    const response = this._response.success(200, `${deleted ? 'Delete' : 'Restore'} class success!`)
 
-      return res.status(response.statsCode || 200).json(response)
-    } catch (error) {
-      console.log(error)
-      return this._response.error(res, error)
-    }
+    return res.status(response.statsCode || 200).json(response)
   }
 
   async joinClass (req, res) {

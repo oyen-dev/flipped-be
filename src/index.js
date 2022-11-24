@@ -3,10 +3,11 @@ const cors = require('cors')
 const multer = require('multer')
 const express = require('express')
 const mongoose = require('mongoose')
+const { MyServer } = require('./myserver')
 const { Websocket } = require('./websocket')
 
 // Init express
-const app = express()
+const app = MyServer()
 const server = require('http').createServer(app)
 
 // Init socket.io
@@ -136,6 +137,10 @@ app.use('/api/v1/attachment', attachmentRoutes.router)
 // Websocket connection
 // eslint-disable-next-line no-unused-vars
 const ws = new Websocket(io, socketController)
+
+// Middlewares
+const { handleError } = require('./middlewares')
+app.use(handleError)
 
 // Listen to port
 const PORT = process.env.PORT || 5000
