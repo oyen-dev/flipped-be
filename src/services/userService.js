@@ -114,12 +114,11 @@ class UserService {
     }
   }
 
-  async getUser (type, id) {
+  async getUser (id) {
     const user = await User.findOne({
       _id: id,
       isDeleted: false,
-      isActivated: true,
-      role: type
+      isActivated: true
     }).select('_id email fullName gender dateOfBirth placeOfBirth role address phone picture')
     if (!user) throw new ClientError('User not found', 404)
 
@@ -132,7 +131,41 @@ class UserService {
       .split(' ')
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ')
-  };
+  }
+
+  async getLogs (userId) {
+    const logs = await User.findOne({ _id: userId })
+      .populate({ path: 'logs', select: '_id action at' })
+      .select('logs')
+      .exec()
+
+    return logs
+  }
+
+  async getStatistic () {
+    // Get total users with role "TEACHER" and isActivated = true and isDeleted = false
+    const totalTeachers = await User.countDocuments({
+      role: 'TEACHER',
+      isActivated: true,
+      isDeleted: false
+    })
+
+    // Get total users with role "STUDENT" and isActivated = true and isDeleted = false
+    const totalStudents = await User.countDocuments({
+      role: 'STUDENT',
+      isActivated: true,
+      isDeleted: false
+    })
+
+    // Count ratio of total teachers and total students
+    const ratio = Math.ceil(totalStudents / totalTeachers)
+
+    return {
+      totalTeachers,
+      totalStudents,
+      ratio
+    }
+  }
 }
 
 module.exports = {

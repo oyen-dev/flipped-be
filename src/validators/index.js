@@ -15,7 +15,15 @@ const {
   getClassesSchema,
   getClassSchema,
   archiveClassSchema,
-  deleteClassSchema
+  deleteClassSchema,
+  joinClassSchema,
+  uploadAttachmentSchema,
+  createPostSchema,
+  getClassPostSchema,
+  updatePostSchema,
+  deleteClassPostSchema,
+  getAttachmentSchema,
+  createSubmissionSchema
 } = require('./schema')
 
 class Validator {
@@ -100,6 +108,46 @@ class Validator {
 
   validateDeleteClass (payload) {
     const { error } = deleteClassSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateJoinClass (payload) {
+    const { error } = joinClassSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateUploadAttachment (payload) {
+    const { error } = uploadAttachmentSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateCreatePost (payload) {
+    const { error } = createPostSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateGetClassPost (payload) {
+    const { error } = getClassPostSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateUpdatePost (payload) {
+    const { error } = updatePostSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateDeleteClassPost (payload) {
+    const { error } = deleteClassPostSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateGetAttachment (payload) {
+    const { error } = getAttachmentSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateCreateSubmission (payload) {
+    const { error } = createSubmissionSchema.validate(payload)
     if (error) throw new ClientError(error.message, 400)
   }
 }

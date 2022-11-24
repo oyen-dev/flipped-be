@@ -16,7 +16,6 @@ const classSchema = new Schema({
   invitationCode: { type: String, default: () => nanoid(5) },
   posts: [{ type: Schema.Types.String, ref: 'posts' }],
   evaluations: [{ type: Schema.Types.String, ref: 'evaluations' }],
-  presence: { type: Boolean, default: false },
   presences: [{ type: Schema.Types.String, ref: 'presences' }],
   createdAt: { type: Date, default: new Date() },
   updatedAt: { type: Date, default: new Date() }

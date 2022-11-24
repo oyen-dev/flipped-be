@@ -2,12 +2,12 @@
 module.exports = {
   ...require('./answer'),
   ...require('./attachment'),
-  ...require('./attendance'),
   ...require('./class'),
   ...require('./eSubmission'),
   ...require('./evaluation'),
   ...require('./grade'),
   ...require('./log'),
+  ...require('./onlineUser'),
   ...require('./post'),
   ...require('./presence'),
   ...require('./question'),
@@ -15,5 +15,6 @@ module.exports = {
   ...require('./tSubmission'),
   ...require('./token'),
   ...require('./tSubmission'),
-  ...require('./user')
+  ...require('./user'),
+  ...require('./studentPresences')
 }
