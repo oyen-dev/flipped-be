@@ -14,6 +14,10 @@ const tSubmissionSchema = new Schema({
   updatedAt: { type: Date, default: new Date() }
 })
 
+// Add index text to name
+tSubmissionSchema.index({ taskId: 'text' })
+tSubmissionSchema.index({ studentId: 'text' })
+
 // Create model
 const tSubmission = model('tsubmissions', tSubmissionSchema)
 

@@ -51,7 +51,7 @@ class SubmissionService {
 
   async getSubmissionsByTaskId (taskId) {
     return await tSubmission.find({ taskId })
-      .select('_id studentId createdAt reaction points')
+      .select('_id studentId updatedAt reaction points')
       .exec()
   }
 }
