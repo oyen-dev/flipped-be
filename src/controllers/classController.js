@@ -1,4 +1,5 @@
 const { ClientError } = require('../errors')
+const { bindAll } = require('../utils/classBinder')
 
 class ClassController {
   constructor (classService, userService, gradeService, storageService, validator, tokenize, response) {
@@ -11,11 +12,7 @@ class ClassController {
     this._tokenize = tokenize
     this._response = response
 
-    this.addClass = this.addClass.bind(this)
-    this.getClasses = this.getClasses.bind(this)
-    this.getClass = this.getClass.bind(this)
-    this.archiveClass = this.archiveClass.bind(this)
-    this.deleteClass = this.deleteClass.bind(this)
+    bindAll(this)
   }
 
   async addClass (req, res) {
