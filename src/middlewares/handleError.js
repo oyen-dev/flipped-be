@@ -10,7 +10,11 @@ const getErrorPayload = (statusCode, message) => ({
 const handleError = async (err, req, res, next) => {
   if (err instanceof ResponseError) {
     const { statusCode, message = 'An error occured' } = err
-    const msg = message.replace(/['"]+/g, '')
+
+    let msg
+    if (typeof (message) === 'string') { msg = message.replace(/['"]+/g, '') } else {
+      msg = message
+    }
 
     res.status(statusCode).json(getErrorPayload(statusCode, msg))
   } else if (err instanceof multer.MulterError) {
