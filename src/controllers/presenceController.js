@@ -9,7 +9,7 @@ class PresenceController {
   }
 
   async getPresences (req, res) {
-    const classroom = await this.classService.getClass(req.params.classid)
+    const classroom = await this.classService.getClass(req.params.classId)
     res.send('')
   }
 }
