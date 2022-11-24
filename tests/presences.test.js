@@ -102,5 +102,12 @@ describe('Presence Route', () => {
 
       expect(res.statusCode).toEqual(404)
     })
+
+    it('returns status code 200 when class exist', async () => {
+      const res = await request(app)
+        .get(`/api/v1/class/${sampleClass._id}/presences`)
+        .set('Authorization', 'Bearer ' + await createTeacherTokenFromClass(sampleClass))
+      expect(res.statusCode).toEqual(200)
+    })
   })
 })
