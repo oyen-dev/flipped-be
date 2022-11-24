@@ -95,7 +95,7 @@ describe('Presence Route', () => {
       expect(res.statusCode).toEqual(403)
     })
 
-    it('returns status code 404 when class id is not exists', async () => {
+    it("returns status code 404 when class id doesn't exists", async () => {
       const res = await request(app)
         .get('/api/v1/class/random-class-id/presences')
         .set('Authorization', 'Bearer ' + await createTeacherTokenFromClass(sampleClass))
