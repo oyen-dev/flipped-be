@@ -85,7 +85,7 @@ const classController = new ClassController(classService, userService, gradeServ
 const socketController = new SocketController(onlineUserService, logService)
 const attachmentController = new AttachmentController(attachmentService, storageService, userService, validator, tokenize, response)
 const postController = new PostController(classService, userService, postService, taskService, submissionService, attachmentService, storageService, validator, tokenize, response)
-const presenceController = new PresenceController(presenceService, classService)
+const presenceController = new PresenceController(presenceService, classService, response)
 
 // Routes
 const { AuthRoutes, UserRoutes, ClassRoutes, AttachmentRoutes, PresenceRoutes } = require('./routes')

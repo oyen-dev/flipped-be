@@ -110,4 +110,22 @@ describe('Presence Route', () => {
       expect(res.statusCode).toEqual(200)
     })
   })
+
+  describe('POST /', () => {
+    it('returns status code 401 error when no user authenticated', async () => {
+      const res = await request(app)
+        .post(`/api/v1/class/${sampleClass._id}/presences`)
+
+      expect(res.statusCode).toEqual(401)
+    })
+
+    it('returns status code 403 when authenticated user neither admin nor teacher', async () => {
+      const studentToken = await createStudentToken()
+      const res = await request(app)
+        .post(`/api/v1/class/${sampleClass._id}/presences`)
+        .set('Authorization', 'Bearer ' + studentToken)
+
+      expect(res.statusCode).toEqual(403)
+    })
+  })
 })
