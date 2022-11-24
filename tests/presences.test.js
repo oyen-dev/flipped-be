@@ -3,6 +3,7 @@ const { app } = require('../src')
 const { ClassService, GradeService, UserService } = require('../src/services')
 const { Tokenize } = require('../src/utils')
 const db = require('./database')
+const { cleanStringify } = require('./extension')
 
 describe('Presence Route', () => {
   const sampleClassData = {
@@ -44,6 +45,15 @@ describe('Presence Route', () => {
       teachers: [teacher._id]
     }
     return await classService.addClass(classData)
+  }
+
+  const presenceData = {
+    start: '2020-09-10 08:00:00',
+    end: '2020-09-10 10:00:00'
+  }
+  const anotherPresenceData = {
+    start: '2020-09-19 10:00:00',
+    end: '2020-09-20 12:00:00'
   }
 
   const createSampleStudent = async () => {
@@ -126,6 +136,40 @@ describe('Presence Route', () => {
         .set('Authorization', 'Bearer ' + studentToken)
 
       expect(res.statusCode).toEqual(403)
+    })
+
+    it("returns 400 and error message when 'start' request body is not valid date", async () => {
+      const res = await request(app)
+        .post(`/api/v1/class/${sampleClass._id}/presences`)
+        .set('Authorization', 'Bearer ' + await createTeacherTokenFromClass(sampleClass))
+        .send({
+          ...presenceData,
+          start: ''
+        })
+
+      expect(res.statusCode).toEqual(400)
+      expect(cleanStringify(res.body.message)).toContain('"start" must be a valid date')
+    })
+
+    it("returns 400 and error message when 'end' request body is not valid date", async () => {
+      const res = await request(app)
+        .post(`/api/v1/class/${sampleClass._id}/presences`)
+        .set('Authorization', 'Bearer ' + await createTeacherTokenFromClass(sampleClass))
+        .send({
+          ...presenceData,
+          end: ''
+        })
+
+      expect(res.statusCode).toEqual(400)
+      expect(cleanStringify(res.body.message)).toContain('"end" must be a valid date')
+    })
+
+    it.skip('returns status code 201 when new presence created', async () => {
+      const res = await request(app)
+        .post(`/api/v1/class/${sampleClass._id}/presences`)
+        .set('Authorization', 'Bearer ' + await createTeacherTokenFromClass(sampleClass))
+
+      expect(res.statusCode).toEqual(201)
     })
   })
 })

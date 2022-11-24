@@ -1,10 +1,11 @@
 const { bindAll } = require('../utils/classBinder')
 
 class PresenceController {
-  constructor (presenceService, classService, response) {
+  constructor (presenceService, classService, validator, response) {
     this.presenceService = presenceService
     this.classService = classService
     this.response = response
+    this.validator = validator
 
     bindAll(this)
   }
@@ -15,7 +16,10 @@ class PresenceController {
   }
 
   async addPresence (req, res) {
-    res.send('')
+    const payload = req.body
+    this.validator.validateAddPresence(payload)
+
+    res.status(201).send('')
   }
 }
 
