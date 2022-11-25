@@ -35,7 +35,8 @@ const {
   AttachmentService,
   PostService,
   TaskService,
-  SubmissionService
+  SubmissionService,
+  PresenceService
 } = require('./services')
 const userService = new UserService()
 const authService = new AuthService()
@@ -49,16 +50,23 @@ const attachmentService = new AttachmentService()
 const postService = new PostService()
 const taskService = new TaskService()
 const submissionService = new SubmissionService()
+const presenceService = new PresenceService()
 
 // Validator
-const { Validator } = require('./validators')
+const { Validator, PresenceValidator } = require('./validators')
 const validator = new Validator()
+const presenceValidator = new PresenceValidator()
 
 // Utils
 const { Response, HashPassword, Tokenize } = require('./utils')
 const response = new Response()
 const hashPassword = new HashPassword()
 const tokenize = new Tokenize()
+
+// Middlewares
+const { getTokenVerifier, getNeedRolesFunc } = require('./middlewares')
+const verifyToken = getTokenVerifier(userService, tokenize, response)
+const needRoles = getNeedRolesFunc(response)
 
 // Controllers
 const {
@@ -67,7 +75,8 @@ const {
   ClassController,
   SocketController,
   AttachmentController,
-  PostController
+  PostController,
+  PresenceController
 } = require('./controllers')
 const authController = new AuthController(authService, userService, mailService, validator, hashPassword, tokenize, response)
 const userController = new UserController(userService, classService, authService, storageService, mailService, validator, hashPassword, tokenize, response)
@@ -75,13 +84,15 @@ const classController = new ClassController(classService, userService, gradeServ
 const socketController = new SocketController(onlineUserService, logService)
 const attachmentController = new AttachmentController(attachmentService, storageService, userService, validator, tokenize, response)
 const postController = new PostController(classService, userService, postService, taskService, submissionService, attachmentService, storageService, validator, tokenize, response)
+const presenceController = new PresenceController(presenceService, classService, presenceValidator, response)
 
 // Routes
-const { AuthRoutes, UserRoutes, ClassRoutes, AttachmentRoutes } = require('./routes')
+const { AuthRoutes, UserRoutes, ClassRoutes, AttachmentRoutes, PresenceRoutes } = require('./routes')
 const authRoutes = new AuthRoutes(authController)
 const userRoutes = new UserRoutes(userController)
 const attachmentRoutes = new AttachmentRoutes(attachmentController)
-const classRoutes = new ClassRoutes(classController, postController)
+const presenceRoutes = new PresenceRoutes(verifyToken, needRoles, presenceController)
+const classRoutes = new ClassRoutes(classController, postController, presenceRoutes)
 
 // Multer middleware
 const multerMid = multer({
