@@ -2,17 +2,17 @@ const { bindAll } = require('../utils/classBinder')
 const { Presence } = require('../models')
 
 class PresenceService {
-  constructor(classService) {
+  constructor (classService) {
     this.classService = classService
 
     bindAll(this)
   }
 
-  getAllPresences(classroom) {
+  getAllPresences (classroom) {
     return classroom.presences.sort((a, b) => new Date(b.end).getTime() - new Date(a.end).getTime())
   }
 
-  async addPresence(payload, classroom) {
+  async addPresence (payload, classroom) {
     const presence = await Presence.create({
       ...payload,
       studentPresences: []
@@ -31,7 +31,7 @@ class PresenceService {
     return presence
   }
 
-  filterCurrentPresence(presences) {
+  filterCurrentPresence (presences) {
     const now = new Date()
     return presences.find((presence) => new Date(presence.end).getTime() > now.getTime()) || null
   }
