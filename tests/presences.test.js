@@ -75,6 +75,8 @@ describe('Presence Route', () => {
     return await createTokenFromExistingUser(classroom.teachers[0])
   }
 
+  const isoDate = (datestring) => new Date(datestring).toISOString()
+
   beforeAll(async () => {
     classService = new ClassService()
     gradeService = new GradeService()
@@ -113,17 +115,38 @@ describe('Presence Route', () => {
       expect(res.statusCode).toEqual(404)
     })
 
-    it('returns status code 200 when class exist', async () => {
+    it('returns status code 200', async () => {
       const res = await request(app)
         .get(`/api/v1/class/${sampleClass._id}/presences`)
         .set('Authorization', 'Bearer ' + await createTeacherTokenFromClass(sampleClass))
       expect(res.statusCode).toEqual(200)
     })
+
+    it('returns all presences in the class sorted by end time', async () => {
+      const token = await createTeacherTokenFromClass(sampleClass)
+      await request(app)
+        .post(`/api/v1/class/${sampleClass._id}/presences`)
+        .set('Authorization', 'Bearer ' + token)
+        .send(anotherPresenceData)
+      await request(app)
+        .post(`/api/v1/class/${sampleClass._id}/presences`)
+        .set('Authorization', 'Bearer ' + token)
+        .send(presenceData)
+
+      const res = await request(app)
+        .get(`/api/v1/class/${sampleClass._id}/presences`)
+        .set('Authorization', 'Bearer ' + token)
+
+      const presences = res.body.data
+
+      expect(presences[0].start).toEqual(isoDate(anotherPresenceData.start))
+      expect(presences[0].end).toEqual(isoDate(anotherPresenceData.end))
+      expect(presences[1].start).toEqual(isoDate(presenceData.start))
+      expect(presences[1].end).toEqual(isoDate(presenceData.end))
+    })
   })
 
   describe('POST /', () => {
-    const isoDate = (datestring) => new Date(datestring).toISOString()
-
     it('returns status code 401 error when no user authenticated', async () => {
       const res = await request(app)
         .post(`/api/v1/class/${sampleClass._id}/presences`)

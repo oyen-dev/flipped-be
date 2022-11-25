@@ -5,7 +5,7 @@ const { GradeService } = require('../../src/services/gradeService.js')
 const { PresenceService } = require('../../src/services/presenceService.js')
 const { UserService } = require('../../src/services/userService.js')
 const { connectDatabase, clearDatabase, disconnectDatabase } = require('../database.js')
-const { createSampleClass, presenceData } = require('../presences.test.js')
+const { createSampleClass, presenceData, anotherPresenceData } = require('../presences.test.js')
 
 describe('presenceService', () => {
   const now = new Date()
@@ -56,6 +56,8 @@ describe('presenceService', () => {
 
   let sampleClass
 
+  const toDate = (dateString) => new Date(dateString)
+
   beforeAll(async () => {
     classService = new ClassService()
     presenceService = new PresenceService(classService)
@@ -94,8 +96,6 @@ describe('presenceService', () => {
   })
 
   describe('addPresence', () => {
-    const toDate = (dateString) => new Date(dateString)
-
     it('returns a new presence with id', async () => {
       const presence = await presenceService.addPresence(presenceData, sampleClass)
 
@@ -122,6 +122,21 @@ describe('presenceService', () => {
       const classroom = await Class.findById(sampleClass._id)
 
       expect(classroom.presences).toContain(result._id)
+    })
+  })
+
+  describe('getAllPresences', () => {
+    it('returns valid array of presence sorted by end time', async () => {
+      await presenceService.addPresence(anotherPresenceData, sampleClass)
+      let newClass = await classService.getClass(sampleClass._id)
+      await presenceService.addPresence(presenceData, newClass)
+      newClass = await classService.getClass(sampleClass._id)
+
+      const presences = presenceService.getAllPresences(newClass)
+      expect(presences[0].start).toEqual(toDate(anotherPresenceData.start))
+      expect(presences[0].end).toEqual(toDate(anotherPresenceData.end))
+      expect(presences[1].start).toEqual(toDate(presenceData.start))
+      expect(presences[1].end).toEqual(toDate(presenceData.end))
     })
   })
 })

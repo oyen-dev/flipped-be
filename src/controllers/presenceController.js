@@ -13,7 +13,10 @@ class PresenceController {
 
   async getPresences (req, res) {
     const classroom = await this.classService.getClass(req.params.classId)
-    res.send('')
+    const presences = this.presenceService.getAllPresences(classroom)
+    res.json(
+      this.response.success(200, 'Get all presences success', presences)
+    )
   }
 
   async addPresence (req, res) {
