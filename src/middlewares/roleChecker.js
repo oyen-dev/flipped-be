@@ -1,34 +1,25 @@
-const { ClientError } = require('../errors')
+const { UnauthorizedError, ForbiddenError } = require('../errors')
 
 const getNeedRolesFunc = (responder) => (roles) => (req, res, next) => {
-  const throwForbidden = () => {
-    throw new ClientError('Forbidden', 403)
-  }
+  if (!req.user) throw new UnauthorizedError()
 
-  try {
-    if (!req.user) throw new ClientError('Unauthorized', 401)
+  const userRole = req.user.role.toLowerCase()
 
-    const userRole = req.user.role.toLowerCase()
-
-    if (typeof (roles) === 'string') {
-      if (roles.toLowerCase() !== userRole) {
-        throwForbidden()
-      }
-      next()
-    } else if (Array.isArray(roles)) {
-      for (const role of roles) {
-        if (role.toLowerCase() === userRole) {
-          next()
-          return
-        }
-      }
-      throwForbidden()
-    } else {
-      throwForbidden()
+  if (typeof (roles) === 'string') {
+    if (roles.toLowerCase() !== userRole) {
+      throw new ForbiddenError()
     }
-  } catch (error) {
-    console.log(error)
-    responder.error(res, error)
+    next()
+  } else if (Array.isArray(roles)) {
+    for (const role of roles) {
+      if (role.toLowerCase() === userRole) {
+        next()
+        return
+      }
+    }
+    throw new ForbiddenError()
+  } else {
+    throw new ForbiddenError()
   }
 }
 

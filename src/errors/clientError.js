@@ -20,6 +20,12 @@ class UnauthorizedError extends ResponseError {
   }
 }
 
+class ForbiddenError extends ResponseError {
+  constructor (message = 'Forbidden') {
+    super(message, 403)
+  }
+}
+
 class DocumentNotFoundError extends ResponseError {
   constructor (document, id) {
     let documentName
@@ -47,5 +53,6 @@ module.exports = {
   ClientError,
   UnauthorizedError,
   DocumentNotFoundError,
-  InternalServerError
+  InternalServerError,
+  ForbiddenError
 }
