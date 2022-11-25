@@ -1,5 +1,5 @@
 const request = require('supertest')
-const { app } = require('../src')
+const { app } = require('../src/app')
 const { ClassService, GradeService, UserService } = require('../src/services')
 const { Tokenize } = require('../src/utils')
 const db = require('./database')
