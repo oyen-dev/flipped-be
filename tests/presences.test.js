@@ -195,6 +195,26 @@ describe('Presence Route', () => {
       expect(data.start).toEqual(isoDate(presenceData.start))
       expect(data.end).toEqual(isoDate(presenceData.end))
     })
+
+    it('returns 409 when there is an opened presence', async () => {
+      const token = await createTeacherTokenFromClass(sampleClass)
+      const currentPresenceData = {
+        start: new Date(),
+        end: new Date().setHours(new Date().getHours() + 1)
+      }
+
+      await request(app)
+        .post(`/api/v1/class/${sampleClass._id}/presences`)
+        .set('Authorization', 'Bearer ' + token)
+        .send(currentPresenceData)
+
+      const res = await request(app)
+        .post(`/api/v1/class/${sampleClass._id}/presences`)
+        .set('Authorization', 'Bearer ' + token)
+        .send(presenceData)
+
+      expect(res.statusCode).toEqual(409)
+    })
   })
 })
 

@@ -42,6 +42,12 @@ class DocumentNotFoundError extends ResponseError {
   }
 }
 
+class ConflictError extends ResponseError {
+  constructor (message = 'Conflict') {
+    super(message, 409)
+  }
+}
+
 class InternalServerError extends ResponseError {
   constructor (message) {
     super(message, 500)
@@ -54,5 +60,6 @@ module.exports = {
   UnauthorizedError,
   DocumentNotFoundError,
   InternalServerError,
-  ForbiddenError
+  ForbiddenError,
+  ConflictError
 }

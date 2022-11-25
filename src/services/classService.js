@@ -65,6 +65,7 @@ class ClassService {
     }).populate({ path: 'teachers', select: '_id fullName' })
       // .populate({ path: 'students', select: '_id fullName' })
       .populate({ path: 'gradeId', select: '_id name' })
+      .populate('presences')
       // .populate({
       //   path: 'posts',
       //   select: '_id title description teacherId attachments isTask taskId',
