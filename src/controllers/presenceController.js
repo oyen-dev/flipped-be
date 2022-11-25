@@ -11,7 +11,7 @@ class PresenceController {
     bindAll(this)
   }
 
-  async getPresences (req, res) {
+  async getAllPresences (req, res) {
     const classroom = await this.classService.getClass(req.params.classId)
     const presences = this.presenceService.getAllPresences(classroom)
     res.json(
