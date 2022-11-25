@@ -1,4 +1,11 @@
+const { Class } = require('../../src/models/class.js')
+const { Presence } = require('../../src/models/presence.js')
+const { ClassService } = require('../../src/services/classService.js')
+const { GradeService } = require('../../src/services/gradeService.js')
 const { PresenceService } = require('../../src/services/presenceService.js')
+const { UserService } = require('../../src/services/userService.js')
+const { connectDatabase, clearDatabase, disconnectDatabase } = require('../database.js')
+const { createSampleClass, presenceData } = require('../presences.test.js')
 
 describe('presenceService', () => {
   const now = new Date()
@@ -43,9 +50,30 @@ describe('presenceService', () => {
   ]
 
   let presenceService
+  let classService
+  let userService
+  let gradeService
 
-  beforeEach(() => {
-    presenceService = new PresenceService()
+  let sampleClass
+
+  beforeAll(async () => {
+    classService = new ClassService()
+    presenceService = new PresenceService(classService)
+    userService = new UserService()
+    gradeService = new GradeService()
+    await connectDatabase()
+  })
+
+  beforeEach(async () => {
+    sampleClass = await createSampleClass(gradeService, classService, userService)
+  })
+
+  afterEach(async () => {
+    await clearDatabase()
+  })
+
+  afterAll(async () => {
+    await disconnectDatabase()
   })
 
   describe('getCurrentPresence', () => {
@@ -62,6 +90,38 @@ describe('presenceService', () => {
     it('returns a presence when there is a presence having end time greeter than current time', () => {
       const currentPresence = presenceService.getCurrentPresence(samplePresencesWithOpenedOne)
       expect(currentPresence).not.toBeNull()
+    })
+  })
+
+  describe('addPresence', () => {
+    const toDate = (dateString) => new Date(dateString)
+
+    it('returns a new presence with id', async () => {
+      const presence = await presenceService.addPresence(presenceData, sampleClass)
+
+      expect(presence.start).toEqual(toDate(presenceData.start))
+      expect(presence.end).toEqual(toDate(presenceData.end))
+      expect(presence._id).not.toBeUndefined()
+    })
+
+    it('save a new presence in database', async () => {
+      const result = await presenceService.addPresence(presenceData, sampleClass)
+      const presence = await Presence.findById(result._id)
+
+      expect(presence).not.toBeNull()
+      expect(presence.start).toEqual(toDate(presenceData.start))
+      expect(presence.end).toEqual(toDate(presenceData.end))
+      expect(presence.studentPresences).toEqual([])
+      expect(presence.createdAt).not.toBeNull()
+      expect(presence.updatedAt).not.toBeNull()
+      expect(presence._id).toBe(result._id)
+    })
+
+    it('bind a new presence to the classroom', async () => {
+      const result = await presenceService.addPresence(presenceData, sampleClass)
+      const classroom = await Class.findById(sampleClass._id)
+
+      expect(classroom.presences).toContain(result._id)
     })
   })
 })

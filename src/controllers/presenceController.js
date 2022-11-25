@@ -19,7 +19,12 @@ class PresenceController {
     const payload = req.body
     this.validator.validateAddPresence(payload)
 
-    res.status(201).send('')
+    const classroom = await this.classService.getClass(req.params.classId)
+    const presence = await this.presenceService.addPresence(payload, classroom)
+
+    res.status(201).send(
+      this.response.success(201, 'Add presence sucess', presence)
+    )
   }
 }
 

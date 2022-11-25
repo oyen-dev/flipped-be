@@ -50,7 +50,7 @@ const attachmentService = new AttachmentService()
 const postService = new PostService()
 const taskService = new TaskService()
 const submissionService = new SubmissionService()
-const presenceService = new PresenceService()
+const presenceService = new PresenceService(classService)
 
 // Validator
 const { Validator, PresenceValidator } = require('./validators')
