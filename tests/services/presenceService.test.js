@@ -76,19 +76,19 @@ describe('presenceService', () => {
     await disconnectDatabase()
   })
 
-  describe('getCurrentPresence', () => {
+  describe('filterCurrentPresence', () => {
     it('returns null when there are no presences', () => {
-      const currentPresence = presenceService.getCurrentPresence([])
+      const currentPresence = presenceService.filterCurrentPresence([])
       expect(currentPresence).toBeNull()
     })
 
     it('returns null when there are no presences having end time greeter than current time', () => {
-      const currentPresence = presenceService.getCurrentPresence(samplePresences)
+      const currentPresence = presenceService.filterCurrentPresence(samplePresences)
       expect(currentPresence).toBeNull()
     })
 
     it('returns a presence when there is a presence having end time greeter than current time', () => {
-      const currentPresence = presenceService.getCurrentPresence(samplePresencesWithOpenedOne)
+      const currentPresence = presenceService.filterCurrentPresence(samplePresencesWithOpenedOne)
       expect(currentPresence).not.toBeNull()
     })
   })

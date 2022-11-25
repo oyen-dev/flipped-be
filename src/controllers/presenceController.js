@@ -21,7 +21,7 @@ class PresenceController {
     this.validator.validateAddPresence(payload)
 
     const classroom = await this.classService.getClass(req.params.classId)
-    if (this.presenceService.getCurrentPresence(classroom.presences)) {
+    if (this.presenceService.filterCurrentPresence(classroom.presences)) {
       throw new ConflictError('There is an opened presence in this class')
     }
 

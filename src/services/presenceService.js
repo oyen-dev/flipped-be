@@ -27,7 +27,7 @@ class PresenceService {
     return presence
   }
 
-  getCurrentPresence (presences) {
+  filterCurrentPresence (presences) {
     const now = new Date()
     return presences.find((presence) => new Date(presence.end).getTime() > now.getTime()) || null
   }
