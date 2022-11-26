@@ -1,7 +1,9 @@
 /* eslint-disable prefer-promise-reject-errors */
+const BUCKET_NAME = process.env.BUCKET_NAME
+
 const { ClientError } = require('../errors')
 const { storage } = require('../config')
-const bucket = storage.bucket('flipped-storage')
+const bucket = storage.bucket(BUCKET_NAME)
 
 class StorageService {
   constructor () {
@@ -22,7 +24,7 @@ class StorageService {
       })
 
       blobStream.on('finish', () => {
-        const publicUrl = `https://storage.googleapis.com/flipped-storage/${blob.name}`
+        const publicUrl = `https://storage.googleapis.com/${BUCKET_NAME}/${blob.name}`
         resolve(publicUrl)
       }).on('error', (err) => {
         console.log(err)
@@ -45,7 +47,7 @@ class StorageService {
       })
 
       blobStream.on('finish', () => {
-        const publicUrl = `https://storage.googleapis.com/flipped-storage/${blob.name}`
+        const publicUrl = `https://storage.googleapis.com/${BUCKET_NAME}/${blob.name}`
         resolve(publicUrl)
       }).on('error', (err) => {
         console.log(err)
