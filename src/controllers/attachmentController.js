@@ -1,4 +1,5 @@
 const { ClientError } = require('../errors')
+const { bindAll } = require('../utils/classBinder')
 
 class AttachmentController {
   constructor (attachmentService, storageService, userService, validator, tokenize, response) {
@@ -10,9 +11,7 @@ class AttachmentController {
     this._tokenize = tokenize
     this._response = response
 
-    this.uploadAttachment = this.uploadAttachment.bind(this)
-    this.uploadMultipleAttachment = this.uploadMultipleAttachment.bind(this)
-    this.getAttachment = this.getAttachment.bind(this)
+    bindAll(this)
   }
 
   async uploadAttachment (req, res) {

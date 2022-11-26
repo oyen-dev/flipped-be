@@ -208,7 +208,7 @@ class UserController {
     this._validator.validateGetUser({ id })
 
     // Get teacher
-    const user = await this._userService.getUser('TEACHER', id)
+    const user = await this._userService.getUser(id)
 
     // To do get enrolled class list
 
@@ -348,7 +348,7 @@ class UserController {
     this._validator.validateGetUser({ id })
 
     // Get teacher
-    const user = await this._userService.getUser('STUDENT', id)
+    const user = await this._userService.getUser(id)
 
     // To do get enrolled class list
 

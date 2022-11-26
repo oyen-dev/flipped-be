@@ -1,4 +1,5 @@
 const { ClientError } = require('../errors')
+const { bindAll } = require('../utils/classBinder')
 
 class PostController {
   constructor (classService, userService, postService, taskService, submissionService, attachmentService, storageService, validator, tokenize, response) {
@@ -14,19 +15,7 @@ class PostController {
     this._tokenize = tokenize
     this._response = response
 
-    // Post
-    this.addPost = this.addPost.bind(this)
-    this.getClassPosts = this.getClassPosts.bind(this)
-    this.getClassPost = this.getClassPost.bind(this)
-    this.updateClassPost = this.updateClassPost.bind(this)
-    this.deletePost = this.deletePost.bind(this)
-
-    // Submission
-    this.addSubmission = this.addSubmission.bind(this)
-    this.getTaskSubmission = this.getTaskSubmission.bind(this)
-    this.getTaskSubmissions = this.getTaskSubmissions.bind(this)
-    this.checkSubmissionStatus = this.checkSubmissionStatus.bind(this)
-    this.updateSubmission = this.updateSubmission.bind(this)
+    bindAll(this)
   }
 
   // Post
@@ -502,6 +491,63 @@ class PostController {
 
       // Response
       const response = this._response.success(200, 'Get submission detail success!', submission)
+
+      return res.status(response.statsCode || 200).json(response)
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async getTaskSubmissionDetail (req, res) {
+    const token = req.headers.authorization
+    const { classId, postId, submissionId } = req.params
+
+    try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Find user
+      const user = await this._userService.findUserById(_id)
+      if (!user) throw new ClientError('Unauthorized', 401)
+
+      // Make sure user is TEACHER or ADMIN
+      if (user.role === 'STUDENT') throw new ClientError('Unauthorized to get submissions', 401)
+
+      // Find class
+      const classData = await this._classService.getClass(classId)
+      if (!classData) throw new ClientError('Class not found', 404)
+
+      // Make sure teacher is in class
+      let isTeacherInClass = false
+      for (const teacher of classData.teachers) {
+        if (teacher._id.includes(user._id)) {
+          isTeacherInClass = true
+          break
+        }
+      }
+      if (!isTeacherInClass) throw new ClientError('Unauthorized to see submissions', 401)
+
+      // Find post
+      const post = await this._postService.getPostById(postId)
+      if (!post) throw new ClientError('Post not found', 404)
+
+      // Make sure post is task
+      if (!post.isTask) throw new ClientError('Post is not task', 400)
+
+      // Find task
+      const task = await this._taskService.getTaskById(post.taskId)
+      if (!task) throw new ClientError('Task not found', 404)
+
+      // Get submission detail
+      const submission = await this._submissionService.getSubmissionDetailById(submissionId)
+      if (!submission) throw new ClientError('Submission not found', 404)
+
+      // Response
+      const response = this._response.success(200, 'Get submission detail success!', { submission })
 
       return res.status(response.statsCode || 200).json(response)
     } catch (error) {
