@@ -45,10 +45,16 @@ const createSubmissionSchema = Joi.object({
   reaction: Joi.number().required()
 })
 
+const updateSubmissonSchema = Joi.object({
+  points: Joi.number().required(),
+  feedback: Joi.string().allow(null)
+})
+
 module.exports = {
   createPostSchema,
   getClassPostSchema,
   updatePostSchema,
   deleteClassPostSchema,
-  createSubmissionSchema
+  createSubmissionSchema,
+  updateSubmissonSchema
 }

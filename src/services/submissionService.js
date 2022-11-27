@@ -49,6 +49,18 @@ class SubmissionService {
     return submission
   }
 
+  async getSubmissionDetailById (id) {
+    const submission = await tSubmission.findById(id)
+      .populate([
+        { path: 'studentId', select: '_id fullName picture' },
+        { path: 'attachments', select: '_id name type url' }
+      ])
+      .select('_id studentId answers attachments points reaction feedback createdAt updatedAt')
+      .exec()
+
+    return submission
+  }
+
   async getSubmissionsByTaskId (taskId) {
     return await tSubmission.find({ taskId })
       .select('_id studentId updatedAt reaction points')
