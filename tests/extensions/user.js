@@ -1,4 +1,5 @@
 const { faker } = require('@faker-js/faker')
+const { User } = require('../../src/models')
 
 /**
  * Generate a payload for registration
@@ -22,6 +23,16 @@ function generateUserPayload() {
   }
 }
 
+/**
+ * Create a user in database
+ * 
+ * @returns {{email: String, fullName: String, gender: Boolean, dateOfBirth: String, placeOfBirth: String, address: String, password: String}} User data
+ */
+async function createUser() {
+  return await User.create(generateUserPayload())
+}
+
 module.exports = {
-  generateUserPayload
+  generateUserPayload,
+  createUser
 }
