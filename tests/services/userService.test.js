@@ -1,6 +1,6 @@
 const { User } = require("../../src/models")
 const { UserService } = require("../../src/services/userService")
-const { connectDatabase, clearDatabase, disconnectDatabase } = require("../database")
+const { connectDatabase, clearDatabase, disconnectDatabase } = require("../extensions/database")
 const { generateUserPayload } = require("../extensions/user")
 
 describe('UserService', () => {
