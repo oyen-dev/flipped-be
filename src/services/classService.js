@@ -65,6 +65,7 @@ class ClassService {
     }).populate({ path: 'teachers', select: '_id fullName' })
       // .populate({ path: 'students', select: '_id fullName' })
       .populate({ path: 'gradeId', select: '_id name' })
+      .populate({ path: 'presences' })
       // .populate({
       //   path: 'posts',
       //   select: '_id title description teacherId attachments isTask taskId',
@@ -168,6 +169,10 @@ class ClassService {
 
   async findClassById (id) {
     return await Class.findOne({ _id: id })
+  }
+
+  async updateClass (classId, newData) {
+    return await Class.findByIdAndUpdate(classId, newData, { new: true })
   }
 
   async archiveClass (id, archive) {

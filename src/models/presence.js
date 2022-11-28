@@ -1,11 +1,19 @@
-const { Schema, model } = require('mongoose')
+const { model } = require('mongoose')
 const { nanoid } = require('nanoid')
+const { MySchema } = require('../utils/dbExtensions')
 
-const presenceSchema = new Schema({
+const presenceSchema = new MySchema({
   _id: { type: String, default: () => { return `pre-${nanoid(15)}` } },
   start: { type: Date, required: true },
   end: { type: Date, required: true },
-  studenPresences: [{ type: Schema.Types.String, ref: 'studentPresences' }]
+  studentPresences: { type: [{ type: MySchema.Types.ObjectId }], default: [] }
+}, {
+  versionKey: false,
+  timestamps: true
+})
+
+presenceSchema.index({
+  end: -1
 })
 
 // Create model
