@@ -8,6 +8,10 @@ class PresenceService {
     bindAll(this)
   }
 
+  getAllPresences (classroom) {
+    return classroom.presences.sort((a, b) => new Date(b.end).getTime() - new Date(a.end).getTime())
+  }
+
   async addPresence (payload, classroom) {
     const presence = await Presence.create({
       ...payload,
