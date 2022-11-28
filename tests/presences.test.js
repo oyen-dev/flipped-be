@@ -239,6 +239,57 @@ describe('Presence Route', () => {
       expect(res.statusCode).toEqual(409)
     })
   })
+
+  describe('GET /current', () => {
+    it('returns status code 401 error when no user authenticated', async () => {
+      const res = await request(app)
+        .get(`/api/v1/class/${sampleClass._id}/presences/current`)
+
+      expect(res.statusCode).toEqual(401)
+    })
+
+    it("returns status code 404 when class id doesn't exists", async () => {
+      const res = await request(app)
+        .get('/api/v1/class/random-class-id/presences/current')
+        .set('Authorization', 'Bearer ' + await createTeacherTokenFromClass(sampleClass))
+
+      expect(res.statusCode).toEqual(404)
+    })
+
+    it('returns false when the presence of the class is not opened', async () => {
+      const token = await createTeacherTokenFromClass(sampleClass)
+
+      await request(app)
+        .post(`/api/v1/class/${sampleClass._id}/presences`)
+        .set('Authorization', 'Bearer ' + token)
+        .send(presenceData)
+      const res = await request(app)
+        .get(`/api/v1/class/${sampleClass._id}/presences/current`)
+        .set('Authorization', 'Bearer ' + token)
+
+      expect(res.statusCode).toEqual(200)
+      expect(res.body.data.isOpen).toEqual(false)
+    })
+
+    it('returns true when the presence of the class is opened', async () => {
+      const token = await createTeacherTokenFromClass(sampleClass)
+      const now = new Date()
+
+      await request(app)
+        .post(`/api/v1/class/${sampleClass._id}/presences`)
+        .set('Authorization', 'Bearer ' + token)
+        .send({
+          start: now,
+          end: new Date(now).setHours(now.getHours() + 2)
+        })
+      const res = await request(app)
+        .get(`/api/v1/class/${sampleClass._id}/presences/current`)
+        .set('Authorization', 'Bearer ' + token)
+
+      expect(res.statusCode).toEqual(200)
+      expect(res.body.data.isOpen).toEqual(true)
+    })
+  })
 })
 
 module.exports = {

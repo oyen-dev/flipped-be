@@ -19,6 +19,18 @@ class PresenceController {
     )
   }
 
+  async getPresenceOpenStatus (req, res) {
+    const classroom = await this.classService.getClass(req.params.classId)
+    const currentPresence = this.presenceService.filterCurrentPresence(classroom.presences)
+    res.send(this.response.success(
+      200,
+      'Get presence open status success',
+      {
+        isOpen: !(!currentPresence)
+      }
+    ))
+  }
+
   async addPresence (req, res) {
     const payload = req.body
     this.validator.validateAddPresence(payload)
