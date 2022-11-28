@@ -6,6 +6,7 @@ class PresenceRoutes {
 
     router.get('/', verifyToken, needRoles(['ADMIN', 'TEACHER']), presenceController.getAllPresences)
     router.post('/', verifyToken, needRoles(['ADMIN', 'TEACHER']), presenceController.addPresence)
+    router.get('/current', verifyToken, presenceController.getPresenceOpenStatus)
 
     this.router = router
   }
