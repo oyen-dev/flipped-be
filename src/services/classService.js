@@ -65,6 +65,7 @@ class ClassService {
     }).populate({ path: 'teachers', select: '_id fullName' })
       // .populate({ path: 'students', select: '_id fullName' })
       .populate({ path: 'gradeId', select: '_id name' })
+      .populate('presences')
       // .populate({
       //   path: 'posts',
       //   select: '_id title description teacherId attachments isTask taskId',
@@ -170,8 +171,12 @@ class ClassService {
     return await Class.findOne({ _id: id })
   }
 
+  async updateClass (classId, newData) {
+    return await Class.findByIdAndUpdate(classId, newData, { new: true })
+  }
+
   async archiveClass (id, archive) {
-    // Check classId is exist
+  // Check classId is exist
     const classData = await this.findClassById(id)
     if (!classData) throw new ClientError('Class not found', 404)
 
@@ -205,7 +210,7 @@ class ClassService {
   }
 
   async joinClass (userId, invitation, join) {
-    // Check invitation code is exist
+  // Check invitation code is exist
     const classData = await Class.findOne({ invitationCode: invitation })
     if (!classData) throw new ClientError('Invalid invitation code', 404)
 
@@ -233,7 +238,7 @@ class ClassService {
     let classes = []
 
     if (role === 'ADMIN') {
-      // Select class based on isDeleted = false, isArchived = false, just only 3 first class
+    // Select class based on isDeleted = false, isArchived = false, just only 3 first class
       classes = await Class.find({
         isDeleted: false,
         isArchived: false
@@ -244,7 +249,7 @@ class ClassService {
         .limit(3)
         .exec()
     } else if (role === 'TEACHER') {
-      // Select class based on teacherId, isDeleted = false, isArchived = false, just only 3 first class
+    // Select class based on teacherId, isDeleted = false, isArchived = false, just only 3 first class
       classes = await Class.find({
         teachers: { $in: [userId] },
         isDeleted: false,
@@ -256,7 +261,7 @@ class ClassService {
         .limit(3)
         .exec()
     } else if (role === 'STUDENT') {
-      // Select class based on studentId, isDeleted = false, isArchived = false, just only 3 first class
+    // Select class based on studentId, isDeleted = false, isArchived = false, just only 3 first class
       classes = await Class.find({
         students: { $in: [userId] },
         isDeleted: false,

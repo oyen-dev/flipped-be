@@ -159,5 +159,6 @@ class Validator {
 }
 
 module.exports = {
-  Validator
+  Validator,
+  ...require('./presenceValidator')
 }
