@@ -80,6 +80,74 @@ class ClassController {
     return res.status(response.statsCode || 200).json(response)
   }
 
+  async updateClass (req, res) {
+    const token = req.headers.authorization
+    const id = req.params.id
+    const payload = req.body
+
+    console.log(payload)
+
+    // Check token is exist
+    if (!token) throw new ClientError('Unauthorized', 401)
+
+    // Validate token
+    const { _id } = await this._tokenize.verify(token)
+
+    // Find user
+    const user = await this._userService.findUserById(_id)
+    if (!user) throw new ClientError('Unauthorized', 401)
+
+    // Make sure user is ADMIN or TEACHER
+    if (user.role !== 'ADMIN' && user.role !== 'TEACHER') throw new ClientError('Unauthorized', 401)
+
+    // Validate payload
+    this._validator.validateUpdateClass(payload)
+
+    // Destructure payload
+    const { name, teachers, schedule, grade } = payload
+
+    // Make array of schedule
+    const scheduleArray = schedule.map((item) => {
+      return {
+        start: new Date(item.start),
+        end: new Date(item.end)
+      }
+    })
+
+    // Remove duplicate teachers
+    const uniqueTeachers = [...new Set(teachers)]
+
+    // Validate teacherId inside teachers array
+    for (let i = 0; i < uniqueTeachers.length; i++) {
+      const teacher = await this._userService.findUserById(teachers[i])
+      if (!teacher) throw new ClientError('Teacher not found', 404)
+      if (teacher.role !== 'TEACHER') throw new ClientError('Teacher not found', 404)
+    }
+
+    // Verify grade is exist
+    let gradeId = await this._gradeService.getGradeByName(grade)
+    if (!gradeId) gradeId = await this._gradeService.addGrade(grade)
+
+    // Update class
+    const classObj = {
+      teachers: [...uniqueTeachers],
+      schedule: [...scheduleArray],
+      name,
+      gradeId: gradeId._id
+    }
+    const updatedClass = await this._classService.updateClass(id, classObj)
+
+    // Return response
+    const data = {
+      _id: updatedClass._id,
+      name: updatedClass.name,
+      invitationCode: updatedClass.invitationCode
+    }
+    const response = this._response.success(200, 'Update class success!', data)
+
+    return res.status(response.statsCode || 200).json(response)
+  }
+
   async getClasses (req, res) {
     const token = req.headers.authorization
     const query = req.query

@@ -63,19 +63,9 @@ class ClassService {
       isDeleted: false,
       isArchived: false
     }).populate({ path: 'teachers', select: '_id fullName' })
-      // .populate({ path: 'students', select: '_id fullName' })
       .populate({ path: 'gradeId', select: '_id name' })
       .populate({ path: 'presences' })
-      // .populate({
-      //   path: 'posts',
-      //   select: '_id title description teacherId attachments isTask taskId',
-      //   populate: [
-      //     { path: 'taskId', select: '_id deadline' },
-      //     { path: 'teacherId', select: '_id fullName picture' },
-      //     { path: 'attachments', select: '_id type url' }
-      //   ]
-      // })
-      // .populate({ path: 'evaluations', select: '_id name' })
+      .populate({ path: 'schedule' })
       .populate({ path: 'presences', select: '_id start end attendance' })
       .select('_id teachers name gradeId cover invitationCode presence presences')
       .exec({

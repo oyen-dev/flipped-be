@@ -39,11 +39,22 @@ const joinClassSchema = Joi.object({
   join: Joi.boolean().truthy('true', 'yes', 1, '1').falsy('false', 'no', 0, '0').required()
 })
 
+const updateClassSchema = Joi.object({
+  name: Joi.string().required(),
+  grade: Joi.string().required(),
+  teachers: Joi.array().items(Joi.string()).required(),
+  schedule: Joi.array().items(Joi.object({
+    start: Joi.date().required(),
+    end: Joi.date().required()
+  })).required()
+})
+
 module.exports = {
   addClassSchema,
   getClassesSchema,
   getClassSchema,
   archiveClassSchema,
   deleteClassSchema,
-  joinClassSchema
+  joinClassSchema,
+  updateClassSchema
 }
