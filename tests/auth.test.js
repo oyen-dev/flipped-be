@@ -48,7 +48,6 @@ describe('Auth Routes', () => {
 
     it('requires password confirmation', async () => {
       const payload = _.omit(registerPayload, ['confirmPassword'])
-      console.log(payload)
       const res = await getRegisterResponse(payload)
       res.statusCode.should.equal(400)
     })
@@ -92,9 +91,11 @@ describe('Auth Routes', () => {
       res.statusCode.should.equal(400)
     })
 
-    it('returns status 200', async () => {
+    it('returns status 201', async () => {
       const res = await getRegisterResponse(registerPayload)
-      res.statusCode.should.equal(200)
+      res.statusCode.should.equal(201)
     })
+
+
   })
 })
