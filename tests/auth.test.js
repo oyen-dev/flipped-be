@@ -1,9 +1,9 @@
-const { app } = require('../src/app');
+const { app } = require('../src/app')
 const request = require('supertest')
-const should = require('should');
+const should = require('should')
 const _ = require('lodash')
-const { connectDatabase, clearDatabase, disconnectDatabase } = require('./extensions/database');
-const { generateRegisterPayload } = require('./extensions/auth');
+const { connectDatabase, clearDatabase, disconnectDatabase } = require('./extensions/database')
+const { generateRegisterPayload } = require('./extensions/auth')
 
 describe('Auth Routes', () => {
   beforeAll(async () => {
@@ -19,7 +19,7 @@ describe('Auth Routes', () => {
   })
 
   describe('POST /api/v1/auth/register', () => {
-    let registerPayload;
+    let registerPayload
 
     const getRegisterResponse = async (payload) => {
       const res = request(app)

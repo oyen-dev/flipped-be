@@ -1,7 +1,7 @@
-const { User } = require("../../src/models")
-const { UserService } = require("../../src/services/userService")
-const { connectDatabase, clearDatabase, disconnectDatabase } = require("../extensions/database")
-const { generateUserPayload, createUser } = require("../extensions/user")
+const { User } = require('../../src/models')
+const { UserService } = require('../../src/services/userService')
+const { connectDatabase, clearDatabase, disconnectDatabase } = require('../extensions/database')
+const { generateUserPayload, createUser } = require('../extensions/user')
 
 describe('UserService', () => {
   let userService
@@ -32,15 +32,15 @@ describe('UserService', () => {
 
   describe('createUser', () => {
     it('returns a created user', async () => {
-      const userPayload = generateUserPayload();
-      const newUser = await userService.createUser(userPayload);
+      const userPayload = generateUserPayload()
+      const newUser = await userService.createUser(userPayload)
 
       validateUserData(userPayload, newUser)
     })
 
     it('save the created user data in database', async () => {
-      const userPayload = generateUserPayload();
-      const newUser = await userService.createUser(userPayload);
+      const userPayload = generateUserPayload()
+      const newUser = await userService.createUser(userPayload)
       const foundUser = await User.findById(newUser._id)
 
       validateUserData(userPayload, foundUser)

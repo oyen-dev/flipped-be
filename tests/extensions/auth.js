@@ -1,7 +1,7 @@
 const { generateUserPayload } = require('./user')
 
-function generateRegisterPayload() {
-  const userPayload = generateUserPayload();
+function generateRegisterPayload () {
+  const userPayload = generateUserPayload()
   return {
     ...userPayload,
     confirmPassword: userPayload.password
