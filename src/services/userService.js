@@ -82,7 +82,16 @@ class UserService {
     return await oldUser.save()
   }
 
-  async getUsers (type, q, page, limit, deleted) {
+  /**
+   * Get users data
+   * @param {*} type
+   * @param {*} q
+   * @param {*} page - The page. Default: 1
+   * @param {*} limit - The limit of users count per page. Default: 20
+   * @param {*} deleted
+   * @returns
+   */
+  async getUsers (type, q, page = 1, limit = 20, deleted) {
     if (q === '' || q === undefined) q = ''
     if (deleted === '' || deleted === 'false' || deleted === undefined) deleted = false
     else deleted = true
