@@ -26,7 +26,8 @@ class PresenceController {
       200,
       'Get presence open status success',
       {
-        isOpen: !(!currentPresence)
+        isOpen: !(!currentPresence),
+        presence: currentPresence
       }
     ))
   }
@@ -34,7 +35,6 @@ class PresenceController {
   async addPresence (req, res) {
     const payload = req.body
     this.validator.validateAddPresence(payload)
-
     const classroom = await this.classService.getClass(req.params.classId)
     if (this.presenceService.filterCurrentPresence(classroom.presences)) {
       throw new ConflictError('There is an opened presence in this class')
