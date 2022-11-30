@@ -36,7 +36,11 @@ const {
   PostService,
   TaskService,
   SubmissionService,
-  PresenceService
+  PresenceService,
+  AnswerService,
+  ESubmissionService,
+  EvaluationService,
+  QuestionService
 } = require('./services')
 const userService = new UserService()
 const authService = new AuthService()
@@ -51,6 +55,10 @@ const postService = new PostService()
 const taskService = new TaskService()
 const submissionService = new SubmissionService()
 const presenceService = new PresenceService(classService)
+const answerService = new AnswerService()
+const eSubmissionService = new ESubmissionService()
+const evaluationService = new EvaluationService()
+const questionService = new QuestionService()
 
 // Validator
 const { Validator, PresenceValidator } = require('./validators')
@@ -76,7 +84,8 @@ const {
   SocketController,
   AttachmentController,
   PostController,
-  PresenceController
+  PresenceController,
+  EvaluationController
 } = require('./controllers')
 const authController = new AuthController(authService, userService, mailService, validator, hashPassword, tokenize, response)
 const userController = new UserController(userService, classService, authService, storageService, mailService, validator, hashPassword, tokenize, response)
@@ -85,6 +94,7 @@ const socketController = new SocketController(onlineUserService, logService)
 const attachmentController = new AttachmentController(attachmentService, storageService, userService, validator, tokenize, response)
 const postController = new PostController(classService, userService, postService, taskService, submissionService, attachmentService, storageService, validator, tokenize, response)
 const presenceController = new PresenceController(presenceService, classService, presenceValidator, response)
+const evaluationController = new EvaluationController(classService, userService, evaluationService, questionService, answerService, eSubmissionService, validator, tokenize, response)
 
 // Routes
 const { AuthRoutes, UserRoutes, ClassRoutes, AttachmentRoutes, PresenceRoutes } = require('./routes')
@@ -92,7 +102,7 @@ const authRoutes = new AuthRoutes(authController)
 const userRoutes = new UserRoutes(userController)
 const attachmentRoutes = new AttachmentRoutes(attachmentController)
 const presenceRoutes = new PresenceRoutes(verifyToken, needRoles, presenceController)
-const classRoutes = new ClassRoutes(classController, postController, presenceRoutes)
+const classRoutes = new ClassRoutes(classController, postController, presenceRoutes, evaluationController)
 
 // Multer middleware
 const multerMid = multer({
