@@ -5,49 +5,18 @@ const { GradeService } = require('../../src/services/gradeService.js')
 const { PresenceService } = require('../../src/services/presenceService.js')
 const { UserService } = require('../../src/services/userService.js')
 const { connectDatabase, clearDatabase, disconnectDatabase } = require('../database.js')
-const { createSampleClass, presenceData, anotherPresenceData } = require('../presences.test.js')
+const { createClass } = require('../extensions/class')
+const { generatePresencePayload } = require('../extensions/presence.js')
+const { createTeacher } = require('../extensions/user')
+const should = require('should')
+const { toDateTimeString } = require('../extensions/common.js')
 
 describe('presenceService', () => {
-  const now = new Date()
-
-  const sampleOpenedPresence = {
-    _id: '113',
-    start: new Date(now).setHours(now.getHours() - 1),
-    end: new Date(now).setHours(now.getHours() + 1),
-    studenPresences: [
-      {
-        _id: '111',
-        studentId: '222',
-        at: now,
-        reaction: 4
-      }
-    ]
+  const createSampleClass = async () => {
+    const teacher = await createTeacher()
+    const grade = 'Grade'
+    return await createClass(null, [teacher], grade)
   }
-  const samplePresences = [
-    {
-      _id: '111',
-      start: new Date('2020-05-01 11:00:00'),
-      end: new Date('2020-05-01 12:00:00'),
-      studenPresences: [
-        {
-          _id: '111',
-          studentId: '222',
-          at: new Date('2020-05-01 11:59:30'),
-          reaction: 4
-        }
-      ]
-    },
-    {
-      _id: '112',
-      start: new Date('2020-02-01 09:00:00'),
-      end: new Date('2020-02-01 11:00:00'),
-      studenPresences: []
-    }
-  ]
-  const samplePresencesWithOpenedOne = [
-    ...samplePresences,
-    sampleOpenedPresence
-  ]
 
   let presenceService
   let classService
@@ -66,10 +35,6 @@ describe('presenceService', () => {
     await connectDatabase()
   })
 
-  beforeEach(async () => {
-    sampleClass = await createSampleClass(gradeService, classService, userService)
-  })
-
   afterEach(async () => {
     await clearDatabase()
   })
@@ -79,12 +44,52 @@ describe('presenceService', () => {
   })
 
   describe('filterCurrentPresence', () => {
+    const now = new Date()
+    const samplePresences = [
+      {
+        _id: '111',
+        start: new Date('2020-05-01 11:00:00'),
+        end: new Date('2020-05-01 12:00:00'),
+        studentPresences: [
+          {
+            _id: '111',
+            studentId: '222',
+            at: new Date('2020-05-01 11:59:30'),
+            reaction: 4
+          }
+        ]
+      },
+      {
+        _id: '112',
+        start: new Date('2020-02-01 09:00:00'),
+        end: new Date('2020-02-01 11:00:00'),
+        studentPresences: []
+      }
+    ]
+    const samplePresencesWithOpenedOne = [
+      ...samplePresences,
+      {
+        _id: '113',
+        start: new Date(now).setHours(now.getHours() - 1),
+        end: new Date(now).setHours(now.getHours() + 1),
+        studenPresences: [
+          {
+            _id: '111',
+            studentId: '222',
+            at: now,
+            reaction: 4
+          }
+        ]
+      }
+    ]
+
     it('returns null when there are no presences', () => {
       const currentPresence = presenceService.filterCurrentPresence([])
       expect(currentPresence).toBeNull()
     })
 
     it('returns null when there are no presences having end time greeter than current time', () => {
+      const presencePayload = generatePresencePayload()
       const currentPresence = presenceService.filterCurrentPresence(samplePresences)
       expect(currentPresence).toBeNull()
     })
@@ -96,32 +101,46 @@ describe('presenceService', () => {
   })
 
   describe('addPresence', () => {
-    it('returns a new presence with id', async () => {
-      const presence = await presenceService.addPresence(presenceData, sampleClass)
+    const getRequiredPresenceData = async () => {
+      const classroom = await createSampleClass()
+      const presencePayload = generatePresencePayload()
 
-      expect(presence.start).toEqual(toDate(presenceData.start))
-      expect(presence.end).toEqual(toDate(presenceData.end))
-      expect(presence._id).not.toBeUndefined()
+      return {
+        classroom,
+        presencePayload
+      }
+    }
+
+    it('returns a new presence with id', async () => {
+      const { presencePayload, classroom } = await getRequiredPresenceData()
+      const presence = await presenceService.addPresence(presencePayload, classroom)
+
+      presence.start.should.be.eql(new Date(presencePayload.start))
+      presence.end.should.be.eql(new Date(presencePayload.end))
+      presence._id.should.not.be.Undefined()
     })
 
     it('save a new presence in database', async () => {
-      const result = await presenceService.addPresence(presenceData, sampleClass)
+      const { presencePayload, classroom } = await getRequiredPresenceData()
+      const result = await presenceService.addPresence(presencePayload, classroom)
       const presence = await Presence.findById(result._id)
 
-      expect(presence).not.toBeNull()
-      expect(presence.start).toEqual(toDate(presenceData.start))
-      expect(presence.end).toEqual(toDate(presenceData.end))
-      expect(presence.studentPresences).toEqual([])
-      expect(presence.createdAt).not.toBeNull()
-      expect(presence.updatedAt).not.toBeNull()
-      expect(presence._id).toBe(result._id)
+      presence.should.not.be.Null()
+      presence.start.should.be.eql(new Date(presencePayload.start))
+      presence.end.should.be.eql(new Date(presencePayload.end))
+      presence.studentPresences.should.be.eql([])
+      presence.createdAt.should.be.Date()
+      presence.updatedAt.should.be.Date()
+      should(presence.deletedAt).be.null()
+      presence._id.should.be.eql(result._id)
     })
 
     it('bind a new presence to the classroom', async () => {
-      const result = await presenceService.addPresence(presenceData, sampleClass)
-      const classroom = await Class.findById(sampleClass._id)
+      const { presencePayload, classroom } = await getRequiredPresenceData()
+      const result = await presenceService.addPresence(presencePayload, classroom)
+      const foundClassroom = await Class.findById(classroom._id)
 
-      expect(classroom.presences).toContain(result._id)
+      foundClassroom.presences.should.containDeep([result._id])
     })
   })
 
