@@ -1,10 +1,8 @@
 const { faker } = require('@faker-js/faker')
 const { Class } = require('../../src/models')
+const { toDateTimeString } = require('./common')
 
 const generateClassPayload = () => {
-  const toDateTimeString = (date) => {
-    return new Date(date).toISOString().split('.')[0].replace('T', ' ')
-  }
   const randomDate = faker.date.past()
 
   return {
