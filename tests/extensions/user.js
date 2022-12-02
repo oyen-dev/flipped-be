@@ -3,10 +3,10 @@ const { User } = require('../../src/models')
 
 /**
  * Generate a payload for registration
- * 
+ *
  * @returns {{email: String, fullName: String, gender: Boolean, dateOfBirth: String, placeOfBirth: String, address: String, password: String}} A generated payload
  */
-function generateUserPayload() {
+function generateUserPayload () {
   const gender = !!Math.round(Math.random())
   return {
     email: faker.internet.email().toLowerCase(),
@@ -25,11 +25,14 @@ function generateUserPayload() {
 
 /**
  * Create a user in database
- * 
+ *
  * @returns {{email: String, fullName: String, gender: Boolean, dateOfBirth: String, placeOfBirth: String, address: String, password: String}} User data
  */
-async function createUser() {
-  return await User.create(generateUserPayload())
+async function createUser (payload) {
+  if (!payload && typeof (payload) !== 'object') {
+    payload = generateUserPayload()
+  }
+  return await User.create(payload)
 }
 
 module.exports = {
