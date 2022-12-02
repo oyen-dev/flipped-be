@@ -2,7 +2,7 @@ const { Schema } = require('mongoose')
 
 // Mongo schema with soft delete support
 class MySchema extends Schema {
-  constructor (definition) {
+  constructor (definition, options) {
     super({
       ...definition,
       deletedAt: {
@@ -10,7 +10,7 @@ class MySchema extends Schema {
         default: null,
         nullable: true
       }
-    })
+    }, options)
   }
 }
 
