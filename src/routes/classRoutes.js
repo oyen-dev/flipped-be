@@ -1,8 +1,10 @@
 const { MyRouter } = require('../myserver')
 
+
 class ClassRoutes {
-  constructor (classController, postController) {
+  constructor (classController, postController, verifyToken, needRole) {
     this.name = 'ClassRouter'
+
     this.router = MyRouter()
     this._classController = classController
     this._postController = postController
@@ -13,7 +15,7 @@ class ClassRoutes {
     this.router.get('/:id/tasks', this._classController.getClassTasks)
     this.router.get('/:id/evaluations', this._classController.getClassEvaluations)
 
-    this.router.post('/', this._classController.addClass)
+    this.router.post('/', verifyToken, needRole(['ADMIN', 'TEACHER']), this._classController.addClass)
     this.router.post('/archive', this._classController.archiveClass)
     this.router.post('/delete', this._classController.deleteClass)
     this.router.post('/join', this._classController.joinClass)

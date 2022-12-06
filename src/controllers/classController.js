@@ -17,20 +17,6 @@ class ClassController {
 
   async addClass (req, res) {
     const payload = req.body
-    const token = req.headers.authorization
-
-    // Check token is exist
-    if (!token) throw new ClientError('Unauthorized', 401)
-
-    // Validate token
-    const { _id } = await this._tokenize.verify(token)
-
-    // Find user
-    const user = await this._userService.findUserById(_id)
-    if (!user) throw new ClientError('Unauthorized', 401)
-
-    // Make sure user is ADMIN or TEACHER
-    if (user.role !== 'ADMIN' && user.role !== 'TEACHER') throw new ClientError('Unauthorized', 401)
 
     // Validate payload
     this._validator.validateAddClass(payload)
@@ -57,7 +43,7 @@ class ClassController {
     }
 
     // Verify grade is exist
-    let gradeId = await this._gradeService.getGradeByName(grade)
+    let gradeId = await is._gradeService.getGradeByName(grade)
     if (!gradeId) gradeId = await this._gradeService.addGrade(grade)
 
     // Add class
