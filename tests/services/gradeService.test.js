@@ -7,6 +7,12 @@ const { faker } = require('@faker-js/faker')
 describe('GradeService', () => {
   let gradeService
 
+  const createGrade = async () => {
+    return await Grade.create({
+      name: faker.word.verb()
+    })
+  }
+
   beforeAll(async () => {
     await connectDatabase()
     gradeService = new GradeService()
@@ -36,12 +42,6 @@ describe('GradeService', () => {
   })
 
   describe('getGrade', () => {
-    const createGrade = async () => {
-      return await Grade.create({
-        name: faker.word.verb()
-      })
-    }
-
     it('returns null when no grades found', async () => {
       const grade = await gradeService.getGrade()
       should(grade).be.null()
@@ -50,6 +50,23 @@ describe('GradeService', () => {
     it('returns grade document with matched id', async () => {
       const createdGrade = await createGrade()
       const grade = await gradeService.getGrade(createdGrade._id)
+      grade.should.be.an.Object()
+      grade.name.should.be.eql(createdGrade.name)
+      grade.createdAt.should.be.Date()
+      grade.updatedAt.should.be.Date()
+      grade._id.should.be.eql(createdGrade._id)
+    })
+  })
+
+  describe('getGradeByName', () => {
+    it('returns null if there is no grades with matched name', async () => {
+      const grade = await gradeService.getGradeByName('namee')
+      should(grade).be.Null()
+    })
+
+    it('returns Grade document when the name is matched to the document', async () => {
+      const createdGrade = await createGrade()
+      const grade = await gradeService.getGradeByName(createdGrade.name)
       grade.should.be.an.Object()
       grade.name.should.be.eql(createdGrade.name)
       grade.createdAt.should.be.Date()
