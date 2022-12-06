@@ -1,6 +1,6 @@
 const { UnauthorizedError, ForbiddenError } = require('../errors')
 
-const getNeedRolesFunc = (responder) => (roles) => (req, res, next) => {
+const needRole = (roles) => (req, _, next) => {
   if (!req.user) throw new UnauthorizedError()
 
   const userRole = req.user.role.toLowerCase()
@@ -23,6 +23,9 @@ const getNeedRolesFunc = (responder) => (roles) => (req, res, next) => {
   }
 }
 
+const getNeedRolesFunc = (responder) => needRole
+
 module.exports = {
-  getNeedRolesFunc
+  getNeedRolesFunc,
+  needRole
 }
