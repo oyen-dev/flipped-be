@@ -1,4 +1,4 @@
-const { ConflictError } = require('../errors')
+const { ConflictError, ForbiddenError } = require('../errors')
 const { bindAll } = require('../utils/classBinder')
 
 class PresenceController {
@@ -36,6 +36,11 @@ class PresenceController {
     this.validator.validateAddPresence(payload)
 
     const classroom = await this.classService.getClass(req.params.classId)
+
+    if(!this.classService.isTeacherInClass(classroom, req.user)) {
+      throw new ForbiddenError()
+    }
+
     if (this.presenceService.filterCurrentPresence(classroom.presences)) {
       throw new ConflictError('There is an opened presence in this class')
     }

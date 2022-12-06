@@ -194,6 +194,16 @@ describe('Presence Route', () => {
       expect(res.statusCode).toEqual(404)
     })
 
+    it("returns 403 when the teacher is not assigned to the class", async () => {
+      const classroom = await createSampleClass()
+      const res = await request(app)
+        .post(`/api/v1/class/${classroom._id}/presences`)
+        .set('Authorization', 'Bearer ' + await createTeacherToken())
+        .send(presenceData)
+
+      res.statusCode.should.be.eql(403)
+    })
+
     it('returns 201 when new presence created', async () => {
       const classroom = await createSampleClass()
       const res = await request(app)
