@@ -95,7 +95,5 @@ describe('Auth Routes', () => {
       const res = await getRegisterResponse(registerPayload)
       res.statusCode.should.equal(201)
     })
-
-
   })
 })
