@@ -1,12 +1,12 @@
 const { faker } = require('@faker-js/faker')
-const { User } = require('../../src/models')
+const { UserService } = require('../../src/services/userService')
 
 /**
  * Generate a payload for registration
  *
  * @returns {{email: String, fullName: String, gender: Boolean, dateOfBirth: String, placeOfBirth: String, address: String, password: String}} A generated payload
  */
-function generateUserPayload() {
+function generateUserPayload () {
   const gender = !!Math.round(Math.random())
   return {
     email: faker.internet.email().toLowerCase(),
@@ -28,14 +28,14 @@ function generateUserPayload() {
  *
  * @returns {{email: String, fullName: String, gender: Boolean, dateOfBirth: String, placeOfBirth: String, address: String, password: String}} User data
  */
-async function createUser(payload) {
+async function createUser (payload) {
   if (!payload && typeof (payload) !== 'object') {
     payload = generateUserPayload()
   }
-  return await User.create(payload)
+  return await new UserService().createUser(payload)
 }
 
-async function createTeacher() {
+async function createTeacher () {
   const payload = {
     ...generateUserPayload(),
     role: 'TEACHER'
@@ -43,8 +43,26 @@ async function createTeacher() {
   return await createUser(payload)
 }
 
+async function createStudent () {
+  const payload = {
+    ...generateUserPayload(),
+    role: 'STUDENT'
+  }
+  return await createUser(payload)
+}
+
+async function createAdmin () {
+  const payload = {
+    ...generateUserPayload(),
+    role: 'ADMIN'
+  }
+  return await createUser(payload)
+}
+
 module.exports = {
   generateUserPayload,
   createUser,
-  createTeacher
+  createTeacher,
+  createStudent,
+  createAdmin
 }
