@@ -14,6 +14,30 @@ class UserService {
     return await User.findOne({ _id: id })
   }
 
+  async findUsersByIds(ids = [], customFilter) {
+    let filters = {
+      _id: {
+        $in: ids
+      }
+    }
+    if(customFilter) {
+      filters = {
+        $and: [
+          {...filters},
+          {...customFilter}
+        ]
+      }
+    }
+    
+    return await User.find(filters)
+  }
+
+  async findTeachersByIds(ids = []) {
+    return await this.findUsersByIds(ids, {
+      role: 'TEACHER'
+    })
+  }
+
   async createUser (user) {
     return await User.create(user)
   }
