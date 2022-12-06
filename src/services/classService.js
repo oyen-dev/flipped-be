@@ -311,6 +311,10 @@ class ClassService {
 
     await classData.save()
   }
+
+  isTeacherInClass (classroom, teacher) {
+    return classroom.teachers.findIndex((classTeacher) => classTeacher._id === teacher._id) >= 0
+  }
 }
 
 module.exports = {
