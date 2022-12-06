@@ -3,9 +3,10 @@ const { nanoid } = require('nanoid')
 
 const gradeSchema = new Schema({
   _id: { type: String, default: () => { return `gra-${nanoid(15)}` } },
-  name: { type: String, required: true },
-  createdAt: { type: Date, default: new Date() },
-  updatedAt: { type: Date, default: new Date() }
+  name: { type: String, required: true }
+}, {
+  timestamps: true,
+  versionKey: false
 })
 
 // add index text to name
