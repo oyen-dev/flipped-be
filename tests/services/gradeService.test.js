@@ -1,6 +1,8 @@
 const { GradeService } = require('../../src/services/gradeService')
 const { connectDatabase, clearDatabase, disconnectDatabase } = require('../extensions/database')
+const { Grade } = require('../../src/models')
 const should = require('should')
+const { faker } = require('@faker-js/faker')
 
 describe('GradeService', () => {
   let gradeService
@@ -21,7 +23,7 @@ describe('GradeService', () => {
       await expect(async () => { await gradeService.addGrade() }).rejects.toThrow()
     })
 
-    it('returns Grade document', async() => {
+    it('returns Grade document', async () => {
       const name = '12'
       const grade = await gradeService.addGrade(name)
 
@@ -30,6 +32,29 @@ describe('GradeService', () => {
       grade.createdAt.should.be.a.Date()
       grade.updatedAt.should.be.a.Date()
       grade._id.should.be.a.String()
+    })
+  })
+
+  describe('getGrade', () => {
+    const createGrade = async () => {
+      return await Grade.create({
+        name: faker.word.verb()
+      })
+    }
+
+    it('returns null when no grades found', async () => {
+      const grade = await gradeService.getGrade()
+      should(grade).be.null()
+    })
+
+    it('returns grade document with matched id', async () => {
+      const createdGrade = await createGrade()
+      const grade = await gradeService.getGrade(createdGrade._id)
+      grade.should.be.an.Object()
+      grade.name.should.be.eql(createdGrade.name)
+      grade.createdAt.should.be.Date()
+      grade.updatedAt.should.be.Date()
+      grade._id.should.be.eql(createdGrade._id)
     })
   })
 })

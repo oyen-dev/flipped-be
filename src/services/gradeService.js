@@ -6,8 +6,8 @@ class GradeService {
     this.name = 'GradeService'
   }
 
-  async getGrades (id) {
-    return await Grade.find({ _id: id })
+  async getGrade (id) {
+    return await Grade.findById(id)
   }
 
   async getGradeByName (name) {
