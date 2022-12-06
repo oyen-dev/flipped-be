@@ -6,6 +6,15 @@
     },
     "extends": "standard",
     "overrides": [
+        {
+            "files": "**/*.test.js",
+            "env": {
+                "jest": true
+            },
+            "rules": {
+                "no-unused-vars": "off"
+            }
+        }
     ],
     "parserOptions": {
         "ecmaVersion": "latest"
