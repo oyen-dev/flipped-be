@@ -1,3 +1,5 @@
 module.exports = {
-  ...require('./handleError')
+  ...require('./handleError'),
+  ...require('./roleChecker'),
+  ...require('./verifyToken')
 }
