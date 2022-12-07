@@ -36,14 +36,15 @@ class ClassController {
     const uniqueTeachers = [...new Set(teachers)]
 
     // Validate teacherId inside teachers array
-    for (let i = 0; i < uniqueTeachers.length; i++) {
-      const teacher = await this._userService.findUserById(teachers[i])
-      if (!teacher) throw new ClientError('Teacher not found', 404)
-      if (teacher.role !== 'TEACHER') throw new ClientError('Teacher not found', 404)
-    }
+    const foundTeachers = await this._userService.findTeachersByIds(teachers)
+    teachers.forEach(id => {
+      if(foundTeachers.findIndex(t => t._id === id) < 0) {
+        throw new ClientError('Teacher not found', 404)
+      }
+    })
 
     // Verify grade is exist
-    let gradeId = await is._gradeService.getGradeByName(grade)
+    let gradeId = await this._gradeService.getGradeByName(grade)
     if (!gradeId) gradeId = await this._gradeService.addGrade(grade)
 
     // Add class
