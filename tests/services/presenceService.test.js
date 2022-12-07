@@ -1,17 +1,14 @@
 const { Class } = require('../../src/models/class.js')
 const { Presence } = require('../../src/models/presence.js')
 const { ClassService } = require('../../src/services/classService.js')
-const { GradeService } = require('../../src/services/gradeService.js')
 const { PresenceService } = require('../../src/services/presenceService.js')
-const { UserService } = require('../../src/services/userService.js')
 const { connectDatabase, clearDatabase, disconnectDatabase } = require('../database.js')
 const { createClass } = require('../extensions/class')
 const { generatePresencePayload } = require('../extensions/presence.js')
 const { createTeacher } = require('../extensions/user')
 const should = require('should')
-const { toDateTimeString } = require('../extensions/common.js')
 
-describe('presenceService', () => {
+describe('PresenceService', () => {
   const createSampleClass = async () => {
     const teacher = await createTeacher()
     const grade = 'Grade'
@@ -20,18 +17,12 @@ describe('presenceService', () => {
 
   let presenceService
   let classService
-  let userService
-  let gradeService
-
-  let sampleClass
 
   const toDate = (dateString) => new Date(dateString)
 
   beforeAll(async () => {
     classService = new ClassService()
     presenceService = new PresenceService(classService)
-    userService = new UserService()
-    gradeService = new GradeService()
     await connectDatabase()
   })
 
@@ -146,16 +137,28 @@ describe('presenceService', () => {
 
   describe('getAllPresences', () => {
     it('returns valid array of presence sorted by end time', async () => {
-      await presenceService.addPresence(anotherPresenceData, sampleClass)
-      let newClass = await classService.getClass(sampleClass._id)
-      await presenceService.addPresence(presenceData, newClass)
-      newClass = await classService.getClass(sampleClass._id)
+      const presencePayloads = [
+        generatePresencePayload(),
+        generatePresencePayload()
+      ]
+      let classroom = await createClass()
+      await presenceService.addPresence(presencePayloads[0], classroom)
+      classroom = await classService.getClass(classroom._id)
+      await presenceService.addPresence(presencePayloads[1], classroom)
+      classroom = await classService.getClass(classroom._id)
 
-      const presences = presenceService.getAllPresences(newClass)
-      expect(presences[0].start).toEqual(toDate(anotherPresenceData.start))
-      expect(presences[0].end).toEqual(toDate(anotherPresenceData.end))
-      expect(presences[1].start).toEqual(toDate(presenceData.start))
-      expect(presences[1].end).toEqual(toDate(presenceData.end))
+      // Sort payload by end time descending
+      const sortedPayloads = presencePayloads.sort(
+        (a, b) => {
+          return new Date(b.end).getTime() - new Date(a.end).getTime()
+        }
+      )
+
+      const presences = presenceService.getAllPresences(classroom)
+      presences[0].start.should.be.eql(toDate(sortedPayloads[0].start))
+      presences[0].end.should.be.eql(toDate(sortedPayloads[0].end))
+      presences[1].start.should.be.eql(toDate(sortedPayloads[1].start))
+      presences[1].end.should.be.eql(toDate(sortedPayloads[1].end))
     })
   })
 })
