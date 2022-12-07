@@ -1,4 +1,5 @@
 const { faker } = require('@faker-js/faker')
+const { PresenceService, ClassService } = require('../../src/services')
 const { toDateTimeString } = require('./common')
 
 const generatePresencePayload = () => {
@@ -11,6 +12,24 @@ const generatePresencePayload = () => {
   }
 }
 
+async function createPresence (classroom, payload) {
+  if (!payload) {
+    payload = generatePresencePayload()
+  }
+
+  return await new PresenceService(new ClassService()).addPresence(payload, classroom)
+}
+
+function sortPresencesByDate (presences) {
+  return presences.sort(
+    (a, b) => {
+      return new Date(b.end).getTime() - new Date(a.end).getTime()
+    }
+  )
+}
+
 module.exports = {
-  generatePresencePayload
+  generatePresencePayload,
+  createPresence,
+  sortPresencesByDate
 }

@@ -37,7 +37,7 @@ class PresenceController {
 
     const classroom = await this.classService.getClass(req.params.classId)
 
-    if(!this.classService.isTeacherInClass(classroom, req.user)) {
+    if (!this.classService.isTeacherInClass(classroom, req.user)) {
       throw new ForbiddenError()
     }
 

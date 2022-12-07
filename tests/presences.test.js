@@ -8,32 +8,7 @@ const { createTeacher } = require('./extensions/user')
 const { createClass } = require('./extensions/class')
 const { createStudentToken, createTeacherToken } = require('./extensions/auth')
 const should = require('should')
-
-const sampleClassData = {
-  teachers: ['NEED INJECTION'],
-  schedule: {
-    start: new Date('2020-02-10 08:00:00'),
-    end: new Date('2020-02-10 11:00:00')
-  },
-  name: 'Kimia',
-  gradeId: 'NEED INJECTION'
-}
-const sampleTeacherData = {
-  email: 'teacher@example.com',
-  fullName: 'Example Teacher',
-  gender: true,
-  dateOfBirth: '2002-02_16',
-  placeOfBirth: 'Medan',
-  address: 'Jl. Sudirman Kelurahan Butuh Kec. Pakisaji Kota Magelang'
-}
-const presenceData = {
-  start: '2020-09-10 08:00:00',
-  end: '2020-09-10 10:00:00'
-}
-const anotherPresenceData = {
-  start: '2020-09-19 10:00:00',
-  end: '2020-09-20 12:00:00'
-}
+const { createPresence, sortPresencesByDate } = require('./extensions/presence')
 
 const createSampleClass = async () => {
   const teacher = await createTeacher()
@@ -42,26 +17,8 @@ const createSampleClass = async () => {
 }
 
 describe('Presence Route', () => {
-  const sampleStudentData = {
-    ...sampleTeacherData,
-    email: 'student@example.com',
-    fullName: 'Example Student'
-  }
-
-  let sampleClass
-
   let userService
   let tokenize
-
-  const createSampleStudent = async () => {
-    return await userService.directCreateUser(sampleStudentData, 'STUDENT')
-  }
-
-  const createTokenFromExistingUser = async (userId) => {
-    const user = await userService.findUserById(userId)
-    if (!user) throw new Error('User not found')
-    return await tokenize.sign(user, false)
-  }
 
   const createTokenFromClassroom = async (classroom) => {
     return await createTeacherToken({ _id: classroom.teachers[0] })
@@ -82,59 +39,74 @@ describe('Presence Route', () => {
   afterEach(async () => await db.clearDatabase())
   afterAll(async () => await db.disconnectDatabase())
 
-  describe('GET /', () => {
-    it('returns status code 401 error when no user authenticated', async () => {
-      const res = await request(app)
-        .get(`/api/v1/class/${sampleClass._id}/presences`)
+  describe('GET /api/v1/class/{classId}/presences', () => {
+    const getPresencesPath = (classroom) => `/api/v1/class/${classroom._id}/presences`
 
-      expect(res.statusCode).toEqual(401)
+    it('returns status code 401 error when no user authenticated', async () => {
+      const classroom = await createSampleClass()
+      const res = await request(app)
+        .get(getPresencesPath(classroom))
+
+      res.statusCode.should.be.eql(401)
     })
 
     it('returns status code 403 when authenticated user neither admin nor teacher', async () => {
+      const classroom = await createSampleClass()
       const studentToken = await createStudentToken()
       const res = await request(app)
-        .get(`/api/v1/class/${sampleClass._id}/presences`)
-        .set('Authorization', 'Bearer ' + studentToken)
+        .get(getPresencesPath(classroom))
+        .auth(studentToken, { type: 'bearer' })
 
-      expect(res.statusCode).toEqual(403)
+      res.statusCode.should.be.eql(403)
     })
 
     it("returns status code 404 when class id doesn't exists", async () => {
       const res = await request(app)
         .get('/api/v1/class/random-class-id/presences')
-        .set('Authorization', 'Bearer ' + await createTeacherTokenFromClass(sampleClass))
+        .auth(await createTeacherToken(), { type: 'bearer' })
 
-      expect(res.statusCode).toEqual(404)
+      res.statusCode.should.be.eql(404)
     })
 
     it('returns status code 200', async () => {
+      const classroom = await createSampleClass()
       const res = await request(app)
-        .get(`/api/v1/class/${sampleClass._id}/presences`)
-        .set('Authorization', 'Bearer ' + await createTeacherTokenFromClass(sampleClass))
+        .get(getPresencesPath(classroom))
+        .auth(await createTokenFromClassroom(classroom), {
+          type: 'bearer'
+        })
       expect(res.statusCode).toEqual(200)
     })
 
     it('returns all presences in the class sorted by end time', async () => {
-      const token = await createTeacherTokenFromClass(sampleClass)
-      await request(app)
-        .post(`/api/v1/class/${sampleClass._id}/presences`)
-        .set('Authorization', 'Bearer ' + token)
-        .send(anotherPresenceData)
-      await request(app)
-        .post(`/api/v1/class/${sampleClass._id}/presences`)
-        .set('Authorization', 'Bearer ' + token)
-        .send(presenceData)
+      const classroom = await createSampleClass()
+      const appendPresence = async () => {
+        const presence = await createPresence(classroom)
+        classroom.presences.push(presence)
+        return presence
+      }
+
+      const createdPresences = [
+        await appendPresence(),
+        await appendPresence()
+      ]
+
+      const sortedPresences = sortPresencesByDate(createdPresences)
+
+      const token = await createTokenFromClassroom(classroom)
 
       const res = await request(app)
-        .get(`/api/v1/class/${sampleClass._id}/presences`)
-        .set('Authorization', 'Bearer ' + token)
+        .get(getPresencesPath(classroom))
+        .auth(token, {
+          type: 'bearer'
+        })
 
       const presences = res.body.data
 
-      expect(presences[0].start).toEqual(isoDate(anotherPresenceData.start))
-      expect(presences[0].end).toEqual(isoDate(anotherPresenceData.end))
-      expect(presences[1].start).toEqual(isoDate(presenceData.start))
-      expect(presences[1].end).toEqual(isoDate(presenceData.end))
+      presences[0].start.should.be.eql(isoDate(sortedPresences[0].start))
+      presences[0].end.should.be.eql(isoDate(sortedPresences[0].end))
+      presences[1].start.should.be.eql(isoDate(sortedPresences[1].start))
+      presences[1].end.should.be.eql(isoDate(sortedPresences[1].end))
     })
   })
 
@@ -194,7 +166,7 @@ describe('Presence Route', () => {
       expect(res.statusCode).toEqual(404)
     })
 
-    it("returns 403 when the teacher is not assigned to the class", async () => {
+    it('returns 403 when the teacher is not assigned to the class', async () => {
       const classroom = await createSampleClass()
       const res = await request(app)
         .post(`/api/v1/class/${classroom._id}/presences`)
@@ -300,9 +272,3 @@ describe('Presence Route', () => {
     })
   })
 })
-
-module.exports = {
-  createSampleClass,
-  presenceData,
-  anotherPresenceData
-}

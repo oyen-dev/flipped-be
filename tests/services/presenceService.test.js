@@ -4,7 +4,7 @@ const { ClassService } = require('../../src/services/classService.js')
 const { PresenceService } = require('../../src/services/presenceService.js')
 const { connectDatabase, clearDatabase, disconnectDatabase } = require('../database.js')
 const { createClass } = require('../extensions/class')
-const { generatePresencePayload } = require('../extensions/presence.js')
+const { generatePresencePayload, sortPresencesByDate } = require('../extensions/presence.js')
 const { createTeacher } = require('../extensions/user')
 const should = require('should')
 
@@ -148,11 +148,7 @@ describe('PresenceService', () => {
       classroom = await classService.getClass(classroom._id)
 
       // Sort payload by end time descending
-      const sortedPayloads = presencePayloads.sort(
-        (a, b) => {
-          return new Date(b.end).getTime() - new Date(a.end).getTime()
-        }
-      )
+      const sortedPayloads = sortPresencesByDate(presencePayloads)
 
       const presences = presenceService.getAllPresences(classroom)
       presences[0].start.should.be.eql(toDate(sortedPayloads[0].start))
