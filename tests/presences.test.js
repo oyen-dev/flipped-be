@@ -6,7 +6,7 @@ const { createTeacher } = require('./extensions/user')
 const { createClass } = require('./extensions/class')
 const { createStudentToken, createTeacherToken } = require('./extensions/auth')
 const should = require('should')
-const { createPresence, sortPresencesByDate } = require('./extensions/presence')
+const { createPresence, sortPresencesByDate, generatePresencePayload } = require('./extensions/presence')
 
 const createSampleClass = async () => {
   const teacher = await createTeacher()
@@ -15,7 +15,6 @@ const createSampleClass = async () => {
 }
 
 describe('Presence Route', () => {
-
   const createTokenFromClassroom = async (classroom) => {
     return await createTeacherToken({ _id: classroom.teachers[0] })
   }
@@ -57,7 +56,7 @@ describe('Presence Route', () => {
       res.statusCode.should.be.eql(404)
     })
 
-    it('returns 403 when authenticated teacher is not assigned to the class', async() => {
+    it('returns 403 when authenticated teacher is not assigned to the class', async () => {
       const classroom = await createSampleClass()
       const anotherTeacherToken = await createTeacherToken()
       const res = await request(app)
@@ -109,7 +108,13 @@ describe('Presence Route', () => {
     })
   })
 
-  describe('POST /', () => {
+  describe('POST /api/v1/class/{classId}/presences', () => {
+    let presencePayload
+
+    beforeEach(() => {
+      presencePayload = generatePresencePayload()
+    })
+
     it('returns 401 when no user authenticated', async () => {
       const classroom = await createSampleClass()
       const res = await request(app)
@@ -134,7 +139,7 @@ describe('Presence Route', () => {
         .post(`/api/v1/class/${classroom._id}/presences`)
         .set('Authorization', 'Bearer ' + await createTokenFromClassroom(classroom))
         .send({
-          ...presenceData,
+          ...presencePayload,
           start: ''
         })
 
@@ -148,7 +153,7 @@ describe('Presence Route', () => {
         .post(`/api/v1/class/${classroom._id}/presences`)
         .set('Authorization', 'Bearer ' + await createTokenFromClassroom(classroom))
         .send({
-          ...presenceData,
+          ...presencePayload,
           end: ''
         })
 
@@ -160,7 +165,7 @@ describe('Presence Route', () => {
       const res = await request(app)
         .post('/api/v1/class/random-class-id/presences')
         .set('Authorization', 'Bearer ' + await createTeacherToken())
-        .send(presenceData)
+        .send(presencePayload)
 
       expect(res.statusCode).toEqual(404)
     })
@@ -170,7 +175,7 @@ describe('Presence Route', () => {
       const res = await request(app)
         .post(`/api/v1/class/${classroom._id}/presences`)
         .set('Authorization', 'Bearer ' + await createTeacherToken())
-        .send(presenceData)
+        .send(presencePayload)
 
       res.statusCode.should.be.eql(403)
     })
@@ -180,7 +185,7 @@ describe('Presence Route', () => {
       const res = await request(app)
         .post(`/api/v1/class/${classroom._id}/presences`)
         .set('Authorization', 'Bearer ' + await createTokenFromClassroom(classroom))
-        .send(presenceData)
+        .send(presencePayload)
 
       res.statusCode.should.eql(201)
     })
@@ -190,12 +195,12 @@ describe('Presence Route', () => {
       const res = await request(app)
         .post(`/api/v1/class/${classroom._id}/presences`)
         .set('Authorization', 'Bearer ' + await createTokenFromClassroom(classroom))
-        .send(presenceData)
+        .send(presencePayload)
 
       const data = res.body.data
 
-      data.start.should.be.eql(isoDate(presenceData.start))
-      data.end.should.be.eql(isoDate(presenceData.end))
+      data.start.should.be.eql(isoDate(presencePayload.start))
+      data.end.should.be.eql(isoDate(presencePayload.end))
     })
 
     it('returns 409 when there is an opened presence', async () => {
@@ -214,7 +219,7 @@ describe('Presence Route', () => {
       const res = await request(app)
         .post(`/api/v1/class/${classroom._id}/presences`)
         .set('Authorization', 'Bearer ' + token)
-        .send(presenceData)
+        .send(presencePayload)
 
       res.statusCode.should.be.eql(409)
     })

@@ -13,7 +13,7 @@ class PresenceController {
 
   async getAllPresences (req, res) {
     const classroom = await this.classService.getClass(req.params.classId)
-    
+
     if (!this.classService.isTeacherInClass(classroom, req.user)) {
       throw new ForbiddenError()
     }
