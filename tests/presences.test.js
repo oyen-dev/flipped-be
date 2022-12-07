@@ -1,7 +1,5 @@
 const request = require('supertest')
 const { app } = require('../src/app')
-const { ClassService, GradeService, UserService } = require('../src/services')
-const { Tokenize } = require('../src/utils')
 const db = require('./database')
 const { cleanStringify } = require('./extension')
 const { createTeacher } = require('./extensions/user')
@@ -17,8 +15,6 @@ const createSampleClass = async () => {
 }
 
 describe('Presence Route', () => {
-  let userService
-  let tokenize
 
   const createTokenFromClassroom = async (classroom) => {
     return await createTeacherToken({ _id: classroom.teachers[0] })
@@ -27,14 +23,7 @@ describe('Presence Route', () => {
   const isoDate = (datestring) => new Date(datestring).toISOString()
 
   beforeAll(async () => {
-    classService = new ClassService()
-    gradeService = new GradeService()
-    userService = new UserService()
-    tokenize = new Tokenize()
     await db.connectDatabase()
-  })
-  beforeEach(async () => {
-    // sampleClass = await createSampleClass(gradeService, classService, userService)
   })
   afterEach(async () => await db.clearDatabase())
   afterAll(async () => await db.disconnectDatabase())
@@ -66,6 +55,16 @@ describe('Presence Route', () => {
         .auth(await createTeacherToken(), { type: 'bearer' })
 
       res.statusCode.should.be.eql(404)
+    })
+
+    it('returns 403 when authenticated teacher is not assigned to the class', async() => {
+      const classroom = await createSampleClass()
+      const anotherTeacherToken = await createTeacherToken()
+      const res = await request(app)
+        .get(getPresencesPath(classroom))
+        .auth(anotherTeacherToken, { type: 'bearer' })
+
+      res.statusCode.should.be.eql(403)
     })
 
     it('returns status code 200', async () => {
