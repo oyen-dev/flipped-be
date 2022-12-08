@@ -3,7 +3,7 @@ const { bindAll } = require('../utils/classBinder')
 const { submitStudentPresenceSchema } = require('../validators/schema/presenceSchema')
 
 class PresenceController {
-  constructor (presenceService, classService, validator, response) {
+  constructor(presenceService, classService, validator, response) {
     this.presenceService = presenceService
     this.classService = classService
     this.response = response
@@ -12,7 +12,7 @@ class PresenceController {
     bindAll(this)
   }
 
-  async getAllPresences (req, res) {
+  async getAllPresences(req, res) {
     const classroom = await this.classService.getClass(req.params.classId)
 
     if (!this.classService.isTeacherInClass(classroom, req.user)) {
@@ -25,7 +25,7 @@ class PresenceController {
     )
   }
 
-  async getPresenceOpenStatus (req, res) {
+  async getPresenceOpenStatus(req, res) {
     const classroom = await this.classService.getClass(req.params.classId)
     const currentPresence = this.presenceService.filterCurrentPresence(classroom.presences)
     res.send(this.response.success(
@@ -37,7 +37,7 @@ class PresenceController {
     ))
   }
 
-  async addPresence (req, res) {
+  async addPresence(req, res) {
     const payload = req.body
     this.validator.validateAddPresence(payload)
 
@@ -52,10 +52,7 @@ class PresenceController {
     }
 
     const presence = await this.presenceService.addPresence(
-      {
-        ...payload,
-        studentPresences: []
-      }, classroom)
+      payload, classroom)
 
     res.status(201).send(
       this.response.success(201, 'Add presence sucess', presence)
@@ -63,26 +60,27 @@ class PresenceController {
   }
 
   async submitStudentPresence(req, res) {
-    const {attendance, reaction} = await submitStudentPresenceSchema.validateAsync(req.body)
+    const { attendance, reaction } = await submitStudentPresenceSchema.validateAsync(req.body)
     const classroom = await this.classService.getClass(req.params.classId)
 
+    // Check is there an active presence
     const activePresence = this.presenceService.filterCurrentPresence(classroom.presences)
-    if(!activePresence) {
+    if (!activePresence) {
       throw new DocumentNotFoundError('Active Presence')
     }
 
-    res.json({
-      s: activePresence
-    })
-    
-    // const result = await this.presenceService.addStudentPresence(
-    //   attendance,
-    //   reaction,
-    //   req.user._id,
-    //   activePresence
-    // )
+    // Check is the student has submitted presence before
+    if(await this.presenceService.isStudentHasSubmittedPresence(activePresence, req.user._id)) {
+      throw new ForbiddenError('student has submitted presence before')
+    }
 
-    // res.json(result)
+    const result = await this.presenceService.addStudentPresence(
+      attendance,
+      reaction,
+      req.user._id,
+      activePresence
+    )
+    res.json({result})
   }
 }
 

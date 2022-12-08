@@ -13,6 +13,8 @@ const studentPresence = new Schema({
    },
   reaction: { type: Number, default: 0 },
   attendance: {type: Number, required: true}
+}, {
+  versionKey: false
 })
 
 // Create model

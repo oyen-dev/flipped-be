@@ -9,6 +9,7 @@ class PresenceService {
   }
 
   getAllPresences(classroom) {
+    // console.log(classroom)
     return classroom.presences.sort((a, b) => new Date(b.end).getTime() - new Date(a.end).getTime())
   }
 
@@ -72,6 +73,17 @@ class PresenceService {
       query.populate('student')
     }
     return await query
+  }
+
+  async isStudentHasSubmittedPresence(activePresence, studentId) {
+    const presence = await Presence.findById(activePresence._id)
+      .populate({
+        path: 'studentPresences',
+        match: {
+          student: studentId
+        }
+      })
+    return !!presence.studentPresences.length
   }
 }
 

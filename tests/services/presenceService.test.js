@@ -4,7 +4,7 @@ const { ClassService } = require('../../src/services/classService.js')
 const { PresenceService } = require('../../src/services/presenceService.js')
 const { connectDatabase, clearDatabase, disconnectDatabase } = require('../database.js')
 const { createClass } = require('../extensions/class')
-const { generatePresencePayload, sortPresencesByDate, generateStudentPresencePayload, createCurrentPresence } = require('../extensions/presence.js')
+const { generatePresencePayload, sortPresencesByDate, generateStudentPresencePayload, createCurrentPresence, createPresence } = require('../extensions/presence.js')
 const { createTeacher, createStudent } = require('../extensions/user')
 const should = require('should')
 const { StudentPresence } = require('../../src/models/studentPresence.js')
@@ -106,9 +106,9 @@ describe('PresenceService', () => {
     it('returns a new presence with id', async () => {
       const { presencePayload, classroom } = await getRequiredPresenceData()
       const presence = await presenceService.addPresence(presencePayload, classroom)
-
       presence.start.should.be.eql(new Date(presencePayload.start))
       presence.end.should.be.eql(new Date(presencePayload.end))
+      presence.studentPresences.should.be.an.Array()
       presence._id.should.not.be.Undefined()
     })
 
@@ -171,7 +171,7 @@ describe('PresenceService', () => {
       presence = await createCurrentPresence(classroom)
     })
 
-    it('binds the student presence to presence', async() => {
+    it('binds the student presence to presence', async () => {
       const result = await presenceService.addStudentPresence(
         attendance,
         reaction,
@@ -217,7 +217,7 @@ describe('PresenceService', () => {
   })
 
   describe('getStudentPresence', () => {
-    const addStudentPresence = async() => {
+    const addStudentPresence = async () => {
       const student = await createStudent()
       const payload = generateStudentPresencePayload()
       return await StudentPresence.create({
@@ -227,14 +227,14 @@ describe('PresenceService', () => {
       })
     }
 
-    it('returns null when no student presences matched with the id', async() => {
+    it('returns null when no student presences matched with the id', async () => {
       const result = await presenceService.getStudentPresence()
-      
+
       should(result).be.null()
     })
 
-    it('returns matched student presence with id', async() => {
-      const {_id, attendance, reaction, student} = await addStudentPresence()
+    it('returns matched student presence with id', async () => {
+      const { _id, attendance, reaction, student } = await addStudentPresence()
       const result = await presenceService.getStudentPresence(_id)
 
       result._id.should.be.eql(_id)
@@ -242,6 +242,51 @@ describe('PresenceService', () => {
       result.reaction.should.be.eql(reaction)
       result.student.should.be.eql(student)
       result.at.should.be.String()
+    })
+  })
+
+  describe('isStudentHasSubmittedPresence', () => {
+    let student, activePresence
+
+    const createStudentPresence = async (presence) => {
+      let studentPresence = await StudentPresence.create({
+        student: student._id,
+        at: new Date(),
+        reaction: 5,
+        attendance: 1
+      })
+      await Presence.findByIdAndUpdate(presence, {
+        studentPresences: [
+          ...presence.studentPresences,
+          studentPresence._id
+        ]
+      })
+    }
+
+    beforeEach(async () => {
+      const classroom = await createSampleClass()
+      student = await createStudent()
+      activePresence = await createCurrentPresence(classroom)
+    })
+
+    it('returns false if the student has not submitted presence yet', async () => {
+      const result = await presenceService.isStudentHasSubmittedPresence(
+        activePresence,
+        student._id
+      )
+
+      result.should.be.eql(false)
+    })
+
+    it('returns true if the student has submitted presence', async () => {
+      await createStudentPresence(activePresence)
+
+      const result = await presenceService.isStudentHasSubmittedPresence(
+        activePresence,
+        student._id
+      )
+
+      result.should.be.eql(true)
     })
   })
 })

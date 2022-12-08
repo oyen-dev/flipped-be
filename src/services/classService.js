@@ -76,13 +76,11 @@ class ClassService {
       //   ]
       // })
       // .populate({ path: 'evaluations', select: '_id name' })
-      .populate({ path: 'presences', select: '_id start end attendance' })
       .select('_id teachers name gradeId cover invitationCode presence presences')
       .exec({
         path: 'presence.presences',
         select: '_id name'
       })
-
     if (!classDetail) throw new ClientError('Class not found', 404)
     return classDetail
   }

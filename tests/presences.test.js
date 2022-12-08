@@ -99,7 +99,6 @@ describe('Presence Route', () => {
         })
 
       const presences = res.body.data
-
       presences[0].start.should.be.eql(isoDate(sortedPresences[0].start))
       presences[0].end.should.be.eql(isoDate(sortedPresences[0].end))
       presences[1].start.should.be.eql(isoDate(sortedPresences[1].start))
@@ -190,9 +189,9 @@ describe('Presence Route', () => {
         .send(presencePayload)
 
       const data = res.body.data
-
       data.start.should.be.eql(isoDate(presencePayload.start))
       data.end.should.be.eql(isoDate(presencePayload.end))
+      data.studentPresences.should.be.eql([])
     })
 
     it('returns 409 when there is an opened presence', async () => {
@@ -331,11 +330,11 @@ describe('Presence Route', () => {
         .post(submitPresencePath(classroom))
         .auth(studentToken, { type: 'bearer' })
         .send(attendancePayload)
-console.log(res.body)
       res.statusCode.should.be.eql(200)
     })
 
-    it.skip('returns 403 when submitting presence twice or more', async () => {
+    it('returns 403 when submitting presence twice or more', async () => {
+      await createCurrentPresence(classroom)
       await request(app)
         .post(submitPresencePath(classroom))
         .auth(studentToken, { type: 'bearer' })
@@ -343,6 +342,7 @@ console.log(res.body)
 
       const res = await request(app)
         .post(submitPresencePath(classroom))
+        .auth(studentToken, { type: 'bearer' })
         .send(attendancePayload)
       res.statusCode.should.be.eql(403)
     })
