@@ -1,5 +1,6 @@
-const { ConflictError, ForbiddenError } = require('../errors')
+const { ConflictError, ForbiddenError, BadRequestError, DocumentNotFoundError } = require('../errors')
 const { bindAll } = require('../utils/classBinder')
+const { submitStudentPresenceSchema } = require('../validators/schema/presenceSchema')
 
 class PresenceController {
   constructor (presenceService, classService, validator, response) {
@@ -50,11 +51,38 @@ class PresenceController {
       throw new ConflictError('There is an opened presence in this class')
     }
 
-    const presence = await this.presenceService.addPresence(payload, classroom)
+    const presence = await this.presenceService.addPresence(
+      {
+        ...payload,
+        studentPresences: []
+      }, classroom)
 
     res.status(201).send(
       this.response.success(201, 'Add presence sucess', presence)
     )
+  }
+
+  async submitStudentPresence(req, res) {
+    const {attendance, reaction} = await submitStudentPresenceSchema.validateAsync(req.body)
+    const classroom = await this.classService.getClass(req.params.classId)
+
+    const activePresence = this.presenceService.filterCurrentPresence(classroom.presences)
+    if(!activePresence) {
+      throw new DocumentNotFoundError('Active Presence')
+    }
+
+    res.json({
+      s: activePresence
+    })
+    
+    // const result = await this.presenceService.addStudentPresence(
+    //   attendance,
+    //   reaction,
+    //   req.user._id,
+    //   activePresence
+    // )
+
+    // res.json(result)
   }
 }
 

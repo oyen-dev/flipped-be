@@ -12,7 +12,7 @@ const generatePresencePayload = () => {
   }
 }
 
-async function createPresence (classroom, payload) {
+async function createPresence(classroom, payload) {
   if (!payload) {
     payload = generatePresencePayload()
   }
@@ -20,7 +20,17 @@ async function createPresence (classroom, payload) {
   return await new PresenceService(new ClassService()).addPresence(payload, classroom)
 }
 
-function sortPresencesByDate (presences) {
+async function createCurrentPresence(classroom) {
+  const now = new Date()
+  const payload = {
+    ...generatePresencePayload(),
+    start: now,
+    end: new Date(now).setHours(now.getHours() + 2)
+  }
+  return await createPresence(classroom, payload)
+}
+
+function sortPresencesByDate(presences) {
   return presences.sort(
     (a, b) => {
       return new Date(b.end).getTime() - new Date(a.end).getTime()
@@ -28,8 +38,15 @@ function sortPresencesByDate (presences) {
   )
 }
 
+const generateStudentPresencePayload = () => ({
+  attendance: Math.floor(Math.random() * 3 + 1),
+  reaction: Math.floor(Math.random() * 5 + 1)
+})
+
 module.exports = {
   generatePresencePayload,
   createPresence,
-  sortPresencesByDate
+  sortPresencesByDate,
+  generateStudentPresencePayload,
+  createCurrentPresence
 }

@@ -6,14 +6,8 @@ const { createTeacher } = require('./extensions/user')
 const { createClass } = require('./extensions/class')
 const { createStudentToken, createTeacherToken } = require('./extensions/auth')
 const should = require('should')
-const { createPresence, sortPresencesByDate, generatePresencePayload } = require('./extensions/presence')
+const { createPresence, sortPresencesByDate, generatePresencePayload, generateStudentPresencePayload, createCurrentPresence } = require('./extensions/presence')
 const { toDateTimeString } = require('./extensions/common')
-
-const createSampleClass = async () => {
-  const teacher = await createTeacher()
-  const grade = 'Grade'
-  return await createClass(null, [teacher], grade)
-}
 
 describe('Presence Route', () => {
   let classroom
@@ -23,11 +17,15 @@ describe('Presence Route', () => {
   }
 
   const isoDate = (datestring) => new Date(datestring).toISOString()
-
   const appendPresence = async (classroom, payload) => {
     const presence = await createPresence(classroom, payload)
     classroom.presences.push(presence)
     return presence
+  }
+  const createSampleClass = async () => {
+    const teacher = await createTeacher()
+    const grade = 'Grade'
+    return await createClass(null, [teacher], grade)
   }
 
   beforeAll(async () => {
@@ -266,6 +264,87 @@ describe('Presence Route', () => {
 
       res.statusCode.should.be.eql(200)
       res.body.data.isOpen.should.be.eql(true)
+    })
+  })
+
+  describe('POST /api/v1/class/{classId}/presences/current', () => {
+    let attendancePayload, studentToken
+    const submitPresencePath = (classroom) => `/api/v1/class/${classroom._id}/presences/current`
+
+    beforeEach(async () => {
+      attendancePayload = generateStudentPresencePayload()
+      studentToken = await createStudentToken()
+    })
+
+    it('returns 401 when unauthenticated', async () => {
+      const res = await request(app)
+        .post(submitPresencePath(classroom))
+        .send(attendancePayload)
+
+      res.statusCode.should.be.eql(401)
+    })
+
+    it('returns 403 when authenticated user is not student', async () => {
+      const res = await request(app)
+        .post(submitPresencePath(classroom))
+        .auth(await createTeacherToken(), { type: 'bearer' })
+        .send(attendancePayload)
+
+      res.statusCode.should.be.eql(403)
+    })
+
+    it('requires "attendance" field', async () => {
+      const res = await request(app)
+        .post(submitPresencePath(classroom))
+        .auth(studentToken, { type: 'bearer' })
+        .send({
+          ...attendancePayload,
+          attendance: undefined
+        })
+
+      res.statusCode.should.be.eql(400)
+    })
+
+    it('requires "reaction" field', async () => {
+      const res = await request(app)
+        .post(submitPresencePath(classroom))
+        .auth(studentToken, { type: 'bearer' })
+        .send({
+          ...attendancePayload,
+          reaction: undefined
+        })
+
+      res.statusCode.should.be.eql(400)
+    })
+
+    it('returns 404 when there is no active presences', async () => {
+      const res = await request(app)
+        .post(submitPresencePath(classroom))
+        .auth(studentToken, { type: 'bearer' })
+        .send(attendancePayload)
+      res.statusCode.should.be.eql(404)
+    })
+
+    it('returns 200 when submitting presence succeeded', async () => {
+      await createCurrentPresence(classroom)
+      const res = await request(app)
+        .post(submitPresencePath(classroom))
+        .auth(studentToken, { type: 'bearer' })
+        .send(attendancePayload)
+console.log(res.body)
+      res.statusCode.should.be.eql(200)
+    })
+
+    it.skip('returns 403 when submitting presence twice or more', async () => {
+      await request(app)
+        .post(submitPresencePath(classroom))
+        .auth(studentToken, { type: 'bearer' })
+        .send(attendancePayload)
+
+      const res = await request(app)
+        .post(submitPresencePath(classroom))
+        .send(attendancePayload)
+      res.statusCode.should.be.eql(403)
     })
   })
 })

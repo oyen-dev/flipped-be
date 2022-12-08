@@ -15,6 +15,6 @@ module.exports = {
   ...require('./tSubmission'),
   ...require('./token'),
   ...require('./tSubmission'),
-  ...require('./user')
-  // ...require('./studentPresence')
+  ...require('./user'),
+  ...require('./studentPresence')
 }

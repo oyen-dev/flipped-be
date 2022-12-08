@@ -4,9 +4,10 @@ const { ClassService } = require('../../src/services/classService.js')
 const { PresenceService } = require('../../src/services/presenceService.js')
 const { connectDatabase, clearDatabase, disconnectDatabase } = require('../database.js')
 const { createClass } = require('../extensions/class')
-const { generatePresencePayload, sortPresencesByDate } = require('../extensions/presence.js')
-const { createTeacher } = require('../extensions/user')
+const { generatePresencePayload, sortPresencesByDate, generateStudentPresencePayload, createCurrentPresence } = require('../extensions/presence.js')
+const { createTeacher, createStudent } = require('../extensions/user')
 const should = require('should')
+const { StudentPresence } = require('../../src/models/studentPresence.js')
 
 describe('PresenceService', () => {
   const createSampleClass = async () => {
@@ -155,6 +156,92 @@ describe('PresenceService', () => {
       presences[0].end.should.be.eql(toDate(sortedPayloads[0].end))
       presences[1].start.should.be.eql(toDate(sortedPayloads[1].start))
       presences[1].end.should.be.eql(toDate(sortedPayloads[1].end))
+    })
+  })
+
+  describe('addStudentPresence', () => {
+    let student, attendance, reaction, presence, classroom
+
+    beforeEach(async () => {
+      student = await createStudent()
+      const payload = generateStudentPresencePayload()
+      attendance = payload.attendance
+      reaction = payload.reaction
+      classroom = await createSampleClass()
+      presence = await createCurrentPresence(classroom)
+    })
+
+    it('binds the student presence to presence', async() => {
+      const result = await presenceService.addStudentPresence(
+        attendance,
+        reaction,
+        student._id,
+        presence
+      )
+
+      const newPresence = await Presence.findById(presence._id)
+      newPresence.studentPresences.should.containDeep([result._id])
+    })
+
+    it('returns student submission', async () => {
+      const result = await presenceService.addStudentPresence(
+        attendance,
+        reaction,
+        student._id,
+        presence
+      )
+
+      result._id.should.be.String()
+      result.attendance.should.be.eql(attendance)
+      result.reaction.should.be.eql(reaction)
+      result.student.should.be.eql(student._id)
+      result.at.should.be.String()
+    })
+
+    it('saves student submission to database', async () => {
+      const studentPresence = await presenceService.addStudentPresence(
+        attendance,
+        reaction,
+        student._id,
+        presence
+      )
+
+      const result = await StudentPresence.findById(studentPresence._id)
+
+      result._id.should.be.String()
+      result.attendance.should.be.eql(attendance)
+      result.reaction.should.be.eql(reaction)
+      result.student.should.be.eql(student._id)
+      result.at.should.be.String()
+    })
+  })
+
+  describe('getStudentPresence', () => {
+    const addStudentPresence = async() => {
+      const student = await createStudent()
+      const payload = generateStudentPresencePayload()
+      return await StudentPresence.create({
+        student: student._id,
+        ...payload,
+        at: new Date()
+      })
+    }
+
+    it('returns null when no student presences matched with the id', async() => {
+      const result = await presenceService.getStudentPresence()
+      
+      should(result).be.null()
+    })
+
+    it('returns matched student presence with id', async() => {
+      const {_id, attendance, reaction, student} = await addStudentPresence()
+      const result = await presenceService.getStudentPresence(_id)
+
+      result._id.should.be.eql(_id)
+      result.attendance.should.be.eql(attendance)
+      result.reaction.should.be.eql(reaction)
+      result.student.should.be.eql(student)
+      result.at.should.be.String()
     })
   })
 })

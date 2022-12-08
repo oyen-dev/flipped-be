@@ -1,12 +1,14 @@
 const { MyRouter } = require('../myserver')
 
 class PresenceRoutes {
-  constructor (verifyToken, needRoles, presenceController) {
+  constructor (verifyToken, needRole, presenceController) {
     const router = MyRouter({ mergeParams: true })
 
-    router.get('/', verifyToken, needRoles(['ADMIN', 'TEACHER']), presenceController.getAllPresences)
-    router.post('/', verifyToken, needRoles(['ADMIN', 'TEACHER']), presenceController.addPresence)
+    router.get('/', verifyToken, needRole(['ADMIN', 'TEACHER']), presenceController.getAllPresences)
+    router.post('/', verifyToken, needRole(['ADMIN', 'TEACHER']), presenceController.addPresence)
+
     router.get('/current', verifyToken, presenceController.getPresenceOpenStatus)
+    router.post('/current', verifyToken, needRole(['STUDENT']), presenceController.submitStudentPresence)
 
     this.router = router
   }
