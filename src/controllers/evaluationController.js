@@ -207,6 +207,51 @@ class EvaluationController {
     return res.status(response.statsCode || 200).json(response)
   }
 
+  async updateClassEvaluation (req, res) {
+    const token = req.headers.authorization
+    const { classId, evaluationId } = req.params
+    const payload = req.body
+
+    // Check token is exist
+    if (!token) throw new ClientError('Unauthorized', 401)
+
+    // Validate token
+    const { _id } = await this._tokenize.verify(token)
+
+    // Find user
+    const user = await this._userService.findUserById(_id)
+    if (!user) throw new ClientError('Unauthorized', 401)
+
+    // Validate payload
+    payload.classId = classId
+    payload.teacherId = _id
+    this._validator.validateCreateEvaluation(payload)
+
+    // Make sure user is TEACHER
+    if (user.role !== 'TEACHER') throw new ClientError('Unauthorized to update evaluation', 401)
+
+    // Find class
+    const classData = await this._classService.getClass(classId)
+
+    // Make sure teacher is in class
+    let isTeacherInClass = false
+    for (const teacher of classData.teachers) {
+      if (teacher._id.includes(user._id)) {
+        isTeacherInClass = true
+        break
+      }
+    }
+    if (!isTeacherInClass) throw new ClientError('Unauthorized to update evaluation', 401)
+
+    // Update evaluation
+    await this._evaluationService.updateEvaluation(evaluationId, payload)
+
+    // Response
+    const response = this._response.success(200, 'Update evaluation success')
+
+    return res.status(response.statsCode || 200).json(response)
+  }
+
   // Answer
 
   // ESubmission

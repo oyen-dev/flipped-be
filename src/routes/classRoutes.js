@@ -42,6 +42,7 @@ class ClassRoutes {
     // Evaluations
     this.router.get('/:classId/evaluations', this._evaluationController.getClassEvaluations)
     this.router.post('/:classId/evaluations', this._evaluationController.createEvaluation)
+    this.router.put('/:classId/evaluations/:evaluationId', this._evaluationController.updateClassEvaluation)
 
     // Presence
     this.router.use('/:classId/presences', presenceRoutes.router)
