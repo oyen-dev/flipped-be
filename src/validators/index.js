@@ -27,7 +27,8 @@ const {
   updateSubmissonSchema,
   updateClassSchema,
   createQuestionSchema,
-  getQuestionShema
+  getQuestionShema,
+  createEvaluationSchema
 } = require('./schema')
 
 class Validator {
@@ -172,6 +173,11 @@ class Validator {
 
   validateGetQuestion (payload) {
     const { error } = getQuestionShema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateCreateEvaluation (payload) {
+    const { error } = createEvaluationSchema.validate(payload)
     if (error) throw new ClientError(error.message, 400)
   }
 }

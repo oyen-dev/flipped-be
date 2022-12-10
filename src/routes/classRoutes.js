@@ -14,7 +14,6 @@ class ClassRoutes {
     this.router.put('/:id', this._classController.updateClass)
     this.router.get('/:id/students', this._classController.getClassStudents)
     this.router.get('/:id/tasks', this._classController.getClassTasks)
-    this.router.get('/:id/evaluations', this._classController.getClassEvaluations)
     this.router.post('/', this._classController.addClass)
     this.router.post('/archive', this._classController.archiveClass)
     this.router.post('/delete', this._classController.deleteClass)
@@ -36,8 +35,13 @@ class ClassRoutes {
 
     // Questions
     this.router.post('/:classId/questions', this._evaluationController.createQuestion)
+    this.router.get('/:classId/questions/:questionId', this._evaluationController.getQuestion)
     this.router.put('/:classId/questions/:questionId', this._evaluationController.updateQuestion)
     this.router.delete('/:classId/questions/:questionId', this._evaluationController.deleteQuestion)
+
+    // Evaluations
+    this.router.get('/:classId/evaluations', this._classController.getClassEvaluations)
+    this.router.post('/:classId/evaluations', this._evaluationController.createEvaluation)
 
     // Presence
     this.router.use('/:classId/presences', presenceRoutes.router)

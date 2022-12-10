@@ -10,7 +10,19 @@ const getQuestionShema = Joi.object({
   questionId: Joi.string().required()
 })
 
+const createEvaluationSchema = Joi.object({
+  classId: Joi.string().required(),
+  teacherId: Joi.string().required(),
+  title: Joi.string().required(),
+  questions: Joi.array().items(Joi.string()).required(),
+  deadline: Joi.object({
+    start: Joi.date().required(),
+    end: Joi.date().required()
+  }).required()
+})
+
 module.exports = {
   createQuestionSchema,
-  getQuestionShema
+  getQuestionShema,
+  createEvaluationSchema
 }
