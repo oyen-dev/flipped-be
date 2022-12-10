@@ -13,12 +13,20 @@ class EvaluationService {
     return await Evaluation.findByIdAndUpdate(_id, payload, { new: true })
   }
 
-  async getClassEvaluations (classId) {
-    return await Evaluation.find({ classId })
-  }
-
   async getEvaluationById (_id) {
     return await Evaluation.findById(_id)
+  }
+
+  async getClassEvaluations (classId) {
+    const evaluations = await Evaluation.find({ classId })
+      .select('_id title teacherId deadline')
+      .populate([
+        { path: 'teacherId', select: 'fullName picture' }
+      ])
+      .sort({ createdAt: -1 })
+      .lean()
+
+    return evaluations || []
   }
 }
 

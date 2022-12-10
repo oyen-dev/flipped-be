@@ -277,33 +277,6 @@ class ClassController {
     }
   }
 
-  async getClassEvaluations (req, res) {
-    const token = req.headers.authorization
-    const id = req.params.id
-
-    try {
-      // Check token is exist
-      if (!token) throw new ClientError('Unauthorized', 401)
-
-      // Validate token
-      await this._tokenize.verify(token)
-
-      // Validate payload
-      this._validator.validateGetClass({ id })
-
-      // Get class
-      const classDetail = await this._classService.getClassPosts(id)
-
-      // Response
-      const response = this._response.success(200, 'Get class evaluations success!', classDetail)
-
-      return res.status(response.statsCode || 200).json(response)
-    } catch (error) {
-      console.log(error)
-      return this._response.error(res, error)
-    }
-  }
-
   async archiveClass (req, res) {
     const token = req.headers.authorization
     const payload = req.body

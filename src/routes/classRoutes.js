@@ -40,7 +40,7 @@ class ClassRoutes {
     this.router.delete('/:classId/questions/:questionId', this._evaluationController.deleteQuestion)
 
     // Evaluations
-    this.router.get('/:classId/evaluations', this._classController.getClassEvaluations)
+    this.router.get('/:classId/evaluations', this._evaluationController.getClassEvaluations)
     this.router.post('/:classId/evaluations', this._evaluationController.createEvaluation)
 
     // Presence
