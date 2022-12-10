@@ -252,6 +252,32 @@ class EvaluationController {
     return res.status(response.statsCode || 200).json(response)
   }
 
+  async getEvaluationDetail (req, res) {
+    const token = req.headers.authorization
+    const { evaluationId } = req.params
+
+    // Check token is exist
+    if (!token) throw new ClientError('Unauthorized', 401)
+
+    // Validate token
+    const { _id } = await this._tokenize.verify(token)
+
+    // Find user
+    const user = await this._userService.findUserById(_id)
+    if (!user) throw new ClientError('Unauthorized', 401)
+
+    // Validate payload
+    this._validator.validateGetEvaluationDetail({ evaluationId })
+
+    // Evaluation detail
+    const evaluation = await this._evaluationService.getEvaluationDetail(evaluationId)
+
+    // Response
+    const response = this._response.success(200, 'Get evaluation detail success', evaluation)
+
+    return res.status(response.statsCode || 200).json(response)
+  }
+
   // Answer
 
   // ESubmission

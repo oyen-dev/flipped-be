@@ -85,8 +85,6 @@ class ClassController {
     const id = req.params.id
     const payload = req.body
 
-    console.log(payload)
-
     // Check token is exist
     if (!token) throw new ClientError('Unauthorized', 401)
 

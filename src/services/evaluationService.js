@@ -28,6 +28,18 @@ class EvaluationService {
 
     return evaluations || []
   }
+
+  async getEvaluationDetail (_id) {
+    const evaluation = await Evaluation.findById(_id)
+      .select('_id title teacherId deadline questions')
+      .populate([
+        { path: 'teacherId', select: 'fullName picture' },
+        { path: 'questions', select: '_id question options key' }
+      ])
+      .lean()
+
+    return evaluation || {}
+  }
 }
 
 module.exports = {

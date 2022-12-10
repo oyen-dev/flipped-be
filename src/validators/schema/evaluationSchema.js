@@ -25,9 +25,14 @@ const getClassEvaluationsSchema = Joi.object({
   classId: Joi.string().required()
 })
 
+const getEvaluationDetailSchema = Joi.object({
+  evaluationId: Joi.string().required()
+})
+
 module.exports = {
   createQuestionSchema,
   getQuestionShema,
   createEvaluationSchema,
-  getClassEvaluationsSchema
+  getClassEvaluationsSchema,
+  getEvaluationDetailSchema
 }
