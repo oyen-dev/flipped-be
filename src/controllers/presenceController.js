@@ -74,13 +74,13 @@ class PresenceController {
       throw new ForbiddenError('student has submitted presence before')
     }
 
-    const result = await this.presenceService.addStudentPresence(
+    await this.presenceService.addStudentPresence(
       attendance,
       reaction,
       req.user._id,
       activePresence
     )
-    res.json({result})
+    res.json(this.response.success(200, 'Presence submission has been recorded', true))
   }
 }
 

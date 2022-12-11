@@ -316,6 +316,15 @@ describe('Presence Route', () => {
       res.statusCode.should.be.eql(400)
     })
 
+    it("returns 404 when class don't exists", async () => {
+      const res = await request(app)
+        .post(submitPresencePath({_id: 'invalid'}))
+        .set('Authorization', 'Bearer ' + await createStudentToken())
+        .send(attendancePayload)
+
+      expect(res.statusCode).toEqual(404)
+    })
+
     it('returns 404 when there is no active presences', async () => {
       const res = await request(app)
         .post(submitPresencePath(classroom))
@@ -331,6 +340,15 @@ describe('Presence Route', () => {
         .auth(studentToken, { type: 'bearer' })
         .send(attendancePayload)
       res.statusCode.should.be.eql(200)
+    })
+
+    it('returns true when success', async () => {
+      await createCurrentPresence(classroom)
+      const res = await request(app)
+        .post(submitPresencePath(classroom))
+        .auth(studentToken, { type: 'bearer' })
+        .send(attendancePayload)
+      res.body.data.should.be.eql(true)
     })
 
     it('returns 403 when submitting presence twice or more', async () => {
