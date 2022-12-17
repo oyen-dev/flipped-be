@@ -1,5 +1,6 @@
 const { bindAll } = require('../utils/classBinder')
-const { Presence, StudentPresence } = require('../models')
+const { Presence, StudentPresence, Class } = require('../models')
+const { ClientError } = require('../errors')
 
 class PresenceService {
   constructor (classService) {
@@ -93,6 +94,23 @@ class PresenceService {
 
   async checkStudentWasPresent (studenntPresenceId, studentId) {
     return await StudentPresence.find({ _id: studenntPresenceId, student: studentId })
+  }
+
+  async getPresenceDetail (classId, presenceId) {
+    const classPresence = await Class.findById(classId)
+
+    if (!classPresence) {
+      throw new ClientError('Class not found', 404)
+    } else if (!classPresence.presences.includes(presenceId)) {
+      throw new ClientError('Presence not found', 404)
+    }
+
+    const presence = await Presence.findById(presenceId)
+      .select('_id start end studentPresences')
+      .populate({ path: 'studentPresences', select: '_id student attendance reaction at' })
+      .exec()
+
+    return presence
   }
 }
 

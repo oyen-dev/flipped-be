@@ -1,5 +1,5 @@
 class ResponseError extends Error {
-  constructor(message, statusCode) {
+  constructor (message, statusCode) {
     super(message)
     this.statusCode = statusCode
     this.message = message
@@ -7,7 +7,7 @@ class ResponseError extends Error {
 }
 
 class ClientError extends ResponseError {
-  constructor(message, statusCode) {
+  constructor (message, statusCode) {
     super(message, statusCode)
     this.statusCode = statusCode
     this.name = 'ClientError'
@@ -15,25 +15,25 @@ class ClientError extends ResponseError {
 }
 
 class BadRequestError extends ResponseError {
-  constructor(message = 'Unauthorized') {
+  constructor (message = 'Unauthorized') {
     super(message, 400)
   }
 }
 
 class UnauthorizedError extends ResponseError {
-  constructor(message = 'Unauthorized') {
+  constructor (message = 'Unauthorized') {
     super(message, 401)
   }
 }
 
 class ForbiddenError extends ResponseError {
-  constructor(message = 'Forbidden') {
+  constructor (message = 'Forbidden') {
     super(message, 403)
   }
 }
 
 class DocumentNotFoundError extends ResponseError {
-  constructor(document, id) {
+  constructor (document, id) {
     let documentName
     if (typeof (document) === 'function') {
       documentName = document.name
@@ -44,7 +44,7 @@ class DocumentNotFoundError extends ResponseError {
     }
 
     let msg
-    if(id) {
+    if (id) {
       msg = `${documentName} with id ${id} is not found.`
     } else {
       msg = `${documentName} not found.`
@@ -58,13 +58,13 @@ class DocumentNotFoundError extends ResponseError {
 }
 
 class ConflictError extends ResponseError {
-  constructor(message = 'Conflict') {
+  constructor (message = 'Conflict') {
     super(message, 409)
   }
 }
 
 class InternalServerError extends ResponseError {
-  constructor(message) {
+  constructor (message) {
     super(message, 500)
   }
 }

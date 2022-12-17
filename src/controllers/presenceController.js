@@ -114,6 +114,74 @@ class PresenceController {
     )
     res.json({ result })
   }
+
+  async getPresenceDetail (req, res) {
+    const { classId, presenceId } = req.params
+
+    // Get class student
+    let { students } = await this.classService.getClassStudents(classId)
+
+    // Map students
+    students = students.map((student) => {
+      return {
+        _id: student._id,
+        fullName: student.fullName,
+        picture: student.picture
+      }
+    })
+
+    // Sort students by fullName
+    students.sort((a, b) => {
+      const nameA = a.fullName.toUpperCase()
+      const nameB = b.fullName.toUpperCase()
+      if (nameA < nameB) {
+        return -1
+      }
+      if (nameA > nameB) {
+        return 1
+      }
+      return 0
+    })
+
+    // Get presence detail
+    const presence = await this.presenceService.getPresenceDetail(classId, presenceId)
+
+    // Map students with their submission
+    const studentPresences = []
+    for (const student of students) {
+      const studentPresence = presence.studentPresences.find((studentPresence) => {
+        return studentPresence.student.toString() === student._id.toString()
+      })
+
+      if (studentPresence) {
+        studentPresences.push({
+          student,
+          attendance: studentPresence.attendance,
+          reaction: studentPresence.reaction,
+          at: studentPresence.at
+        })
+      } else {
+        studentPresences.push({
+          student,
+          attendance: null,
+          reaction: null,
+          at: null
+        })
+      }
+    }
+
+    // Payload response
+    const payload = {
+      _id: presence._id,
+      start: presence.start,
+      end: presence.end,
+      studentPresences
+    }
+
+    res.json(
+      this.response.success(200, 'Get presence detail success', payload)
+    )
+  }
 }
 
 module.exports = {
