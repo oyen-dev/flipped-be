@@ -93,7 +93,7 @@ const classController = new ClassController(classService, userService, gradeServ
 const socketController = new SocketController(onlineUserService, logService)
 const attachmentController = new AttachmentController(attachmentService, storageService, userService, validator, tokenize, response)
 const postController = new PostController(classService, userService, postService, taskService, submissionService, attachmentService, storageService, validator, tokenize, response)
-const presenceController = new PresenceController(presenceService, classService, presenceValidator, response)
+const presenceController = new PresenceController(presenceService, classService, presenceValidator, tokenize, response)
 const evaluationController = new EvaluationController(classService, userService, evaluationService, questionService, answerService, eSubmissionService, validator, tokenize, response)
 
 // Routes
