@@ -1,0 +1,229 @@
+[{
+  "_id": "pre-RMcey7tr-aCU8qA",
+  "start": {
+    "$date": {
+      "$numberLong": "1667376000000"
+    }
+  },
+  "end": {
+    "$date": {
+      "$numberLong": "1667469600000"
+    }
+  },
+  "studentPresences": [],
+  "deletedAt": null,
+  "__v": 0
+},{
+  "_id": "pre-mhlmwCH_i3ayViO",
+  "start": {
+    "$date": {
+      "$numberLong": "1669633200000"
+    }
+  },
+  "end": {
+    "$date": {
+      "$numberLong": "1667397600000"
+    }
+  },
+  "studentPresences": [],
+  "deletedAt": null,
+  "__v": 0
+},{
+  "_id": "pre-_CZtoP6Y-zo08Wc",
+  "start": {
+    "$date": {
+      "$numberLong": "1669633200000"
+    }
+  },
+  "end": {
+    "$date": {
+      "$numberLong": "1667397600000"
+    }
+  },
+  "studentPresences": [],
+  "deletedAt": null,
+  "__v": 0
+},{
+  "_id": "pre-fBDindXlrgUrcl9",
+  "start": {
+    "$date": {
+      "$numberLong": "1669633200000"
+    }
+  },
+  "end": {
+    "$date": {
+      "$numberLong": "1669644000000"
+    }
+  },
+  "studentPresences": [],
+  "deletedAt": null,
+  "__v": 0
+},{
+  "_id": "pre-6lUTkLJkxfUSYA4",
+  "start": {
+    "$date": {
+      "$numberLong": "1669633200000"
+    }
+  },
+  "end": {
+    "$date": {
+      "$numberLong": "1669636800000"
+    }
+  },
+  "studentPresences": [],
+  "deletedAt": null,
+  "__v": 0
+},{
+  "_id": "pre-VY2u3ERsCLOcpxL",
+  "start": {
+    "$date": {
+      "$numberLong": "1669633200000"
+    }
+  },
+  "end": {
+    "$date": {
+      "$numberLong": "1669636800000"
+    }
+  },
+  "studentPresences": [],
+  "deletedAt": null,
+  "__v": 0
+},{
+  "_id": "pre-k4a8bQ9xFCAubuU",
+  "start": {
+    "$date": {
+      "$numberLong": "1669633200000"
+    }
+  },
+  "end": {
+    "$date": {
+      "$numberLong": "1669636800000"
+    }
+  },
+  "studentPresences": [],
+  "deletedAt": null,
+  "__v": 0
+},{
+  "_id": "pre-xLJzWUHmmQ1knH2",
+  "start": {
+    "$date": {
+      "$numberLong": "1669719600000"
+    }
+  },
+  "end": {
+    "$date": {
+      "$numberLong": "1669744800000"
+    }
+  },
+  "studentPresences": [],
+  "deletedAt": null,
+  "__v": 0
+},{
+  "_id": "pre-HJRKYFsn0lcwt5z",
+  "start": {
+    "$date": {
+      "$numberLong": "1669788000029"
+    }
+  },
+  "end": {
+    "$date": {
+      "$numberLong": "1669795200943"
+    }
+  },
+  "studentPresences": [],
+  "deletedAt": null,
+  "__v": 0
+},{
+  "_id": "pre-_DKjev5eR1AK8p7",
+  "start": {
+    "$date": {
+      "$numberLong": "1669788000590"
+    }
+  },
+  "end": {
+    "$date": {
+      "$numberLong": "1669795200941"
+    }
+  },
+  "studentPresences": [],
+  "deletedAt": null,
+  "__v": 0
+},{
+  "_id": "pre-ecEq8UKn5-nNIwa",
+  "start": {
+    "$date": {
+      "$numberLong": "1669791600421"
+    }
+  },
+  "end": {
+    "$date": {
+      "$numberLong": "1669795200477"
+    }
+  },
+  "studentPresences": [],
+  "deletedAt": null,
+  "__v": 0
+},{
+  "_id": "pre-MwGjXYHNiIZDxXy",
+  "start": {
+    "$date": {
+      "$numberLong": "1669795200670"
+    }
+  },
+  "end": {
+    "$date": {
+      "$numberLong": "1669802400230"
+    }
+  },
+  "studentPresences": [],
+  "deletedAt": null,
+  "__v": 0
+},{
+  "_id": "pre-WXaSY4BhQXLSAgo",
+  "start": {
+    "$date": {
+      "$numberLong": "1670655600000"
+    }
+  },
+  "end": {
+    "$date": {
+      "$numberLong": "1670659200000"
+    }
+  },
+  "studentPresences": [],
+  "deletedAt": null,
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1670687589857"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1670687589857"
+    }
+  }
+},{
+  "_id": "pre-Zej96ju_S3A_Vig",
+  "start": {
+    "$date": {
+      "$numberLong": "1670688840293"
+    }
+  },
+  "end": {
+    "$date": {
+      "$numberLong": "1670691540710"
+    }
+  },
+  "studentPresences": [],
+  "deletedAt": null,
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1670688855555"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1670688855555"
+    }
+  }
+}]

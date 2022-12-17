@@ -1,0 +1,88 @@
+[{
+  "_id": "tsb-FNBpS5DkoXpP3DK",
+  "taskId": "tas-PNSXMyh8NGqP0nU",
+  "studentId": "usr-8N5ylElwv4ddWNf",
+  "answers": "hhahahah",
+  "attachments": [],
+  "points": 70,
+  "reaction": 5,
+  "feedback": "bagus lanjutkan",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669042270734"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1669560670734"
+    }
+  },
+  "__v": 0
+},{
+  "_id": "tsb-pUh5JfvuejKm7bM",
+  "taskId": "tas-EhGckRhze9cda16",
+  "studentId": "usr-8N5ylElwv4ddWNf",
+  "answers": "Ini foto saya",
+  "attachments": [
+    "att-YdLJ5_nF58W8dr0",
+    "att-l7FsNkXewqPIMAm",
+    "att-GoElu3EgcsbatgG",
+    "att-ZjRNnLehJwTmWah"
+  ],
+  "points": null,
+  "reaction": 5,
+  "feedback": null,
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669042270734"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1669042270734"
+    }
+  },
+  "__v": 0
+},{
+  "_id": "tsb-cPeVpgsE0tCuS4x",
+  "taskId": "tas-EhGckRhze9cda16",
+  "studentId": "usr-vddBF_ZyFL9Tzvt",
+  "answers": "adadasfasfasfasfgasgasgasgasgasgasga",
+  "attachments": [],
+  "points": 78,
+  "reaction": 4,
+  "feedback": "tingkatkan lagi",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669457674552"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1669457674552"
+    }
+  },
+  "__v": 0
+},{
+  "_id": "tsb-vh3RSpy-o-8UGwJ",
+  "taskId": "tas-PNSXMyh8NGqP0nU",
+  "studentId": "usr-vddBF_ZyFL9Tzvt",
+  "answers": "ini jawaban saya ",
+  "attachments": [
+    "att-3PB1HCavIitapO9"
+  ],
+  "points": 40,
+  "reaction": 1,
+  "feedback": null,
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669457674552"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1669457674552"
+    }
+  },
+  "__v": 0
+}]

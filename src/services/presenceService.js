@@ -35,6 +35,10 @@ class PresenceService {
     const now = new Date()
     return presences.find((presence) => new Date(presence.end).getTime() > now.getTime()) || null
   }
+
+  async updatePresence (id, payload) {
+    return await Presence.findByIdAndUpdate(id, payload, { new: true })
+  }
 }
 
 module.exports = {

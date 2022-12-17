@@ -1,0 +1,61 @@
+[{
+  "_id": "tas-EhGckRhze9cda16",
+  "postId": "pos-bzb2gTBcCS1pIp2",
+  "deadline": {
+    "start": {
+      "$date": {
+        "$numberLong": "1669024771000"
+      }
+    },
+    "end": {
+      "$date": {
+        "$numberLong": "1669136399000"
+      }
+    }
+  },
+  "submissions": [
+    "tsb-pUh5JfvuejKm7bM",
+    "tsb-cPeVpgsE0tCuS4x"
+  ],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669024772310"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1669024772311"
+    }
+  },
+  "__v": 3
+},{
+  "_id": "tas-PNSXMyh8NGqP0nU",
+  "postId": "pos-3_d1R4sL6whUWM2",
+  "deadline": {
+    "start": {
+      "$date": {
+        "$numberLong": "1669024893000"
+      }
+    },
+    "end": {
+      "$date": {
+        "$numberLong": "1669136399000"
+      }
+    }
+  },
+  "submissions": [
+    "tsb-FNBpS5DkoXpP3DK",
+    "tsb-vh3RSpy-o-8UGwJ"
+  ],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669024893888"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1669024893888"
+    }
+  },
+  "__v": 3
+}]

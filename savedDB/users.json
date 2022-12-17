@@ -1,0 +1,529 @@
+[{
+  "_id": "usr-djXyWGkMDeW9N4m",
+  "email": "admin@admin.com",
+  "password": "$2b$10$JULlnbOhXoJjr8i3dD9EKeUSLTYWrFe4NsrqwbuJFeI0tNLqm6NEC",
+  "fullName": "Admin",
+  "gender": true,
+  "dateOfBirth": "Sat Jan 01 2000 00:00:00 GMT+0000 (Coordinated Universal Time)",
+  "placeOfBirth": "Malang",
+  "address": "Malang",
+  "phone": "",
+  "isActivated": true,
+  "verifiedAt": {
+    "$date": {
+      "$numberLong": "1669023650996"
+    }
+  },
+  "isDeleted": false,
+  "deletedAt": null,
+  "willBeDeletedAt": null,
+  "role": "ADMIN",
+  "logs": [
+    "log-YpX01SaHLV8CpKs",
+    "log-Ig3ntgxB6SsCFdd",
+    "log-yAwHdL1mP2KI3o8"
+  ],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669023578934"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1671263588271"
+    }
+  },
+  "picture": "https://storage.googleapis.com/olearning-storage/1671001496433-IMG_3906.jpeg",
+  "__v": 38
+},{
+  "_id": "usr-bj7oeOTPM_1SnGT",
+  "email": "sobociju@lyricspad.net",
+  "password": "$2b$10$ydDFBVXto2OyiE/GciBKnueDPa4231BlexBDNNEljGlVHtqXgVZwe",
+  "fullName": "Anandia Karina, S.Pd.",
+  "gender": false,
+  "dateOfBirth": "Wed Feb 21 1990 16:45:21 GMT+0700 (Indochina Time)",
+  "placeOfBirth": "Malang",
+  "address": "Malang",
+  "phone": "",
+  "isActivated": true,
+  "verifiedAt": {
+    "$date": {
+      "$numberLong": "1669023935693"
+    }
+  },
+  "isDeleted": false,
+  "deletedAt": null,
+  "willBeDeletedAt": null,
+  "role": "TEACHER",
+  "logs": [
+    "log-3wC8kZx0bqEGZrP",
+    "log-s6wyqr3a3Z-z1FL",
+    "log-i5V4f6NUu-O7egN"
+  ],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669023578934"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1671263518528"
+    }
+  },
+  "picture": "https://ui-avatars.com/api/?name=Anandia&size=300",
+  "__v": 54
+},{
+  "_id": "usr-uYPSkzoRMlhxwpl",
+  "email": "lovewebe@mailo.icu",
+  "password": "$2b$10$PChoQ5wEVdv/gsyq8TCKGeHh/aY1Y6pNLMqzOMa7fQhS75js2FiKq",
+  "fullName": "Teuku Afrizal",
+  "gender": true,
+  "dateOfBirth": "Mon Apr 10 1989 09:47:00 GMT+0000 (Coordinated Universal Time)",
+  "placeOfBirth": "Malang",
+  "address": "Malang",
+  "phone": "",
+  "isActivated": true,
+  "verifiedAt": {
+    "$date": {
+      "$numberLong": "1669024031200"
+    }
+  },
+  "isDeleted": false,
+  "deletedAt": null,
+  "willBeDeletedAt": null,
+  "role": "TEACHER",
+  "logs": [
+    "log-qcoYE7AKVsFcM5L",
+    "log-yfwSBuyMHPfdgEk",
+    "log-yHJZ4HPfauWZdgg"
+  ],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669023578934"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1671001636066"
+    }
+  },
+  "picture": "https://storage.googleapis.com/olearning-storage/1670999332146-1916431_843127262500091_6812341380142394504_n.jpg",
+  "__v": 46
+},{
+  "_id": "usr-8N5ylElwv4ddWNf",
+  "email": "qejydefu@ema-sofia.eu",
+  "password": "$2b$10$piHC9R6z3Lsma7rWFOzanOcahqKD4cOqQObMIyOI9532fHDui4hGm",
+  "fullName": "Budi Doremi",
+  "gender": true,
+  "dateOfBirth": "Tue Jan 03 2006 16:49:14 GMT+0700 (Indochina Time)",
+  "placeOfBirth": "Malang",
+  "address": "Malang",
+  "phone": "",
+  "isActivated": true,
+  "verifiedAt": {
+    "$date": {
+      "$numberLong": "1669024164728"
+    }
+  },
+  "isDeleted": false,
+  "deletedAt": null,
+  "willBeDeletedAt": null,
+  "role": "STUDENT",
+  "logs": [
+    "log-wppDd2aDmrVdpWA",
+    "log-tZxLXBW_3j7HpoI",
+    "log-fLzLQChWUYrNIkQ"
+  ],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669023578934"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1669792000880"
+    }
+  },
+  "picture": "https://ui-avatars.com/api/?name=Budi&size=300",
+  "__v": 30
+},{
+  "_id": "usr-vddBF_ZyFL9Tzvt",
+  "email": "teliwy@cyclelove.cc",
+  "password": "$2b$10$NEQy5DDQL3BwGfYP57rYVuPr3CVNlk1Cr2VG3JrmXPO7LY7kgPhnu",
+  "fullName": "Arina Chan",
+  "gender": false,
+  "dateOfBirth": "Thu Dec 11 2008 16:50:42 GMT+0700 (Indochina Time)",
+  "placeOfBirth": "Malang",
+  "address": "Malang",
+  "phone": "",
+  "isActivated": true,
+  "verifiedAt": {
+    "$date": {
+      "$numberLong": "1669024259003"
+    }
+  },
+  "isDeleted": false,
+  "deletedAt": null,
+  "willBeDeletedAt": null,
+  "role": "STUDENT",
+  "logs": [
+    "log-jHz71w-K450vnW3",
+    "log-RCdjJbdCEDEt2Yf",
+    "log-uoH9xwpdwyIzuve"
+  ],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669023578934"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1671263606935"
+    }
+  },
+  "picture": "https://ui-avatars.com/api/?name=Arina&size=300",
+  "__v": 4
+},{
+  "_id": "usr-jNFpwg7j-DT7SXp",
+  "email": "mailerrr1@gmail.com",
+  "password": "$2b$10$GtAcsp4DK29kw7j./JzpvOypmWFE5.1zf2zhu6y88SUXa2zxD8oc2",
+  "fullName": "Wildan Azmi",
+  "gender": true,
+  "dateOfBirth": "Sat Feb 24 2001 00:00:00 GMT+0000 (Coordinated Universal Time)",
+  "placeOfBirth": "Malang",
+  "address": "Jln. Senggani No.7",
+  "phone": "",
+  "isActivated": false,
+  "verifiedAt": null,
+  "isDeleted": false,
+  "deletedAt": null,
+  "willBeDeletedAt": null,
+  "role": "STUDENT",
+  "logs": [],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669170684204"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1669170684204"
+    }
+  },
+  "picture": "https://ui-avatars.com/api/?name=Wildan&size=300",
+  "__v": 0
+},{
+  "_id": "usr-YrI4Ko4kdWPRzZU",
+  "email": "mailerrr2@gmail.com",
+  "password": "$2b$10$bV.qz/seatB/UvDMn0UtZeIq71fCUMbJQTqrBT8QN/zokL26jGjq6",
+  "fullName": "Wildan Azmi",
+  "gender": true,
+  "dateOfBirth": "Sat Feb 24 2001 00:00:00 GMT+0000 (Coordinated Universal Time)",
+  "placeOfBirth": "Malang",
+  "address": "Jln. Senggani No.7",
+  "phone": "",
+  "isActivated": false,
+  "verifiedAt": null,
+  "isDeleted": false,
+  "deletedAt": null,
+  "willBeDeletedAt": null,
+  "role": "STUDENT",
+  "logs": [],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669218890064"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1669218890064"
+    }
+  },
+  "picture": "https://ui-avatars.com/api/?name=Wildan&size=300",
+  "__v": 0
+},{
+  "_id": "usr-i-H0PkyY9ksDHTz",
+  "email": "mailerrr3@gmail.com",
+  "password": "$2b$10$zs4Xjf/UOxVZjlIIxBZzfeINs9LrQ7bDOr.raagOa3ImWvQugHpRy",
+  "fullName": "Wildan Azmi",
+  "gender": true,
+  "dateOfBirth": "Sat Feb 24 2001 00:00:00 GMT+0000 (Coordinated Universal Time)",
+  "placeOfBirth": "Malang",
+  "address": "Jln. Senggani No.7",
+  "phone": "",
+  "isActivated": false,
+  "verifiedAt": null,
+  "isDeleted": false,
+  "deletedAt": null,
+  "willBeDeletedAt": null,
+  "role": "STUDENT",
+  "logs": [],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669219024706"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1669219024706"
+    }
+  },
+  "picture": "https://ui-avatars.com/api/?name=Wildan&size=300",
+  "__v": 0
+},{
+  "_id": "usr-1EkVJ_wopY_2_Ov",
+  "email": "mailerrr4@gmail.com",
+  "password": "$2b$10$NglLqKPe0A.albZHF6BMgOdNFo.0jrXkIzGdZmR3lZTBvs4KaAtry",
+  "fullName": "Wildan Azmi",
+  "gender": true,
+  "dateOfBirth": "Sat Feb 24 2001 00:00:00 GMT+0000 (Coordinated Universal Time)",
+  "placeOfBirth": "Malang",
+  "address": "Jln. Senggani No.7",
+  "phone": "",
+  "isActivated": false,
+  "verifiedAt": null,
+  "isDeleted": false,
+  "deletedAt": null,
+  "willBeDeletedAt": null,
+  "role": "STUDENT",
+  "logs": [],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669219128458"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1669219128458"
+    }
+  },
+  "picture": "https://ui-avatars.com/api/?name=Wildan&size=300",
+  "__v": 0
+},{
+  "_id": "usr-MhBN9WxILK-_akc",
+  "email": "mailerrr5@gmail.com",
+  "password": "$2b$10$jtrrHOUzzS9ARw8XefGjpOe9YoMPN/x5PG1Axgx.kWx08IrnSog7K",
+  "fullName": "Wildan Azmi",
+  "gender": true,
+  "dateOfBirth": "Sat Feb 24 2001 00:00:00 GMT+0000 (Coordinated Universal Time)",
+  "placeOfBirth": "Malang",
+  "address": "Jln. Senggani No.7",
+  "phone": "",
+  "isActivated": false,
+  "verifiedAt": null,
+  "isDeleted": false,
+  "deletedAt": null,
+  "willBeDeletedAt": null,
+  "role": "STUDENT",
+  "logs": [],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669238900912"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1669238900912"
+    }
+  },
+  "picture": "https://ui-avatars.com/api/?name=Wildan&size=300",
+  "__v": 0
+},{
+  "_id": "usr-Y4an4zExczuveM2",
+  "email": "juvypeno@mailo.icu",
+  "password": "12345678",
+  "fullName": "Andika Pratama, S.Si",
+  "gender": false,
+  "dateOfBirth": "Wed Feb 12 1997 00:00:00 GMT+0000 (Coordinated Universal Time)",
+  "placeOfBirth": "Malang",
+  "address": "Jl. Pisang",
+  "phone": "",
+  "isActivated": true,
+  "verifiedAt": {
+    "$date": {
+      "$numberLong": "1669248457424"
+    }
+  },
+  "isDeleted": false,
+  "deletedAt": null,
+  "willBeDeletedAt": null,
+  "role": "TEACHER",
+  "logs": [],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669248367984"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1669721104741"
+    }
+  },
+  "picture": "https://ui-avatars.com/api/?name=Andika&size=300",
+  "__v": 0
+},{
+  "_id": "usr-r6Am4tdNBmz-6F5",
+  "email": "mardhatillah.atjeh@gmail.com",
+  "password": "$2b$10$tnB6EkfRMsIxY0FvA3HZU.ZhQMzBHZIKntwTg2uXeLF.0GpEb7FbK",
+  "fullName": "mardhatillah",
+  "gender": true,
+  "dateOfBirth": "Fri Apr 12 1991 00:00:00 GMT+0000 (Coordinated Universal Time)",
+  "placeOfBirth": "Desa Dalam",
+  "address": "Aceh Selatan",
+  "phone": "",
+  "isActivated": false,
+  "verifiedAt": null,
+  "isDeleted": false,
+  "deletedAt": null,
+  "willBeDeletedAt": null,
+  "role": "STUDENT",
+  "logs": [],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669566365781"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1669566365781"
+    }
+  },
+  "picture": "https://ui-avatars.com/api/?name=mardhatillah&size=300",
+  "__v": 0
+},{
+  "_id": "usr-GFtohj09zAhsfoN",
+  "email": "tijatovo@teleg.eu",
+  "password": "$2b$10$dGJlmA7OiRn04fiCfc3pSOebwL5Go75bV8JbxOBhn5weBOhJveA2O",
+  "fullName": "Berdina Amalia, S.pd",
+  "gender": false,
+  "dateOfBirth": "Fri Sep 10 1993 11:32:06 GMT+0000 (Coordinated Universal Time)",
+  "placeOfBirth": "Malang",
+  "address": "Malang",
+  "phone": "",
+  "isActivated": true,
+  "verifiedAt": {
+    "$date": {
+      "$numberLong": "1669721539568"
+    }
+  },
+  "isDeleted": false,
+  "deletedAt": null,
+  "willBeDeletedAt": null,
+  "role": "TEACHER",
+  "logs": [],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669700463881"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1669721904263"
+    }
+  },
+  "picture": "https://ui-avatars.com/api/?name=Berdina&size=300",
+  "__v": 0
+},{
+  "_id": "usr-Kz1PttVMk0GBdfG",
+  "email": "mardhatillah@bbg.ac.id",
+  "password": "$2b$10$jIKwk8dYq/PVoZA.rf0rlOsnBGgs3GwRGvlfWgttTGeEfJzyRpO5q",
+  "fullName": "mardhatillah",
+  "gender": true,
+  "dateOfBirth": "Fri Apr 12 1991 00:00:00 GMT+0000 (Coordinated Universal Time)",
+  "placeOfBirth": "Desa Dalam",
+  "address": "Aceh Selatan",
+  "phone": "",
+  "isActivated": true,
+  "verifiedAt": {
+    "$date": {
+      "$numberLong": "1670998095811"
+    }
+  },
+  "isDeleted": false,
+  "deletedAt": null,
+  "willBeDeletedAt": null,
+  "role": "STUDENT",
+  "logs": [],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669700463881"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1670998095811"
+    }
+  },
+  "picture": "https://ui-avatars.com/api/?name=mardhatillah&size=300",
+  "__v": 0
+},{
+  "_id": "usr-RAJdGgPA1KoING4",
+  "email": "helmi@bbg.ac.id",
+  "password": "$2b$10$B0rRFvRFTaLXfAHzH/ZNTOtYW9vGIjd1zJVxvhHXSez5bZQTOYe0i",
+  "fullName": "Helminsyah ",
+  "gender": true,
+  "dateOfBirth": "Mon Feb 10 2014 00:00:00 GMT+0000 (Coordinated Universal Time)",
+  "placeOfBirth": "Kandang ",
+  "address": "Kandang, Aceh Selatan ",
+  "phone": "",
+  "isActivated": true,
+  "verifiedAt": {
+    "$date": {
+      "$numberLong": "1670999190473"
+    }
+  },
+  "isDeleted": false,
+  "deletedAt": null,
+  "willBeDeletedAt": null,
+  "role": "STUDENT",
+  "logs": [
+    "log-6aZoM-DhbuhyVZq",
+    "log-Qv6zN0fZHJB2fAO",
+    "log-OCQzkWfRY1BAGEb"
+  ],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669700463881"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1671016018613"
+    }
+  },
+  "picture": "https://ui-avatars.com/api/?name=Helminsyah&size=300",
+  "__v": 6
+},{
+  "_id": "usr-DVHADaqgOYTlIb_",
+  "email": "tybutu@lyricspad.net",
+  "password": "$2b$10$RtnyKIZhHDCmI5zMpUzXaebypT5NnlyE5NxUaA1NfYlwloh6An2ku",
+  "fullName": "Test Siswa",
+  "gender": true,
+  "dateOfBirth": "Tue Dec 06 2022 00:00:00 GMT+0000 (Coordinated Universal Time)",
+  "placeOfBirth": "Malang",
+  "address": "Malang",
+  "phone": "",
+  "isActivated": true,
+  "verifiedAt": {
+    "$date": {
+      "$numberLong": "1671000055709"
+    }
+  },
+  "isDeleted": false,
+  "deletedAt": null,
+  "willBeDeletedAt": null,
+  "role": "STUDENT",
+  "logs": [],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669700463881"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1671000055709"
+    }
+  },
+  "picture": "https://ui-avatars.com/api/?name=Test&size=300",
+  "__v": 0
+}]

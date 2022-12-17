@@ -46,6 +46,22 @@ class PresenceController {
       this.response.success(201, 'Add presence sucess', presence)
     )
   }
+
+  async updatePresence (req, res) {
+    const payload = req.body
+
+    // Validate payload
+    this.validator.validateAddPresence(payload)
+
+    // Get current presence
+    const classroom = await this.classService.getClass(req.params.classId)
+    const currentPresence = this.presenceService.filterCurrentPresence(classroom.presences)
+
+    // Update current presence
+    await this.presenceService.updatePresence(currentPresence._id, payload)
+
+    res.status(200).send(this.response.success(200, 'Update presence success'))
+  }
 }
 
 module.exports = {
