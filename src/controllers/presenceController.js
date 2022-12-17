@@ -38,14 +38,17 @@ class PresenceController {
     const classroom = await this.classService.getClass(req.params.classId)
     const currentPresence = this.presenceService.filterCurrentPresence(classroom.presences)
 
-    const isStudentPresent = await this.presenceService.isStudentHasSubmittedPresence(currentPresence, _id)
+    let isStudentPresent = false
+    if (currentPresence) {
+      isStudentPresent = await this.presenceService.isStudentHasSubmittedPresence(currentPresence, _id)
+    }
 
     res.send(this.response.success(
       200,
       'Get presence open status success',
       {
         isOpen: !(!currentPresence),
-        isStudentPresent,
+        isStudentPresent: currentPresence ? isStudentPresent : false,
         presence: currentPresence
       }
     ))
