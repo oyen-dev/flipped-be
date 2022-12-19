@@ -1,4 +1,4 @@
-const { Evaluation } = require('../models')
+const { Evaluation, Question, eSubmission } = require('../models')
 const { ClientError } = require('../errors')
 
 class EvaluationService {
@@ -44,6 +44,23 @@ class EvaluationService {
       .lean()
 
     return evaluation || {}
+  }
+
+  async deleteEvaluation (_id) {
+    const wilBeDeleted = await Evaluation.findById(_id)
+    if (!wilBeDeleted) throw new ClientError('Evaluation not found', 404)
+
+    // Iterate questions and delete them
+    for (const questionId of wilBeDeleted.questions) {
+      await Question.deleteOne({ _id: questionId })
+    }
+
+    // Iterate submissions and delete them
+    for (const submissionId of wilBeDeleted.submissions) {
+      await eSubmission.deleteOne({ _id: submissionId })
+    }
+
+    return await Evaluation.deleteOne({ _id })
   }
 }
 
