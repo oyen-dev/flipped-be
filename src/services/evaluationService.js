@@ -1,4 +1,5 @@
 const { Evaluation } = require('../models')
+const { ClientError } = require('../errors')
 
 class EvaluationService {
   constructor () {
@@ -10,11 +11,15 @@ class EvaluationService {
   }
 
   async updateEvaluation (_id, payload) {
+    const wilBeUpdated = await Evaluation.findById(_id)
+
+    if (!wilBeUpdated) throw new ClientError('Evaluation not found', 404)
+
     return await Evaluation.findByIdAndUpdate(_id, payload, { new: true })
   }
 
   async getEvaluationById (_id) {
-    return await Evaluation.findById(_id)
+    return await Evaluation.findById(_id).exec()
   }
 
   async getClassEvaluations (classId) {
@@ -23,7 +28,7 @@ class EvaluationService {
       .populate([
         { path: 'teacherId', select: 'fullName picture' }
       ])
-      .sort({ createdAt: -1 })
+      .sort({ 'deadline.start': -1 })
       .lean()
 
     return evaluations || []

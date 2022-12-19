@@ -21,6 +21,7 @@ class EvaluationController {
   async createQuestion (req, res) {
     const token = req.headers.authorization
     const payload = req.body
+    const { evaluationId } = req.params
 
     // Check token is exist
     if (!token) throw new ClientError('Unauthorized', 401)
@@ -32,6 +33,10 @@ class EvaluationController {
     const user = await this._userService.findUserById(_id)
     if (!user) throw new ClientError('Unauthorized', 401)
 
+    // Check evaluation is exist
+    const evaluation = await this._evaluationService.getEvaluationById(evaluationId)
+    if (!evaluation) throw new ClientError('Evaluation not found', 404)
+
     // Validate payload
     this._validator.validateCreateQuestion(payload)
 
@@ -41,6 +46,10 @@ class EvaluationController {
     // Create question
     const question = await this._questionService.createQuestion(payload)
 
+    // Add question to evaluation
+    evaluation.questions.push(question._id)
+    await evaluation.save()
+
     // Response
     const response = this._response.success(200, 'Create question success', { _id: question._id })
 
@@ -49,7 +58,7 @@ class EvaluationController {
 
   async updateQuestion (req, res) {
     const token = req.headers.authorization
-    const { questionId } = req.params
+    const { evaluationId, questionId } = req.params
     const payload = req.body
 
     // Check token is exist
@@ -61,6 +70,10 @@ class EvaluationController {
     // Find user
     const user = await this._userService.findUserById(_id)
     if (!user) throw new ClientError('Unauthorized', 401)
+
+    // Check evaluation is exist
+    const evaluation = await this._evaluationService.getEvaluationById(evaluationId)
+    if (!evaluation) throw new ClientError('Evaluation not found', 404)
 
     // Validate payload
     this._validator.validateCreateQuestion(payload)
@@ -79,7 +92,7 @@ class EvaluationController {
 
   async deleteQuestion (req, res) {
     const token = req.headers.authorization
-    const { questionId } = req.params
+    const { evaluationId, questionId } = req.params
 
     // Check token is exist
     if (!token) throw new ClientError('Unauthorized', 401)
@@ -91,6 +104,10 @@ class EvaluationController {
     const user = await this._userService.findUserById(_id)
     if (!user) throw new ClientError('Unauthorized', 401)
 
+    // Check evaluation is exist
+    const evaluation = await this._evaluationService.getEvaluationById(evaluationId)
+    if (!evaluation) throw new ClientError('Evaluation not found', 404)
+
     // Validate payload
     this._validator.validateGetQuestion({ questionId })
 
@@ -99,6 +116,10 @@ class EvaluationController {
 
     // Delete question
     await this._questionService.deleteQuestion(questionId)
+
+    // Remove question from evaluation
+    evaluation.questions = evaluation.questions.filter(question => question.toString() !== questionId)
+    await evaluation.save()
 
     // Response
     const response = this._response.success(200, 'Delete question success')
@@ -223,9 +244,7 @@ class EvaluationController {
     if (!user) throw new ClientError('Unauthorized', 401)
 
     // Validate payload
-    payload.classId = classId
-    payload.teacherId = _id
-    this._validator.validateCreateEvaluation(payload)
+    this._validator.validateUpdateEvaluation(payload)
 
     // Make sure user is TEACHER
     if (user.role !== 'TEACHER') throw new ClientError('Unauthorized to update evaluation', 401)

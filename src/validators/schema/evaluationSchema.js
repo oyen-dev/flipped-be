@@ -21,6 +21,14 @@ const createEvaluationSchema = Joi.object({
   }).required()
 })
 
+const updateEvaluationSchema = Joi.object({
+  title: Joi.string().required(),
+  deadline: Joi.object({
+    start: Joi.date().required(),
+    end: Joi.date().required()
+  })
+})
+
 const getClassEvaluationsSchema = Joi.object({
   classId: Joi.string().required()
 })
@@ -34,5 +42,6 @@ module.exports = {
   getQuestionShema,
   createEvaluationSchema,
   getClassEvaluationsSchema,
-  getEvaluationDetailSchema
+  getEvaluationDetailSchema,
+  updateEvaluationSchema
 }

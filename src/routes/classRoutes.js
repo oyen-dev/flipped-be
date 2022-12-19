@@ -33,17 +33,17 @@ class ClassRoutes {
     this.router.get('/:classId/posts/:postId/status', this._postController.checkSubmissionStatus)
     this.router.put('/:classId/posts/:postId/submissions', this._postController.updateSubmission)
 
-    // Questions
-    this.router.post('/:classId/questions', this._evaluationController.createQuestion)
-    this.router.get('/:classId/questions/:questionId', this._evaluationController.getQuestion)
-    this.router.put('/:classId/questions/:questionId', this._evaluationController.updateQuestion)
-    this.router.delete('/:classId/questions/:questionId', this._evaluationController.deleteQuestion)
-
     // Evaluations
     this.router.get('/:classId/evaluations', this._evaluationController.getClassEvaluations)
     this.router.post('/:classId/evaluations', this._evaluationController.createEvaluation)
     this.router.get('/:classId/evaluations/:evaluationId', this._evaluationController.getEvaluationDetail)
     this.router.put('/:classId/evaluations/:evaluationId', this._evaluationController.updateClassEvaluation)
+
+    // Questions
+    this.router.post('/:classId/evaluations/:evaluationId/questions', this._evaluationController.createQuestion)
+    this.router.get('/:classId/evaluations/:evaluationId/questions/:questionId', this._evaluationController.getQuestion)
+    this.router.put('/:classId/evaluations/:evaluationId/questions/:questionId', this._evaluationController.updateQuestion)
+    this.router.delete('/:classId/evaluations/:evaluationId/questions/:questionId', this._evaluationController.deleteQuestion)
 
     // Presence
     this.router.use('/:classId/presences', presenceRoutes.router)
