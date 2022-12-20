@@ -417,6 +417,83 @@ class EvaluationController {
 
     return res.status(response.statsCode || 200).json(response)
   }
+
+  async getEvaluationSubmissions (req, res) {
+    const token = req.headers.authorization
+    const { classId, evaluationId } = req.params
+
+    // Check token is exist
+    if (!token) throw new ClientError('Unauthorized', 401)
+
+    // Validate token
+    const { _id } = await this._tokenize.verify(token)
+
+    // Find user
+    const user = await this._userService.findUserById(_id)
+    if (!user) throw new ClientError('Unauthorized', 401)
+
+    // Make sure user is TEACHER or ADMIN
+    if (user.role === 'STUDENT') throw new ClientError('Unauthorized to get submissions', 401)
+
+    // Find class
+    const classData = await this._classService.getClass(classId)
+    if (!classData) throw new ClientError('Class not found', 404)
+
+    // Make sure teacher is in class
+    let isTeacherInClass = false
+    for (const teacher of classData.teachers) {
+      if (teacher._id.includes(user._id)) {
+        isTeacherInClass = true
+        break
+      }
+    }
+    if (!isTeacherInClass) throw new ClientError('Unauthorized to see submissions', 401)
+
+    // Find evaluation
+    const evaluation = await this._evaluationService.getEvaluationById(evaluationId)
+    if (!evaluation) throw new ClientError('Evaluation not found', 404)
+
+    // Get class students
+    // Get class student
+    let { students } = await this._classService.getClassStudents(classId)
+
+    // Map students, only get 1 logs, other delete
+    students = students.map((student) => {
+      return {
+        _id: student._id,
+        fullName: student.fullName,
+        picture: student.picture
+      }
+    })
+
+    // Sort students by fullName
+    students.sort((a, b) => {
+      const nameA = a.fullName.toUpperCase()
+      const nameB = b.fullName.toUpperCase()
+      if (nameA < nameB) {
+        return -1
+      }
+      if (nameA > nameB) {
+        return 1
+      }
+      return 0
+    })
+
+    // Get their submission
+    for (const student of students) {
+      const submission = await this._eSubmissionService.getEvaluationResult(evaluationId, student._id)
+      if (submission) {
+        student.submission = submission
+      } else {
+        student.submission = null
+      }
+    }
+
+    // Response
+    const response = this._response.success(200, 'Get evaluation submissions success', students)
+
+    return res.status(response.statsCode || 200).json(response)
+  }
 }
 
 module.exports = {
