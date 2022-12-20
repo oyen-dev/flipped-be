@@ -31,7 +31,8 @@ const {
   createEvaluationSchema,
   getClassEvaluationsSchema,
   getEvaluationDetailSchema,
-  updateEvaluationSchema
+  updateEvaluationSchema,
+  createESubmissionSchema
 } = require('./schema')
 
 class Validator {
@@ -196,6 +197,11 @@ class Validator {
 
   validateUpdateEvaluation (payload) {
     const { error } = updateEvaluationSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateSubmitEvaluation (payload) {
+    const { error } = createESubmissionSchema.validate(payload)
     if (error) throw new ClientError(error.message, 400)
   }
 }

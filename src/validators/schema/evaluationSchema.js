@@ -37,11 +37,22 @@ const getEvaluationDetailSchema = Joi.object({
   evaluationId: Joi.string().required()
 })
 
+const createESubmissionSchema = Joi.object({
+  evaluationId: Joi.string().required(),
+  studentId: Joi.string().required(),
+  answers: Joi.array().items(Joi.object({
+    questionId: Joi.string().required(),
+    answer: Joi.number().required()
+  })).required(),
+  reaction: Joi.number().required()
+})
+
 module.exports = {
   createQuestionSchema,
   getQuestionShema,
   createEvaluationSchema,
   getClassEvaluationsSchema,
   getEvaluationDetailSchema,
-  updateEvaluationSchema
+  updateEvaluationSchema,
+  createESubmissionSchema
 }
