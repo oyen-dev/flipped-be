@@ -67,12 +67,21 @@ class ClassService {
       .populate({ path: 'presences' })
       .populate({ path: 'schedule' })
       .populate({ path: 'presences', select: '_id start end attendance' })
+      // .populate({
+      //   path: 'posts',
+      //   select: '_id title description teacherId attachments isTask taskId',
+      //   populate: [
+      //     { path: 'taskId', select: '_id deadline' },
+      //     { path: 'teacherId', select: '_id fullName picture' },
+      //     { path: 'attachments', select: '_id type url' }
+      //   ]
+      // })
+      // .populate({ path: 'evaluations', select: '_id name' })
       .select('_id teachers name gradeId cover invitationCode presence presences')
       .exec({
         path: 'presence.presences',
         select: '_id name'
       })
-
     if (!classDetail) throw new ClientError('Class not found', 404)
     return classDetail
   }
@@ -305,6 +314,10 @@ class ClassService {
     classData.updatedAt = new Date()
 
     await classData.save()
+  }
+
+  isTeacherInClass (classroom, teacher) {
+    return classroom.teachers.findIndex((classTeacher) => classTeacher._id === teacher._id) >= 0
   }
 }
 

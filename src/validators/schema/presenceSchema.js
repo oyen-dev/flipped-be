@@ -5,6 +5,12 @@ const addPresenceSchema = Joi.object({
   end: Joi.date().required()
 })
 
+const submitStudentPresenceSchema = Joi.object({
+  attendance: Joi.number().min(1).max(3).required(),
+  reaction: Joi.number().min(1).max(5).required()
+})
+
 module.exports = {
-  addPresenceSchema
+  addPresenceSchema,
+  submitStudentPresenceSchema
 }

@@ -1,0 +1,546 @@
+[{
+  "_id": "cls-Xb_zz85av11pRj1",
+  "teachers": [
+    "usr-bj7oeOTPM_1SnGT",
+    "usr-uYPSkzoRMlhxwpl"
+  ],
+  "schedule": [
+    {
+      "start": {
+        "$date": {
+          "$numberLong": "1670173200908"
+        }
+      },
+      "end": {
+        "$date": {
+          "$numberLong": "1670180400074"
+        }
+      }
+    },
+    {
+      "start": {
+        "$date": {
+          "$numberLong": "1670180400411"
+        }
+      },
+      "end": {
+        "$date": {
+          "$numberLong": "1670184000874"
+        }
+      }
+    },
+    {
+      "start": {
+        "$date": {
+          "$numberLong": "1670198400326"
+        }
+      },
+      "end": {
+        "$date": {
+          "$numberLong": "1670202000373"
+        }
+      }
+    }
+  ],
+  "name": "Sejarah Indonesia",
+  "gradeId": "gra-grv62ejcLOCLycJ",
+  "cover": "",
+  "students": [
+    "usr-8N5ylElwv4ddWNf",
+    "usr-vddBF_ZyFL9Tzvt"
+  ],
+  "isArchived": true,
+  "isDeleted": true,
+  "deletedAt": {
+    "$date": {
+      "$numberLong": "1671000699006"
+    }
+  },
+  "willBeDeletedAt": {
+    "$date": {
+      "$numberLong": "1678776699006"
+    }
+  },
+  "posts": [
+    "pos-bzb2gTBcCS1pIp2",
+    "pos-3_d1R4sL6whUWM2"
+  ],
+  "evaluations": [],
+  "presences": [
+    "pre-Zej96ju_S3A_Vig",
+    "pre-WXaSY4BhQXLSAgo",
+    "pre-MwGjXYHNiIZDxXy"
+  ],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669023578846"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1671000699006"
+    }
+  },
+  "invitationCode": "PuDEX",
+  "__v": 3
+},{
+  "_id": "cls-UY1Wyd7IKlAVnKL",
+  "teachers": [
+    "usr-uYPSkzoRMlhxwpl"
+  ],
+  "schedule": [
+    {
+      "start": {
+        "$date": {
+          "$numberLong": "1669582800890"
+        }
+      },
+      "end": {
+        "$date": {
+          "$numberLong": "1669590000394"
+        }
+      }
+    }
+  ],
+  "name": "Seni Budaya Kita",
+  "gradeId": "gra-noh2WvBOr8Udjga",
+  "cover": "",
+  "students": [],
+  "isArchived": true,
+  "isDeleted": true,
+  "deletedAt": {
+    "$date": {
+      "$numberLong": "1669721071877"
+    }
+  },
+  "willBeDeletedAt": {
+    "$date": {
+      "$numberLong": "1677497071878"
+    }
+  },
+  "posts": [],
+  "evaluations": [],
+  "presences": [],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669566365763"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1669721071878"
+    }
+  },
+  "invitationCode": "yB0hE",
+  "__v": 0
+},{
+  "_id": "cls-AIAsMA7xDWM_hzC",
+  "teachers": [
+    "usr-uYPSkzoRMlhxwpl"
+  ],
+  "schedule": [
+    {
+      "start": {
+        "$date": {
+          "$numberLong": "1669593600195"
+        }
+      },
+      "end": {
+        "$date": {
+          "$numberLong": "1669597200922"
+        }
+      }
+    },
+    {
+      "start": {
+        "$date": {
+          "$numberLong": "1669777200723"
+        }
+      },
+      "end": {
+        "$date": {
+          "$numberLong": "1669780800778"
+        }
+      }
+    },
+    {
+      "start": {
+        "$date": {
+          "$numberLong": "1669928400579"
+        }
+      },
+      "end": {
+        "$date": {
+          "$numberLong": "1669932000850"
+        }
+      }
+    }
+  ],
+  "name": "Matematika",
+  "gradeId": "gra--N1HGAYXy77HVzk",
+  "cover": "",
+  "students": [],
+  "isArchived": true,
+  "isDeleted": true,
+  "deletedAt": {
+    "$date": {
+      "$numberLong": "1671000690608"
+    }
+  },
+  "willBeDeletedAt": {
+    "$date": {
+      "$numberLong": "1678776690608"
+    }
+  },
+  "posts": [],
+  "evaluations": [],
+  "presences": [],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669566365763"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1671000690608"
+    }
+  },
+  "invitationCode": "gSAWL",
+  "__v": 0
+},{
+  "_id": "cls-c_6cs7u--CusAOE",
+  "teachers": [
+    "usr-uYPSkzoRMlhxwpl",
+    "usr-bj7oeOTPM_1SnGT"
+  ],
+  "schedule": [
+    {
+      "start": {
+        "$date": {
+          "$numberLong": "1669852800114"
+        }
+      },
+      "end": {
+        "$date": {
+          "$numberLong": "1669856400314"
+        }
+      }
+    }
+  ],
+  "name": "Bahasa Jawa",
+  "gradeId": "gra--N1HGAYXy77HVzk",
+  "cover": "",
+  "students": [],
+  "isArchived": true,
+  "isDeleted": false,
+  "deletedAt": null,
+  "willBeDeletedAt": null,
+  "posts": [],
+  "evaluations": [],
+  "presences": [],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669643998066"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1669721065611"
+    }
+  },
+  "invitationCode": "BJ7Om",
+  "__v": 0
+},{
+  "_id": "cls-QHsIUfknn3fA4_3",
+  "teachers": [
+    "usr-uYPSkzoRMlhxwpl"
+  ],
+  "schedule": [
+    {
+      "start": {
+        "$date": {
+          "$numberLong": "1670979600386"
+        }
+      },
+      "end": {
+        "$date": {
+          "$numberLong": "1670985900802"
+        }
+      }
+    }
+  ],
+  "name": "SD N Keubu Jagat, Tematik Berbasis HOTS dan Inklusi Sosial",
+  "gradeId": "gra-FWjVdIuTL9WdOXh",
+  "cover": "",
+  "students": [],
+  "isArchived": false,
+  "isDeleted": false,
+  "deletedAt": null,
+  "willBeDeletedAt": null,
+  "posts": [
+    "pos-LY2O2cPRmhuAn3l",
+    "pos-Nnhi3-_Hxa52Od6",
+    "pos-2cq30Faw9nTyAkS"
+  ],
+  "evaluations": [],
+  "presences": [],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669700463861"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1670999896939"
+    }
+  },
+  "invitationCode": "Aleb9",
+  "__v": 3
+},{
+  "_id": "cls-g4Aup5V8eAqkRYu",
+  "teachers": [
+    "usr-uYPSkzoRMlhxwpl"
+  ],
+  "schedule": [],
+  "name": "SD N 4 Krueng Sabee, Tematik Berbasis HOTS dan Inklusi Sosial",
+  "gradeId": "gra-FWjVdIuTL9WdOXh",
+  "cover": "",
+  "students": [],
+  "isArchived": false,
+  "isDeleted": false,
+  "deletedAt": null,
+  "willBeDeletedAt": null,
+  "posts": [],
+  "evaluations": [],
+  "presences": [],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669700463861"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1669700463861"
+    }
+  },
+  "invitationCode": "QUm_Y",
+  "__v": 0
+},{
+  "_id": "cls-LkQQ3ajdpBIS4qS",
+  "teachers": [
+    "usr-uYPSkzoRMlhxwpl"
+  ],
+  "schedule": [],
+  "name": "SD N Drien Tujoh, Tematik Berbasis HOTS dan Inklusi Sosial",
+  "gradeId": "gra-FWjVdIuTL9WdOXh",
+  "cover": "",
+  "students": [],
+  "isArchived": false,
+  "isDeleted": false,
+  "deletedAt": null,
+  "willBeDeletedAt": null,
+  "posts": [],
+  "evaluations": [],
+  "presences": [],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669700463861"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1669700463861"
+    }
+  },
+  "invitationCode": "6b4g1",
+  "__v": 0
+},{
+  "_id": "cls-9bkjuYcsyZ1cRav",
+  "teachers": [
+    "usr-uYPSkzoRMlhxwpl"
+  ],
+  "schedule": [],
+  "name": "SD N Keulumbah, Tematik Berbasis HOTS dan Inklusi Sosial",
+  "gradeId": "gra-FWjVdIuTL9WdOXh",
+  "cover": "",
+  "students": [],
+  "isArchived": false,
+  "isDeleted": false,
+  "deletedAt": null,
+  "willBeDeletedAt": null,
+  "posts": [],
+  "evaluations": [],
+  "presences": [],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669700463861"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1669700463861"
+    }
+  },
+  "invitationCode": "4li43",
+  "__v": 0
+},{
+  "_id": "cls-F70BRcMyX7pbSsF",
+  "teachers": [
+    "usr-uYPSkzoRMlhxwpl"
+  ],
+  "schedule": [],
+  "name": "SD N 2 Meulaboh, Tematik Berbasis HOTS dan Inklusi Sosial",
+  "gradeId": "gra-FWjVdIuTL9WdOXh",
+  "cover": "",
+  "students": [],
+  "isArchived": false,
+  "isDeleted": false,
+  "deletedAt": null,
+  "willBeDeletedAt": null,
+  "posts": [],
+  "evaluations": [],
+  "presences": [],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669700463861"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1669700463861"
+    }
+  },
+  "invitationCode": "2TR_M",
+  "__v": 0
+},{
+  "_id": "cls-ov5vSZcDYpo7idC",
+  "teachers": [
+    "usr-uYPSkzoRMlhxwpl"
+  ],
+  "schedule": [],
+  "name": "SD N Air Sialang, Tematik Berbasis HOTS dan Inklusi Sosial",
+  "gradeId": "gra-HDbmGCVc53rYHVC",
+  "cover": "",
+  "students": [],
+  "isArchived": false,
+  "isDeleted": false,
+  "deletedAt": null,
+  "willBeDeletedAt": null,
+  "posts": [],
+  "evaluations": [],
+  "presences": [],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669700463861"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1669700463861"
+    }
+  },
+  "invitationCode": "WKsi5",
+  "__v": 0
+},{
+  "_id": "cls-ZvMEJoTpHp_hV7E",
+  "teachers": [
+    "usr-uYPSkzoRMlhxwpl"
+  ],
+  "schedule": [],
+  "name": "SD N 4 Panga, Tematik Berbasis HOTS dan Inklusi Sosial",
+  "gradeId": "gra-HDbmGCVc53rYHVC",
+  "cover": "",
+  "students": [],
+  "isArchived": false,
+  "isDeleted": false,
+  "deletedAt": null,
+  "willBeDeletedAt": null,
+  "posts": [],
+  "evaluations": [],
+  "presences": [],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669700463861"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1669700463861"
+    }
+  },
+  "invitationCode": "r5BAA",
+  "__v": 0
+},{
+  "_id": "cls-fMpSv4inPnpaNLV",
+  "teachers": [
+    "usr-uYPSkzoRMlhxwpl"
+  ],
+  "schedule": [],
+  "name": "SD N Gunong Tarok, Tematik Berbasis HOTS dan Inklusi Sosial",
+  "gradeId": "gra-HDbmGCVc53rYHVC",
+  "cover": "",
+  "students": [],
+  "isArchived": false,
+  "isDeleted": false,
+  "deletedAt": null,
+  "willBeDeletedAt": null,
+  "posts": [],
+  "evaluations": [],
+  "presences": [],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669700463861"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1669700463861"
+    }
+  },
+  "invitationCode": "9Ldh6",
+  "__v": 0
+},{
+  "_id": "cls-Z3InYNxUs6ovmYV",
+  "teachers": [
+    "usr-bj7oeOTPM_1SnGT"
+  ],
+  "schedule": [
+    {
+      "start": {
+        "$date": {
+          "$numberLong": "1670976000819"
+        }
+      },
+      "end": {
+        "$date": {
+          "$numberLong": "1670983200387"
+        }
+      }
+    }
+  ],
+  "name": "Matematika",
+  "gradeId": "gra-vDtZkbQFwc2AFsp",
+  "cover": "",
+  "students": [
+    "usr-vddBF_ZyFL9Tzvt"
+  ],
+  "isArchived": false,
+  "isDeleted": false,
+  "deletedAt": null,
+  "willBeDeletedAt": null,
+  "posts": [],
+  "evaluations": [],
+  "presences": [],
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1671263413059"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1671263617719"
+    }
+  },
+  "invitationCode": "JME_x",
+  "__v": 1
+}]

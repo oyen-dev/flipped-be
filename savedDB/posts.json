@@ -1,0 +1,110 @@
+[{
+  "_id": "pos-bzb2gTBcCS1pIp2",
+  "classId": "cls-Xb_zz85av11pRj1",
+  "teacherId": "usr-bj7oeOTPM_1SnGT",
+  "title": "Tugas 1 - Perkenalan",
+  "description": "Kenalkan nama kalian!",
+  "attachments": [
+    "att--czQMglIx0uiW8k",
+    "att-j5KaF_c6cpnLF56",
+    "att-spwTqq59651Vqni",
+    "att-I9tCuL8vpBdun1W"
+  ],
+  "isTask": true,
+  "taskId": "tas-EhGckRhze9cda16",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669024772242"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1669024846848"
+    }
+  },
+  "__v": 0
+},{
+  "_id": "pos-3_d1R4sL6whUWM2",
+  "classId": "cls-Xb_zz85av11pRj1",
+  "teacherId": "usr-bj7oeOTPM_1SnGT",
+  "title": "Tugas 2 - Hallo",
+  "description": "Selamat pagi..\nPertemuan hari ini mengerjakan tugas yang ada di lampiran.",
+  "attachments": [
+    "att-ykk-CJWw3a5m5LD",
+    "att-4j3jpTk4ujOLvRh",
+    "att-YD5_RBr21pfU3Os"
+  ],
+  "isTask": true,
+  "taskId": "tas-PNSXMyh8NGqP0nU",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669024893857"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1669722239333"
+    }
+  },
+  "__v": 0
+},{
+  "_id": "pos-LY2O2cPRmhuAn3l",
+  "classId": "cls-QHsIUfknn3fA4_3",
+  "teacherId": "usr-uYPSkzoRMlhxwpl",
+  "title": "Subtema I Daerah Tempat Tinggalku",
+  "description": "Tempat tinggal adalah tempat manusia menetap untuk berteduh dari keadaan alam, serta tempat melaksanakan hak dan kewajibannya dalam menjalani hidup. Tempat tinggal manusia biasanya berwujud rumah. Tempat tinggal merupakan kebutuhan utama bagi manusia. Setiap manusia tentu menginginkan lingkungan tempat tinggal yang nyaman untuk kehidupannya.\n",
+  "attachments": [],
+  "isTask": false,
+  "taskId": null,
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1670999680730"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1670999723616"
+    }
+  },
+  "__v": 0
+},{
+  "_id": "pos-Nnhi3-_Hxa52Od6",
+  "classId": "cls-QHsIUfknn3fA4_3",
+  "teacherId": "usr-uYPSkzoRMlhxwpl",
+  "title": "Subtema 2 Keunikan Daerah Tempat Tinggalku",
+  "description": "Ceritakan apa yang unik dari daerah tempat tinggalmu",
+  "attachments": [],
+  "isTask": false,
+  "taskId": null,
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1670999845612"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1670999845612"
+    }
+  },
+  "__v": 0
+},{
+  "_id": "pos-2cq30Faw9nTyAkS",
+  "classId": "cls-QHsIUfknn3fA4_3",
+  "teacherId": "usr-uYPSkzoRMlhxwpl",
+  "title": "Subtema 3 Bangga Terhadap Daerah Tempat Tinggalku",
+  "description": "Ceritakan Keunggulan daerah tempat tinggalmu",
+  "attachments": [],
+  "isTask": false,
+  "taskId": null,
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1670999896931"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1670999896931"
+    }
+  },
+  "__v": 0
+}]

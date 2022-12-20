@@ -6,7 +6,11 @@ const presenceSchema = new MySchema({
   _id: { type: String, default: () => { return `pre-${nanoid(15)}` } },
   start: { type: Date, required: true },
   end: { type: Date, required: true },
-  studentPresences: { type: [{ type: MySchema.Types.ObjectId }], default: [] }
+  studentPresences: {
+    type: [{ type: MySchema.Types.String, ref: 'studentPresences' }],
+    required: true,
+    default: []
+  }
 }, {
   versionKey: false,
   timestamps: true

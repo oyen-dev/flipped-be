@@ -25,7 +25,14 @@ const {
   getAttachmentSchema,
   createSubmissionSchema,
   updateSubmissonSchema,
-  updateClassSchema
+  updateClassSchema,
+  createQuestionSchema,
+  getQuestionShema,
+  createEvaluationSchema,
+  getClassEvaluationsSchema,
+  getEvaluationDetailSchema,
+  updateEvaluationSchema,
+  createESubmissionSchema
 } = require('./schema')
 
 class Validator {
@@ -160,6 +167,41 @@ class Validator {
 
   validateUpdateClass (payload) {
     const { error } = updateClassSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateCreateQuestion (payload) {
+    const { error } = createQuestionSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateGetQuestion (payload) {
+    const { error } = getQuestionShema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateCreateEvaluation (payload) {
+    const { error } = createEvaluationSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateGetClassEvaluations (payload) {
+    const { error } = getClassEvaluationsSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateGetEvaluationDetail (payload) {
+    const { error } = getEvaluationDetailSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateUpdateEvaluation (payload) {
+    const { error } = updateEvaluationSchema.validate(payload)
+    if (error) throw new ClientError(error.message, 400)
+  }
+
+  validateSubmitEvaluation (payload) {
+    const { error } = createESubmissionSchema.validate(payload)
     if (error) throw new ClientError(error.message, 400)
   }
 }

@@ -11,5 +11,9 @@ module.exports = {
   ...require('./attachmentService'),
   ...require('./taskService'),
   ...require('./submissionService'),
-  ...require('./presenceService')
+  ...require('./presenceService'),
+  ...require('./evaluationService'),
+  ...require('./answerService'),
+  ...require('./eSubmissionService'),
+  ...require('./questionService')
 }

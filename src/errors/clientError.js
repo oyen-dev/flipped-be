@@ -14,6 +14,12 @@ class ClientError extends ResponseError {
   }
 }
 
+class BadRequestError extends ResponseError {
+  constructor (message = 'Unauthorized') {
+    super(message, 400)
+  }
+}
+
 class UnauthorizedError extends ResponseError {
   constructor (message = 'Unauthorized') {
     super(message, 401)
@@ -33,10 +39,19 @@ class DocumentNotFoundError extends ResponseError {
       documentName = document.name
     } else if (typeof (document) === 'object') {
       documentName = document.constructor.name
+    } else if (typeof (document) === 'string') {
+      documentName = document
+    }
+
+    let msg
+    if (id) {
+      msg = `${documentName} with id ${id} is not found.`
+    } else {
+      msg = `${documentName} not found.`
     }
 
     super(
-      `${documentName} with id ${id} is not found.`,
+      msg,
       404
     )
   }
@@ -61,5 +76,6 @@ module.exports = {
   DocumentNotFoundError,
   InternalServerError,
   ForbiddenError,
-  ConflictError
+  ConflictError,
+  BadRequestError
 }

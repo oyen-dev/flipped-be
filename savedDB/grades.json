@@ -1,0 +1,85 @@
+[{
+  "_id": "gra-grv62ejcLOCLycJ",
+  "name": "X - IPA 2",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669023578871"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1669023578871"
+    }
+  },
+  "__v": 0
+},{
+  "_id": "gra-noh2WvBOr8Udjga",
+  "name": "VI - Tematik",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669566365770"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1669566365770"
+    }
+  },
+  "__v": 0
+},{
+  "_id": "gra--N1HGAYXy77HVzk",
+  "name": "VI",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669566365770"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1669566365770"
+    }
+  },
+  "__v": 0
+},{
+  "_id": "gra-FWjVdIuTL9WdOXh",
+  "name": "Kelas IV",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669700463868"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1669700463868"
+    }
+  },
+  "__v": 0
+},{
+  "_id": "gra-HDbmGCVc53rYHVC",
+  "name": "IV",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1669700463868"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1669700463868"
+    }
+  },
+  "__v": 0
+},{
+  "_id": "gra-vDtZkbQFwc2AFsp",
+  "name": "XII - A",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1671263413085"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1671263413085"
+    }
+  },
+  "__v": 0
+}]

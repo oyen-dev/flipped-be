@@ -11,7 +11,13 @@ const userSchema = new Schema({
   password: { type: String, required: true, minlength: 8 },
   fullName: { type: String, required: true },
   gender: { type: Boolean, required: true },
-  dateOfBirth: { type: String, required: true },
+  dateOfBirth: {
+    type: Date,
+    required: true,
+    get: function (data) {
+      return data.toISOString().split('T')[0]
+    }
+  },
   placeOfBirth: { type: String, required: true },
   address: { type: String, required: true },
   picture: { type: String, default: (user) => { return `https://ui-avatars.com/api/?name=${user.fullName.split(' ')[0]}&size=300` } },

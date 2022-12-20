@@ -1,0 +1,23 @@
+[{
+  "_id": "que-0G84TUh0lLtSiGI",
+  "question": "Seberapa kaya Anda di usia muda dan tua nanti?",
+  "options": [
+    "1",
+    "2",
+    "4",
+    "5",
+    "6"
+  ],
+  "key": "2",
+  "createdAt": {
+    "$date": {
+      "$numberLong": "1670677992654"
+    }
+  },
+  "updatedAt": {
+    "$date": {
+      "$numberLong": "1670677992654"
+    }
+  },
+  "__v": 0
+}]

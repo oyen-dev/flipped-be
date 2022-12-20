@@ -3,5 +3,6 @@ module.exports = {
   ...require('./userSchema'),
   ...require('./classSchema'),
   ...require('./attachmentSchema'),
-  ...require('./postSchema')
+  ...require('./postSchema'),
+  ...require('./evaluationSchema')
 }

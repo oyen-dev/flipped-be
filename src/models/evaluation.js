@@ -11,7 +11,7 @@ const evaluationSchema = new Schema({
     start: { type: Date, required: true },
     end: { type: Date, required: true }
   },
-  submissions: [{ type: Schema.Types.String, ref: 'esubmissions' }],
+  submissions: [{ type: Schema.Types.String, ref: 'esubmissions', default: [] }],
   createdAt: { type: Date, default: new Date() },
   updatedAt: { type: Date, default: new Date() }
 })
