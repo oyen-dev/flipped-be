@@ -19,7 +19,7 @@ class EvaluationService {
   }
 
   async getEvaluationById (_id) {
-    return await Evaluation.findById(_id).exec()
+    return await Evaluation.findById(_id).exec() || null
   }
 
   async getClassEvaluations (classId) {
