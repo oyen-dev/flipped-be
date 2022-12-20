@@ -60,6 +60,11 @@ class ESubmissionService {
   async createAnswer (payload) {
     return await Answer.create(payload)
   }
+
+  async checkSubmission (evaluationId, studentId) {
+    const submission = await eSubmission.findOne({ evaluationId, studentId })
+    return submission || null
+  }
 }
 
 module.exports = {

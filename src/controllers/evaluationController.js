@@ -358,6 +358,35 @@ class EvaluationController {
 
     return res.status(response.statsCode || 200).json(response)
   }
+
+  async checkESubmission (req, res) {
+    const token = req.headers.authorization
+    const { evaluationId } = req.params
+
+    // Check token is exist
+    if (!token) throw new ClientError('Unauthorized', 401)
+
+    // Validate token
+    const { _id } = await this._tokenize.verify(token)
+
+    // Find user
+    const user = await this._userService.findUserById(_id)
+    if (!user) throw new ClientError('Unauthorized', 401)
+
+    // Validate payload
+    this._validator.validateGetEvaluationDetail({ evaluationId })
+
+    // Make sure user is STUDENT
+    if (user.role !== 'STUDENT') throw new ClientError('Unauthorized to check submission', 401)
+
+    // Check submission
+    const submission = await this._eSubmissionService.checkSubmission(evaluationId, _id)
+
+    // Response
+    const response = this._response.success(200, 'Check submission success', { isSubmitted: !!submission })
+
+    return res.status(response.statsCode || 200).json(response)
+  }
 }
 
 module.exports = {

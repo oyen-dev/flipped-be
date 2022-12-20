@@ -39,6 +39,7 @@ class ClassRoutes {
     this.router.get('/:classId/evaluations/:evaluationId', this._evaluationController.getEvaluationDetail)
     this.router.put('/:classId/evaluations/:evaluationId', this._evaluationController.updateClassEvaluation)
     this.router.delete('/:classId/evaluations/:evaluationId', this._evaluationController.deleteEvaluation)
+    this.router.get('/:classId/evaluations/:evaluationId/check', this._evaluationController.checkESubmission)
     this.router.post('/:classId/evaluations/:evaluationId/submit', this._evaluationController.createESubmission)
 
     // Questions
