@@ -387,6 +387,36 @@ class EvaluationController {
 
     return res.status(response.statsCode || 200).json(response)
   }
+
+  async getEvaluationResult (req, res) {
+    const token = req.headers.authorization
+    const { evaluationId } = req.params
+
+    // Check token is exist
+    if (!token) throw new ClientError('Unauthorized', 401)
+
+    // Validate token
+    const { _id } = await this._tokenize.verify(token)
+
+    // Find user
+    const user = await this._userService.findUserById(_id)
+    if (!user) throw new ClientError('Unauthorized', 401)
+
+    // Validate payload
+    this._validator.validateGetEvaluationDetail({ evaluationId })
+
+    // Make sure user is STUDENT
+    if (user.role !== 'STUDENT') throw new ClientError('Unauthorized to get evaluation result', 401)
+
+    // Get evaluation result
+    const result = await this._eSubmissionService.getEvaluationResult(evaluationId, _id)
+    if (!result) throw new ClientError('Evaluation result not found', 404)
+
+    // Response
+    const response = this._response.success(200, 'Get evaluation result success', result)
+
+    return res.status(response.statsCode || 200).json(response)
+  }
 }
 
 module.exports = {

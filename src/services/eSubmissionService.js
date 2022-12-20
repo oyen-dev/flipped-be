@@ -65,6 +65,17 @@ class ESubmissionService {
     const submission = await eSubmission.findOne({ evaluationId, studentId })
     return submission || null
   }
+
+  async getEvaluationResult (evaluationId, studentId) {
+    const submission = await eSubmission.findOne({ evaluationId, studentId })
+      .select('_id points reaction answers createdAt')
+      .populate([
+        { path: 'answers', select: '_id questionId answer', populate: { path: 'questionId', select: '_id question options key' } }
+      ])
+      .lean()
+
+    return submission || null
+  }
 }
 
 module.exports = {
