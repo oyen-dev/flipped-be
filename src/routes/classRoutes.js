@@ -53,6 +53,9 @@ class ClassRoutes {
 
     // Presence
     this.router.use('/:classId/presences', presenceRoutes.router)
+
+    // Reports
+    this.router.get('/:classId/reports/:studentId', this._classController.getStudentReport)
   }
 }
 

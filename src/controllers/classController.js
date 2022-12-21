@@ -2,9 +2,12 @@ const { ClientError } = require('../errors')
 const { bindAll } = require('../utils/classBinder')
 
 class ClassController {
-  constructor (classService, userService, gradeService, storageService, validator, tokenize, response) {
+  constructor (classService, presenceService, taskService, evaluationService, userService, gradeService, storageService, validator, tokenize, response) {
     this.name = 'ClassController'
     this._classService = classService
+    this._presenceService = presenceService
+    this._taskService = taskService
+    this._evaluationService = evaluationService
     this._userService = userService
     this._gradeService = gradeService
     this._storageService = storageService
@@ -370,6 +373,78 @@ class ClassController {
 
       // Response
       const response = this._response.success(200, `${join ? 'Join' : 'Leave'} class success!`, { _id: classDetail })
+
+      return res.status(response.statsCode || 200).json(response)
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async getStudentReport (req, res) {
+    const token = req.headers.authorization
+    const { classId, studentId } = req.params
+
+    try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Find user
+      const user = await this._userService.findUserById(_id)
+      if (!user) throw new ClientError('Unauthorized', 401)
+
+      // Get all class presence
+      const classroom = await this._classService.getClass(classId)
+      const presences = await this._presenceService.getAllPresences(classroom)
+
+      // Iterate presences and check if student is present
+      const newPresences = []
+      for (const presence of presences) {
+        const isPresent = await this._presenceService.checkStudentIsPresent(presence._id, studentId)
+
+        if (isPresent.studentPresences.length !== 0 && isPresent.studentPresences[0].attendance) {
+          newPresences.push({ ...presence._doc, attendance: isPresent.studentPresences[0].attendance })
+        } else {
+          newPresences.push({ ...presence._doc, attendance: 0 })
+        }
+      }
+
+      // Get all class tasks
+      const { posts: tasks } = await this._classService.getClassTasks(classId)
+
+      // Iterate tasks and check if student is done
+      const newTasks = []
+      for (const task of tasks) {
+        const { title, points } = await this._taskService.getStudentPoint(task._id, studentId)
+        newTasks.push({ title, points })
+      }
+
+      // Get all class evaluations
+      const evaluations = await this._evaluationService.getClassEvaluations(classId)
+
+      // Iterate evaluations and check if student is done
+      const newEvaluations = []
+      for (const evaluation of evaluations) {
+        const points = await this._evaluationService.getStudentEvaluationPoint(evaluation._id, studentId)
+        const evaluationDetail = {
+          title: evaluation.title,
+          points
+        }
+        newEvaluations.push(evaluationDetail)
+      }
+
+      // Response payload
+      const payload = {
+        presences: newPresences,
+        tasks: newTasks,
+        evaluations: newEvaluations
+      }
+
+      // Response
+      const response = this._response.success(200, 'Get student report success!', payload)
 
       return res.status(response.statsCode || 200).json(response)
     } catch (error) {

@@ -112,6 +112,21 @@ class PresenceService {
 
     return presence
   }
+
+  async checkStudentIsPresent (presenceId, studentId) {
+    const presence = await Presence.findById(presenceId)
+      .select('_id studentPresences')
+      .populate({
+        path: 'studentPresences',
+        match: {
+          student: studentId
+        },
+        select: '_id attendance reaction'
+      })
+      .exec()
+
+    return presence
+  }
 }
 
 module.exports = {
