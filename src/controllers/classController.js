@@ -2,11 +2,12 @@ const { ClientError } = require('../errors')
 const { bindAll } = require('../utils/classBinder')
 
 class ClassController {
-  constructor (classService, presenceService, taskService, userService, gradeService, storageService, validator, tokenize, response) {
+  constructor (classService, presenceService, taskService, evaluationService, userService, gradeService, storageService, validator, tokenize, response) {
     this.name = 'ClassController'
     this._classService = classService
     this._presenceService = presenceService
     this._taskService = taskService
+    this._evaluationService = evaluationService
     this._userService = userService
     this._gradeService = gradeService
     this._storageService = storageService
@@ -400,19 +401,13 @@ class ClassController {
       const presences = await this._presenceService.getAllPresences(classroom)
 
       // Iterate presences and check if student is present
-      let totalPresent = 0
-      let totalAbsent = 0
       const newPresences = []
       for (const presence of presences) {
         const isPresent = await this._presenceService.checkStudentIsPresent(presence._id, studentId)
 
         if (isPresent.studentPresences.length !== 0 && isPresent.studentPresences[0].attendance) {
-          if (isPresent.studentPresences[0].attendance === 1) totalPresent++
-          else totalAbsent++
-
           newPresences.push({ ...presence._doc, attendance: isPresent.studentPresences[0].attendance })
         } else {
-          totalAbsent++
           newPresences.push({ ...presence._doc, attendance: 0 })
         }
       }
@@ -427,14 +422,25 @@ class ClassController {
         newTasks.push({ title, points })
       }
 
+      // Get all class evaluations
+      const evaluations = await this._evaluationService.getClassEvaluations(classId)
+
+      // Iterate evaluations and check if student is done
+      const newEvaluations = []
+      for (const evaluation of evaluations) {
+        const points = await this._evaluationService.getStudentEvaluationPoint(evaluation._id, studentId)
+        const evaluationDetail = {
+          title: evaluation.title,
+          points
+        }
+        newEvaluations.push(evaluationDetail)
+      }
+
       // Response payload
       const payload = {
-        presence: {
-          totalPresent,
-          totalAbsent,
-          presences: newPresences
-        },
-        tasks: newTasks
+        presences: newPresences,
+        tasks: newTasks,
+        evaluations: newEvaluations
       }
 
       // Response

@@ -27,8 +27,8 @@ class ESubmissionService {
       if (question._id === answers[i].questionId && question.key === answers[i].answer) points++
     }
 
-    // Count points
-    points = (points / evaluation.questions.length) * 100
+    // Count points and round it
+    points = Math.round((points / evaluation.questions.length) * 100)
 
     // Create submission
     const submission = await eSubmission.create({

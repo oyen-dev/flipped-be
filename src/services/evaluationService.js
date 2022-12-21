@@ -62,6 +62,19 @@ class EvaluationService {
 
     return await Evaluation.deleteOne({ _id })
   }
+
+  async getStudentEvaluationPoint (evaluationId, studentId) {
+    const evaluation = await Evaluation.findById(evaluationId)
+      .select('submissions')
+      .populate({
+        path: 'submissions',
+        match: { studentId },
+        select: 'points'
+      })
+      .exec()
+
+    return evaluation.submissions[0].points || null
+  }
 }
 
 module.exports = {
