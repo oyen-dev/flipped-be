@@ -73,7 +73,7 @@ class EvaluationService {
       })
       .exec()
 
-    return evaluation.submissions[0].points || null
+    return evaluation.submissions[0] ? evaluation.submissions[0].points : null
   }
 }
 
