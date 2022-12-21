@@ -2,9 +2,10 @@ const { ClientError } = require('../errors')
 const { bindAll } = require('../utils/classBinder')
 
 class ClassController {
-  constructor (classService, userService, gradeService, storageService, validator, tokenize, response) {
+  constructor (classService, presenceService, userService, gradeService, storageService, validator, tokenize, response) {
     this.name = 'ClassController'
     this._classService = classService
+    this._presenceService = presenceService
     this._userService = userService
     this._gradeService = gradeService
     this._storageService = storageService
@@ -370,6 +371,60 @@ class ClassController {
 
       // Response
       const response = this._response.success(200, `${join ? 'Join' : 'Leave'} class success!`, { _id: classDetail })
+
+      return res.status(response.statsCode || 200).json(response)
+    } catch (error) {
+      console.log(error)
+      return this._response.error(res, error)
+    }
+  }
+
+  async getStudentReport (req, res) {
+    const token = req.headers.authorization
+    const { classId, studentId } = req.params
+
+    try {
+      // Check token is exist
+      if (!token) throw new ClientError('Unauthorized', 401)
+
+      // Validate token
+      const { _id } = await this._tokenize.verify(token)
+
+      // Find user
+      const user = await this._userService.findUserById(_id)
+      if (!user) throw new ClientError('Unauthorized', 401)
+
+      // Get all class presence
+      const classroom = await this._classService.getClass(classId)
+      const presences = await this._presenceService.getAllPresences(classroom)
+
+      // Iterate presences and check if student is present
+      let totalPresent = 0
+      let totalAbsent = 0
+      const newPresences = []
+      for (const presence of presences) {
+        const isPresent = await this._presenceService.checkStudentIsPresent(presence._id, studentId)
+
+        if (isPresent.studentPresences.length !== 0 && isPresent.studentPresences[0].attendance) {
+          if (isPresent.studentPresences[0].attendance === 1) totalPresent++
+          else totalAbsent++
+
+          newPresences.push({ ...presence._doc, attendance: isPresent.studentPresences[0].attendance })
+        } else {
+          totalAbsent++
+          newPresences.push({ ...presence._doc, attendance: 0 })
+        }
+      }
+
+      // Response payload
+      const payload = {
+        totalPresent,
+        totalAbsent,
+        presences: newPresences
+      }
+
+      // Response
+      const response = this._response.success(200, 'Get student report success!', payload)
 
       return res.status(response.statsCode || 200).json(response)
     } catch (error) {
