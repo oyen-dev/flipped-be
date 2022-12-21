@@ -89,7 +89,7 @@ const {
 } = require('./controllers')
 const authController = new AuthController(authService, userService, mailService, validator, hashPassword, tokenize, response)
 const userController = new UserController(userService, classService, authService, storageService, mailService, validator, hashPassword, tokenize, response)
-const classController = new ClassController(classService, presenceService, userService, gradeService, storageService, validator, tokenize, response)
+const classController = new ClassController(classService, presenceService, taskService, userService, gradeService, storageService, validator, tokenize, response)
 const socketController = new SocketController(onlineUserService, logService)
 const attachmentController = new AttachmentController(attachmentService, storageService, userService, validator, tokenize, response)
 const postController = new PostController(classService, userService, postService, taskService, submissionService, attachmentService, storageService, validator, tokenize, response)

@@ -1,4 +1,4 @@
-const { Task } = require('../models')
+const { Task, Post } = require('../models')
 const { ClientError } = require('../errors')
 
 class TaskService {
@@ -42,6 +42,28 @@ class TaskService {
     if (!submissions) throw new ClientError('No submissions found')
 
     return submissions
+  }
+
+  async getStudentPoint (postId, studentId) {
+    const post = await Post.findById(postId)
+      .select('title')
+      .exec()
+
+    const task = await Task.findOne({ postId })
+      .populate({
+        path: 'submissions',
+        match: { studentId },
+        select: 'points'
+      })
+      .select('submissions')
+      .exec()
+
+    const result = {
+      title: post.title || null,
+      points: task.submissions[0].points || null
+    }
+
+    return result
   }
 }
 

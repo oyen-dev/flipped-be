@@ -2,10 +2,11 @@ const { ClientError } = require('../errors')
 const { bindAll } = require('../utils/classBinder')
 
 class ClassController {
-  constructor (classService, presenceService, userService, gradeService, storageService, validator, tokenize, response) {
+  constructor (classService, presenceService, taskService, userService, gradeService, storageService, validator, tokenize, response) {
     this.name = 'ClassController'
     this._classService = classService
     this._presenceService = presenceService
+    this._taskService = taskService
     this._userService = userService
     this._gradeService = gradeService
     this._storageService = storageService
@@ -416,11 +417,24 @@ class ClassController {
         }
       }
 
+      // Get all class tasks
+      const { posts: tasks } = await this._classService.getClassTasks(classId)
+
+      // Iterate tasks and check if student is done
+      const newTasks = []
+      for (const task of tasks) {
+        const { title, points } = await this._taskService.getStudentPoint(task._id, studentId)
+        newTasks.push({ title, points })
+      }
+
       // Response payload
       const payload = {
-        totalPresent,
-        totalAbsent,
-        presences: newPresences
+        presence: {
+          totalPresent,
+          totalAbsent,
+          presences: newPresences
+        },
+        tasks: newTasks
       }
 
       // Response
