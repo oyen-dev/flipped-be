@@ -1,4 +1,4 @@
-const { ClientError } = require('../errors')
+const { ClientError, ConflictError } = require('../errors')
 const { bindAll } = require('../utils/classBinder')
 class AuthController {
   constructor (authService, userService, mailService, validator, hashPassword, tokenize, response) {
@@ -23,7 +23,7 @@ class AuthController {
 
     // Check if user already exist
     let user = await this._userService.findUserByEmail(email)
-    if (user) throw new ClientError('Sorry, this email was registered.', 400)
+    if (user) throw new ConflictError('Sorry, this email was registered.')
 
     // Hash password
     const hashedPassword = await this._hashPassword.hash(password)
