@@ -188,7 +188,8 @@ class UserService {
     })
 
     // Count ratio of total teachers and total students
-    const ratio = Math.ceil(totalStudents / totalTeachers)
+    let ratio = Math.ceil(totalTeachers / totalStudents)
+    if (totalTeachers === 0 || totalStudents === 0) ratio = 0
 
     return {
       totalTeachers,

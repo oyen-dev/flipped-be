@@ -12,7 +12,7 @@ const classSchema = new Schema({
   isArchived: { type: Boolean, default: false },
   isDeleted: { type: Boolean, default: false },
   deletedAt: { type: Date, default: null },
-  willBeDeletedAt: { type: Date, default: null },
+  willBeDeletedAt: { type: Date, default: null, index: { expires: '10s' } },
   invitationCode: { type: String, default: () => nanoid(5) },
   posts: [{ type: Schema.Types.String, ref: 'posts' }],
   evaluations: [{ type: Schema.Types.String, ref: 'evaluations' }],

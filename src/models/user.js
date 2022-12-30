@@ -28,7 +28,7 @@ const userSchema = new Schema({
   verifiedAt: { type: Date, default: null },
   isDeleted: { type: Boolean, default: false },
   deletedAt: { type: Date, default: null },
-  willBeDeletedAt: { type: Date, default: null },
+  willBeDeletedAt: { type: Date, default: null, index: { expires: '10s' } },
 
   // Role
   role: { type: String, default: 'STUDENT' },
