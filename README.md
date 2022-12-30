@@ -38,3 +38,13 @@ gsutil cors set cors.json gs://olearning-data
 curl http://localhost:5000/api/v1/users/first-init-app
 ```
 2. Done
+
+# Run App
+1. Build images
+```
+docker build -t "olearning-be:v1" .
+```
+2. Run app
+```
+docker-compose up -d
+```
