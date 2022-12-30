@@ -7,7 +7,7 @@ const classSchema = new Schema({
   schedule: [{ type: Object, required: true }],
   name: { type: String, required: true },
   gradeId: { type: Schema.Types.String, ref: 'grades' },
-  cover: { type: String, default: '' },
+  cover: { type: String, default: null },
   students: [{ type: Schema.Types.String, ref: 'users' }],
   isArchived: { type: Boolean, default: false },
   isDeleted: { type: Boolean, default: false },

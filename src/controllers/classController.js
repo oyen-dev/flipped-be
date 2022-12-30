@@ -452,6 +452,48 @@ class ClassController {
       return this._response.error(res, error)
     }
   }
+
+  async updateClassCover (req, res) {
+    const token = req.headers.authorization
+    const file = req.files[0]
+    const { classId } = req.params
+
+    // Check token is exist
+    if (!token) throw new ClientError('Unauthorized', 401)
+
+    // Validate token
+    const { _id } = await this._tokenize.verify(token)
+
+    // Find user
+    const user = await this._userService.findUserById(_id)
+    if (!user) throw new ClientError('Unauthorized', 401)
+
+    // Check file is exists
+    if (!file) throw new ClientError('Mohon lampirkan foto!', 400)
+
+    // Find class
+    const classData = await this._classService.findClassById(classId)
+
+    // Check classData is exist
+    if (!classData) throw new ClientError('Kelas tidak ditemukan!', 404)
+
+    // Validate mime type and file size
+    const { mimetype, size } = file
+    this._validator.validateEditPicture({ mimetype, size })
+
+    // Upload file to cloud storage
+    const imageUrl = await this._storageService.uploadImage(file)
+
+    // Update user profile picture
+    classData.cover = imageUrl
+    classData.updatedAt = new Date()
+    await classData.save()
+
+    // Send response
+    const response = this._response.success(200, 'Pembaruan gambar kelas berhasil!')
+
+    return res.status(response.statusCode || 200).json(response)
+  }
 }
 
 module.exports = {
