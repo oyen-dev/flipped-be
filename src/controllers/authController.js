@@ -1,7 +1,7 @@
 const { ClientError, ConflictError, InternalServerError } = require('../errors')
 const { bindAll } = require('../utils/classBinder')
 class AuthController {
-  constructor(authService, userService, mailService, validator, hashPassword, tokenize, response) {
+  constructor (authService, userService, mailService, validator, hashPassword, tokenize, response) {
     this.name = 'authController'
     this._authService = authService
     this._userService = userService
@@ -14,7 +14,7 @@ class AuthController {
     bindAll(this)
   }
 
-  async register(req, res) {
+  async register (req, res) {
     const payload = req.body
     const { email, password } = payload
 
@@ -58,7 +58,7 @@ class AuthController {
     return res.status(response.statusCode || 200).json(response)
   }
 
-  async login(req, res) {
+  async login (req, res) {
     const payload = req.body
     const { email, password, remember } = payload
 
@@ -88,7 +88,7 @@ class AuthController {
     return res.status(response.statusCode || 200).json(response)
   }
 
-  async getAuthProfile(req, res) {
+  async getAuthProfile (req, res) {
     const token = req.headers.authorization
 
     // Check token is exist
@@ -115,7 +115,7 @@ class AuthController {
     return res.status(response.statusCode || 200).json(response)
   }
 
-  async forgotPassword(req, res) {
+  async forgotPassword (req, res) {
     const payload = req.body
     const { email } = payload
 
@@ -147,7 +147,7 @@ class AuthController {
     return res.status(response.statusCode || 200).json(response)
   }
 
-  async resetPassword(req, res) {
+  async resetPassword (req, res) {
     const token = req.query.token
     const payload = req.body
     const { password } = payload
@@ -189,7 +189,7 @@ class AuthController {
     return res.status(response.statusCode || 200).json(response)
   }
 
-  async checkToken(req, res) {
+  async checkToken (req, res) {
     const token = req.query.token
 
     // Check token is exist
@@ -208,7 +208,7 @@ class AuthController {
     return res.status(response.statusCode || 200).json(response)
   }
 
-  async verifyAccount(req, res) {
+  async verifyAccount (req, res) {
     const payload = req.query
     const { token } = payload
 

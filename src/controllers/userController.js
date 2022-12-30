@@ -558,6 +558,26 @@ class UserController {
       return this._response.error(res, error)
     }
   }
+
+  async initApp (req, res) {
+    const payload = {
+      email: 'admin@admin.com',
+      fullName: 'Admin Learning',
+      password: await this._hashPassword.hash('12345678'),
+      gender: 1,
+      dateOfBirth: new Date(),
+      placeOfBirth: 'Universal',
+      address: 'Universal'
+    }
+
+    // Create admin
+    await this._userService.createAdmin(payload, 'ADMIN')
+
+    // Send response
+    const response = this._response.success(200, 'Admin user created!')
+
+    return res.status(response.statusCode || 200).json(response)
+  }
 }
 
 module.exports = {

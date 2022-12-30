@@ -117,6 +117,7 @@ app.use(multerMid.array('files', 10))
 
 // Catch error when file is too large
 app.use((err, req, res, next) => {
+  console.log(err)
   if (err instanceof multer.MulterError) {
     const payload = response.fail(400, 'File is too large, max size is 25mb')
 

@@ -39,7 +39,7 @@ class ClassService {
       .populate({ path: 'teachers', select: '_id fullName' })
       .populate({ path: 'students', select: '_id fullName' })
       .populate({ path: 'gradeId', select: '_id name' })
-      .select('_id name teachers gradeId schedule')
+      .select('_id name teachers gradeId cover schedule')
       .exec()
 
     // Get total class based on q tId sId
