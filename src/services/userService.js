@@ -39,6 +39,27 @@ class UserService {
     return await newUser.save()
   }
 
+  async createAdmin (user, role) {
+    // Check admin is exist or not
+    const admin = await User.findOne({ email: 'admin@admin.com' })
+    if (admin) return true
+
+    const { email, fullName, password, gender, dateOfBirth, placeOfBirth, address } = user
+    const newUser = new User({
+      email: email.toLowerCase(),
+      password,
+      fullName: this.toTitleCase(fullName),
+      gender,
+      dateOfBirth: new Date(dateOfBirth),
+      placeOfBirth,
+      address,
+      isActivated: true,
+      verifiedAt: new Date(),
+      role
+    })
+    return await newUser.save()
+  }
+
   async updateUserProfile (id, user) {
     const { fullName, gender, dateOfBirth, placeOfBirth, address, phone } = user
 

@@ -10,6 +10,7 @@ class UserRoutes {
     this.router.post('/picture', this._userController.editProfilePicture)
     this.router.get('/profile', this._userController.getUser)
     this.router.put('/profile', this._userController.editProfile)
+    this.router.get('/first-init-app', this._userController.initApp)
 
     // Teacher
     this.router.get('/teachers', this._userController.getTeachers)

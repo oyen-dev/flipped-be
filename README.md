@@ -31,3 +31,10 @@ gsutil cors set cors.json gs://olearning-data
 ```
 3. Run the script
 4. Authorize the script
+
+# First run app
+1. Init admin by hit api
+```
+curl http://localhost:5000/api/v1/users/first-init-app
+```
+2. Done
