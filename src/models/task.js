@@ -1,5 +1,6 @@
 const { Schema, model } = require('mongoose')
-const { nanoid } = require('nanoid')
+const { customAlphabet } = require('nanoid')
+const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 15)
 
 const taskSchema = new Schema({
   _id: { type: String, default: () => { return `tas-${nanoid(15)}` } },
