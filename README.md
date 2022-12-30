@@ -27,7 +27,7 @@
 printf '[{"origin": ["*"],"responseHeader": ["*"],"method":
 ["GET","POST","PUT","DELETE","HEAD"],"maxAgeSeconds": 86400}]' > cors.json
 
-gsutil cors set cors.json gs://olearning-storage
+gsutil cors set cors.json gs://olearning-data
 ```
 3. Run the script
 4. Authorize the script
