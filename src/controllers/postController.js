@@ -266,7 +266,8 @@ class PostController {
       const arrayAttachments = await this._postService.getAttachments(postId)
       if (arrayAttachments.length > 0) {
         for (const attachment of arrayAttachments) {
-          const fileName = attachment.url.split('/flipped-storage/')[1]
+          const BUCKET_NAME = `/${process.env.BUCKET_NAME}/`
+          const fileName = attachment.url.split(BUCKET_NAME)[1]
           await this._storageService.deleteFile(fileName)
         }
       }
