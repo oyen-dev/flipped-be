@@ -6,5 +6,6 @@ module.exports = {
   ...require('./attachmentController'),
   ...require('./postController'),
   ...require('./presenceController'),
-  ...require('./evaluationController')
+  ...require('./evaluationController'),
+  ...require('./storageController')
 }

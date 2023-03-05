@@ -1,5 +1,4 @@
 const cors = require('cors')
-const multer = require('multer')
 const express = require('express')
 const { MyServer } = require('./myserver')
 const { Websocket } = require('./websocket')
@@ -85,7 +84,8 @@ const {
   AttachmentController,
   PostController,
   PresenceController,
-  EvaluationController
+  EvaluationController,
+  StorageController
 } = require('./controllers')
 const authController = new AuthController(authService, userService, mailService, validator, hashPassword, tokenize, response)
 const userController = new UserController(userService, classService, authService, storageService, mailService, validator, hashPassword, tokenize, response)
@@ -95,35 +95,16 @@ const attachmentController = new AttachmentController(attachmentService, storage
 const postController = new PostController(classService, userService, postService, taskService, submissionService, attachmentService, storageService, validator, tokenize, response)
 const presenceController = new PresenceController(presenceService, classService, presenceValidator, tokenize, response)
 const evaluationController = new EvaluationController(classService, userService, evaluationService, questionService, answerService, eSubmissionService, validator, tokenize, response)
+const storageController = new StorageController()
 
 // Routes
-const { AuthRoutes, UserRoutes, ClassRoutes, AttachmentRoutes, PresenceRoutes } = require('./routes')
+const { AuthRoutes, UserRoutes, ClassRoutes, AttachmentRoutes, PresenceRoutes, StorageRoutes } = require('./routes')
 const authRoutes = new AuthRoutes(authController)
 const userRoutes = new UserRoutes(userController)
 const attachmentRoutes = new AttachmentRoutes(attachmentController)
 const presenceRoutes = new PresenceRoutes(verifyToken, needRoles, presenceController)
 const classRoutes = new ClassRoutes(classController, postController, presenceRoutes, evaluationController)
-
-// Multer middleware
-const multerMid = multer({
-  storage: multer.memoryStorage(),
-  limits: {
-    fileSize: 25 * 1024 * 1024 // no larger than 25mb
-  }
-})
-
-// Use multer middleware single file
-app.use(multerMid.array('files', 10))
-
-// Catch error when file is too large
-app.use((err, req, res, next) => {
-  console.log(err)
-  if (err instanceof multer.MulterError) {
-    const payload = response.fail(400, 'File is too large, max size is 25mb')
-
-    return res.status(400).json(payload)
-  }
-})
+const storageRoutes = new StorageRoutes(storageController)
 
 // Simple route
 app.get('/', (req, res) => {
@@ -135,6 +116,7 @@ app.use('/api/v1/auth', authRoutes.router)
 app.use('/api/v1/users', userRoutes.router)
 app.use('/api/v1/class', classRoutes.router)
 app.use('/api/v1/attachment', attachmentRoutes.router)
+app.use('/api/v1/storage/uploads', storageRoutes.router)
 
 // Websocket connection
 // eslint-disable-next-line no-unused-vars

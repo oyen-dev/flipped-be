@@ -457,6 +457,7 @@ class ClassController {
     const token = req.headers.authorization
     const file = req.files[0]
     const { classId } = req.params
+    console.log(file)
 
     // Check token is exist
     if (!token) throw new ClientError('Unauthorized', 401)
@@ -481,11 +482,10 @@ class ClassController {
     const { mimetype, size } = file
     this._validator.validateEditPicture({ mimetype, size })
 
-    // Upload file to cloud storage
-    const imageUrl = await this._storageService.uploadImage(file)
+    const fileName = `${process.env.BACKEND_URL}/storage/uploads/files${file.path.split('files')[1]}`
 
     // Update user profile picture
-    classData.cover = imageUrl
+    classData.cover = fileName
     classData.updatedAt = new Date()
     await classData.save()
 
