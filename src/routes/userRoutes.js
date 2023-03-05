@@ -1,4 +1,5 @@
 const { MyRouter } = require('../myserver')
+const { upload } = require('../services/localStorageService')
 
 class UserRoutes {
   constructor (userController) {
@@ -7,7 +8,7 @@ class UserRoutes {
 
     // Universal
     this.router.get('/dashboard', this._userController.getDashboard)
-    this.router.post('/picture', this._userController.editProfilePicture)
+    this.router.post('/picture', upload.single('files'), this._userController.editProfilePicture)
     this.router.get('/profile', this._userController.getUser)
     this.router.put('/profile', this._userController.editProfile)
     this.router.get('/first-init-app', this._userController.initApp)
@@ -29,8 +30,8 @@ class UserRoutes {
     this.router.delete('/teachers/:id', this._userController.adminDeleteUser)
     this.router.post('/students/:id', this._userController.adminRestoreUser)
     this.router.post('/teachers/:id', this._userController.adminRestoreUser)
-    this.router.post('/students/picture/:id', this._userController.adminEditProfilePicture)
-    this.router.post('/teachers/picture/:id', this._userController.adminEditProfilePicture)
+    this.router.post('/students/picture/:id', upload.single('files'), this._userController.adminEditProfilePicture)
+    this.router.post('/teachers/picture/:id', upload.single('files'), this._userController.adminEditProfilePicture)
   }
 }
 

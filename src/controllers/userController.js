@@ -1,13 +1,13 @@
 const { ClientError } = require('../errors')
 const { bindAll } = require('../utils/classBinder')
+const { deleteFile } = require('../services/localStorageService')
 
 class UserController {
-  constructor (userService, classService, authService, storageService, mailService, validator, hashPassword, tokenize, response) {
+  constructor (userService, classService, authService, mailService, validator, hashPassword, tokenize, response) {
     this.name = 'userController'
     this._userService = userService
     this._classService = classService
     this._authService = authService
-    this._storageService = storageService
     this._mailService = mailService
     this._validator = validator
     this._hashPassword = hashPassword
@@ -360,7 +360,7 @@ class UserController {
 
   async editProfilePicture (req, res) {
     const token = req.headers.authorization
-    const file = req.files[0]
+    const file = req.file
 
     // Check token is exist
     if (!token) throw new ClientError('Unauthorized', 401)
@@ -375,15 +375,18 @@ class UserController {
     // Check file is exists
     if (!file) throw new ClientError('Please upload your picture file!', 400)
 
+    if (!file.mimetype.startsWith('image')) {
+      deleteFile(file)
+    }
+
     // Validate mime type and file size
     const { mimetype, size } = file
     this._validator.validateEditPicture({ mimetype, size })
 
-    // Upload file to cloud storage
-    const imageUrl = await this._storageService.uploadImage(file)
+    const fileName = `${process.env.BACKEND_URL}/storage/uploads/files${file.path.split('files')[1]}`
 
     // Update user profile picture
-    user.picture = imageUrl
+    user.picture = fileName
     user.updatedAt = new Date()
     await user.save()
 
@@ -396,7 +399,7 @@ class UserController {
   async adminEditProfilePicture (req, res) {
     const token = req.headers.authorization
     const id = req.params.id
-    const file = req.files[0]
+    const file = req.file
 
     // Check token is exist
     if (!token) throw new ClientError('Unauthorized', 401)
@@ -416,15 +419,18 @@ class UserController {
     // Check file is exists
     if (!file) throw new ClientError('Please upload your picture file!', 400)
 
+    if (!file.mimetype.startsWith('image')) {
+      deleteFile(file)
+    }
+
     // Validate mime type and file size
     const { mimetype, size } = file
     this._validator.validateEditPicture({ mimetype, size })
 
-    // Upload file to cloud storage
-    const imageUrl = await this._storageService.uploadImage(file)
+    const fileName = `${process.env.BACKEND_URL}/storage/uploads/files${file.path.split('files')[1]}`
 
     // Update user profile picture
-    user.picture = imageUrl
+    user.picture = fileName
     user.updatedAt = new Date()
     await user.save()
 

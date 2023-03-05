@@ -1,4 +1,5 @@
 const { MyRouter } = require('../myserver')
+const { upload } = require('../services/localStorageService')
 
 class ClassRoutes {
   constructor (classController, postController, presenceRoutes, evaluationController) {
@@ -14,7 +15,7 @@ class ClassRoutes {
     this.router.put('/:id', this._classController.updateClass)
     this.router.get('/:id/students', this._classController.getClassStudents)
     this.router.get('/:id/tasks', this._classController.getClassTasks)
-    this.router.post('/:classId/cover', this._classController.updateClassCover)
+    this.router.post('/:classId/cover', upload.array('files', 10), this._classController.updateClassCover)
     this.router.post('/', this._classController.addClass)
     this.router.post('/archive', this._classController.archiveClass)
     this.router.post('/delete', this._classController.deleteClass)

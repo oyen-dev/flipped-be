@@ -1,8 +1,9 @@
 const { ClientError } = require('../errors')
 const { bindAll } = require('../utils/classBinder')
+const { deleteFile } = require('../services/localStorageService')
 
 class ClassController {
-  constructor (classService, presenceService, taskService, evaluationService, userService, gradeService, storageService, validator, tokenize, response) {
+  constructor (classService, presenceService, taskService, evaluationService, userService, gradeService, validator, tokenize, response) {
     this.name = 'ClassController'
     this._classService = classService
     this._presenceService = presenceService
@@ -10,7 +11,6 @@ class ClassController {
     this._evaluationService = evaluationService
     this._userService = userService
     this._gradeService = gradeService
-    this._storageService = storageService
     this._validator = validator
     this._tokenize = tokenize
     this._response = response
@@ -477,15 +477,18 @@ class ClassController {
     // Check classData is exist
     if (!classData) throw new ClientError('Kelas tidak ditemukan!', 404)
 
+    if (!file.mimetype.startsWith('image')) {
+      deleteFile(file)
+    }
+
     // Validate mime type and file size
     const { mimetype, size } = file
     this._validator.validateEditPicture({ mimetype, size })
 
-    // Upload file to cloud storage
-    const imageUrl = await this._storageService.uploadImage(file)
+    const fileName = `${process.env.BACKEND_URL}/storage/uploads/files${file.path.split('files')[1]}`
 
     // Update user profile picture
-    classData.cover = imageUrl
+    classData.cover = fileName
     classData.updatedAt = new Date()
     await classData.save()
 

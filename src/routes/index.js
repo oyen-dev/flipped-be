@@ -3,5 +3,6 @@ module.exports = {
   ...require('./userRoutes'),
   ...require('./classRoutes'),
   ...require('./attachmentRoutes'),
-  ...require('./presenceRoutes')
+  ...require('./presenceRoutes'),
+  ...require('./storageRoutes')
 }
