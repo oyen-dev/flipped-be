@@ -1,8 +1,9 @@
 const { ClientError } = require('../errors')
 const { bindAll } = require('../utils/classBinder')
+const { deleteUploadedFile } = require('../services/localStorageService')
 
 class PostController {
-  constructor (classService, userService, postService, taskService, submissionService, attachmentService, storageService, validator, tokenize, response) {
+  constructor (classService, userService, postService, taskService, submissionService, attachmentService, validator, tokenize, response) {
     this.name = 'PostController'
     this._classService = classService
     this._userService = userService
@@ -10,7 +11,6 @@ class PostController {
     this._taskService = taskService
     this._submissionService = submissionService
     this._attachmentService = attachmentService
-    this._storageService = storageService
     this._validator = validator
     this._tokenize = tokenize
     this._response = response
@@ -266,9 +266,8 @@ class PostController {
       const arrayAttachments = await this._postService.getAttachments(postId)
       if (arrayAttachments.length > 0) {
         for (const attachment of arrayAttachments) {
-          const BUCKET_NAME = `/${process.env.BUCKET_NAME}/`
-          const fileName = attachment.url.split(BUCKET_NAME)[1]
-          await this._storageService.deleteFile(fileName)
+          const fileName = attachment.url.split('files')[1]
+          deleteUploadedFile(`files${fileName}`)
         }
       }
 

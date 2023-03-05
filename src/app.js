@@ -26,7 +26,6 @@ const {
   UserService,
   AuthService,
   MailService,
-  StorageService,
   ClassService,
   GradeService,
   OnlineUserService,
@@ -44,7 +43,6 @@ const {
 const userService = new UserService()
 const authService = new AuthService()
 const mailService = new MailService()
-const storageService = new StorageService()
 const classService = new ClassService()
 const gradeService = new GradeService()
 const onlineUserService = new OnlineUserService()
@@ -92,7 +90,7 @@ const userController = new UserController(userService, classService, authService
 const classController = new ClassController(classService, presenceService, taskService, evaluationService, userService, gradeService, validator, tokenize, response)
 const socketController = new SocketController(onlineUserService, logService)
 const attachmentController = new AttachmentController(attachmentService, userService, validator, tokenize, response)
-const postController = new PostController(classService, userService, postService, taskService, submissionService, attachmentService, storageService, validator, tokenize, response)
+const postController = new PostController(classService, userService, postService, taskService, submissionService, attachmentService, validator, tokenize, response)
 const presenceController = new PresenceController(presenceService, classService, presenceValidator, tokenize, response)
 const evaluationController = new EvaluationController(classService, userService, evaluationService, questionService, answerService, eSubmissionService, validator, tokenize, response)
 const storageController = new StorageController()

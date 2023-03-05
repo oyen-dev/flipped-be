@@ -27,6 +27,14 @@ const deleteFile = (file) => {
   })
 }
 
+const deleteUploadedFile = (fileName) => {
+  fs.unlink(path.join(__dirname, `../uploads/${fileName}`), err => {
+    if (err) {
+      throw new ClientError('Terjadi kesalahan saat menghapus file', 500)
+    }
+  })
+}
+
 const acceptedFileTypes = [
   'image/jpeg',
   'image/png',
@@ -51,5 +59,6 @@ const validateFileTypes = (file) => {
 module.exports = {
   upload,
   deleteFile,
-  validateFileTypes
+  validateFileTypes,
+  deleteUploadedFile
 }
