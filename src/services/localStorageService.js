@@ -1,5 +1,7 @@
+const { ClientError } = require('../errors')
 const multer = require('multer')
 const path = require('path')
+const fs = require('fs')
 
 const diskStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -17,6 +19,37 @@ const upload = multer({
   }
 })
 
+const deleteFile = (file) => {
+  fs.unlink(file.path, (err) => {
+    if (err) {
+      throw new ClientError('Terjadi kesalahan saat menghapus file', 500)
+    }
+  })
+}
+
+const acceptedFileTypes = [
+  'image/jpeg',
+  'image/png',
+  'image/svg+xml',
+  'video/mp4',
+  'video/quicktime',
+  'video/webm',
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.ms-powerpoint',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+]
+
+const validateFileTypes = (file) => {
+  if (!acceptedFileTypes.includes(file.mimetype)) {
+    return false
+  }
+  return true
+}
+
 module.exports = {
-  upload
+  upload,
+  deleteFile,
+  validateFileTypes
 }

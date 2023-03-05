@@ -1,5 +1,6 @@
 const { ClientError } = require('../errors')
 const { bindAll } = require('../utils/classBinder')
+const { deleteFile } = require('../services/localStorageService')
 
 class ClassController {
   constructor (classService, presenceService, taskService, evaluationService, userService, gradeService, storageService, validator, tokenize, response) {
@@ -457,7 +458,6 @@ class ClassController {
     const token = req.headers.authorization
     const file = req.files[0]
     const { classId } = req.params
-    console.log(file)
 
     // Check token is exist
     if (!token) throw new ClientError('Unauthorized', 401)
@@ -477,6 +477,10 @@ class ClassController {
 
     // Check classData is exist
     if (!classData) throw new ClientError('Kelas tidak ditemukan!', 404)
+
+    if (!file.mimetype.startsWith('image')) {
+      deleteFile(file)
+    }
 
     // Validate mime type and file size
     const { mimetype, size } = file

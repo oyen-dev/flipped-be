@@ -116,7 +116,7 @@ app.use('/api/v1/auth', authRoutes.router)
 app.use('/api/v1/users', userRoutes.router)
 app.use('/api/v1/class', classRoutes.router)
 app.use('/api/v1/attachment', attachmentRoutes.router)
-app.use('/api/v1/storage/uploads', storageRoutes.router)
+app.use('/storage/uploads', storageRoutes.router)
 
 // Websocket connection
 // eslint-disable-next-line no-unused-vars

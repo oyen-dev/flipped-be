@@ -1,5 +1,6 @@
 const { ClientError } = require('../errors')
 const { bindAll } = require('../utils/classBinder')
+const { validateFileTypes, deleteFile } = require('../services/localStorageService')
 
 class AttachmentController {
   constructor (attachmentService, storageService, userService, validator, tokenize, response) {
@@ -16,7 +17,7 @@ class AttachmentController {
 
   async uploadAttachment (req, res) {
     const token = req.headers.authorization
-    const file = req.files[0]
+    const file = req.file
 
     try {
       // Check token is exist
@@ -32,15 +33,19 @@ class AttachmentController {
       // Check file is exists
       if (!file) throw new ClientError('Please upload your attachment file!', 400)
 
+      // First validate file type
+      const validateResult = validateFileTypes(file)
+      if (!validateResult) deleteFile(file)
+
       // Validate mime type and file size
       const { mimetype, originalname, size } = file
       this._validator.validateUploadAttachment({ mimetype, size })
 
-      // Upload file to cloud storage
-      const attachmentUrl = await this._storageService.uploadAttachment(file)
+      // Get fileName
+      const fileName = `${process.env.BACKEND_URL}/storage/uploads/files${file.path.split('files')[1]}`
 
       // Save uri to db
-      const attachment = await this._attachmentService.addAttachment(mimetype, attachmentUrl, originalname)
+      const attachment = await this._attachmentService.addAttachment(mimetype, fileName, originalname)
 
       // Array of attachment
       const attachments = [attachment]
@@ -77,17 +82,24 @@ class AttachmentController {
       // Array of attachment
       const attachments = []
 
+      // First looping to validate file type
+      for (const f of files) {
+        // First validate file type
+        const validateResult = validateFileTypes(f)
+        if (!validateResult) deleteFile(f)
+      }
+
       // Looping file
       for (const f of files) {
         // Validate mime type and file size
         const { mimetype, originalname, size } = f
         this._validator.validateUploadAttachment({ mimetype, size })
 
-        // Upload file to cloud storage
-        const attachmentUrl = await this._storageService.uploadAttachment(f)
+        // Get fileName
+        const fileName = `${process.env.BACKEND_URL}/storage/uploads/files${f.path.split('files')[1]}`
 
         // Save uri to db
-        const attachment = await this._attachmentService.addAttachment(mimetype, attachmentUrl, originalname)
+        const attachment = await this._attachmentService.addAttachment(mimetype, fileName, originalname)
 
         // Push to array
         attachments.push(attachment)
