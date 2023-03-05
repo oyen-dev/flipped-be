@@ -3,10 +3,9 @@ const { bindAll } = require('../utils/classBinder')
 const { validateFileTypes, deleteFile } = require('../services/localStorageService')
 
 class AttachmentController {
-  constructor (attachmentService, storageService, userService, validator, tokenize, response) {
+  constructor (attachmentService, userService, validator, tokenize, response) {
     this.name = 'AttachmentController'
     this._attachmentService = attachmentService
-    this._storageService = storageService
     this._userService = userService
     this._validator = validator
     this._tokenize = tokenize

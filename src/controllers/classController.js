@@ -3,7 +3,7 @@ const { bindAll } = require('../utils/classBinder')
 const { deleteFile } = require('../services/localStorageService')
 
 class ClassController {
-  constructor (classService, presenceService, taskService, evaluationService, userService, gradeService, storageService, validator, tokenize, response) {
+  constructor (classService, presenceService, taskService, evaluationService, userService, gradeService, validator, tokenize, response) {
     this.name = 'ClassController'
     this._classService = classService
     this._presenceService = presenceService
@@ -11,7 +11,6 @@ class ClassController {
     this._evaluationService = evaluationService
     this._userService = userService
     this._gradeService = gradeService
-    this._storageService = storageService
     this._validator = validator
     this._tokenize = tokenize
     this._response = response
