@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon ./src/index.js",
     "lint": "eslint --fix .",
-    "test": "cross-env NODE_ENV=test jest --forceExit"
+    "test": "cross-env NODE_ENV=test jest --forceExit",
+    "start:prod": "pm2 restart ecosystem.config.js"
   },
   "repository": {
     "type": "git",
